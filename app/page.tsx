@@ -5,7 +5,7 @@ import { CATEGORY_LABELS, BUILT_WITH_LABELS } from '@/lib/constants'
 import { GalleryClient } from './GalleryClient'
 
 export const metadata = {
-  title: '1PromptApps — Real apps from one AI prompt',
+  title: '1PromptApps — Real apps from one prompt',
   description: 'Browse proof-driven case studies of static webapps built from a single AI prompt. Every app includes the original prompt, screenshots, builder info, generation time, and honest edit notes.',
 }
 
@@ -38,7 +38,7 @@ export default function HomePage() {
       {/* Hero */}
       <div className="max-w-7xl mx-auto px-6 pt-12 pb-8">
         <h1 className="text-3xl font-bold tracking-tight mb-2" style={{ color: 'var(--ink)' }}>
-          Real apps from one AI prompt.
+          Real apps from one prompt.
         </h1>
         <p className="text-base max-w-xl" style={{ color: 'var(--muted)' }}>
           Each entry includes the original prompt, a live demo, screenshots, and honest notes

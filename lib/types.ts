@@ -14,6 +14,7 @@ export interface AppManifest {
     effort?: string
     generationDurationSeconds?: number
     followUpCount: number
+    followUpPrompts?: string[]
     errorFixes?: number
     transcriptUrl?: string
   }
@@ -84,6 +85,7 @@ export interface AppEntry {
   publishedAt: string
   externalApiDomains: string[]
   followUpCount: number
+  followUpPrompts: string[]
   errorFixes: number
 }
 

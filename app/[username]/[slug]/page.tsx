@@ -180,6 +180,28 @@ export default async function AppPage({ params }: { params: Promise<Params> }) {
           </div>
         </section>
 
+        {/* Follow-up prompts */}
+        {app.followUpPrompts.length > 0 && (
+          <section className="mb-8">
+            {app.followUpPrompts.map((fp, i) => (
+              <div key={i} className="mb-4">
+                <div className="flex items-center justify-between mb-2">
+                  <h2 className="text-sm font-semibold uppercase tracking-wide" style={{ color: 'var(--muted)' }}>
+                    Follow-up {i + 1}
+                  </h2>
+                  <CopyButton text={fp} />
+                </div>
+                <div
+                  className="prompt-block rounded-xl p-5 whitespace-pre-wrap text-sm leading-relaxed"
+                  style={{ background: '#F8F8F7', border: '1px solid var(--border)', color: 'var(--ink)' }}
+                >
+                  {fp}
+                </div>
+              </div>
+            ))}
+          </section>
+        )}
+
         {/* Outcome */}
         {(app.worked.length > 0 || app.manualEdits.length > 0) && (
           <section className="mb-8">
