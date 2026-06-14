@@ -38,7 +38,8 @@
       "required": ["text", "builder", "followUpCount"],
       "properties": {
         "text": { "type": "string", "minLength": 10, "maxLength": 8000 },
-        "model": { "type": "string" },
+        "model": { "type": "string", "description": "Human-readable model name, e.g. GLM-5.1, Claude Opus 4." },
+        "modelId": { "type": "string", "description": "Canonical model ID used by the provider, e.g. zai-org/GLM-5.1, anthropic/claude-opus-4." },
         "provider": {
           "type": "string",
           "description": "API provider used to access the model (e.g. DeepInfra, OpenRouter, Together AI, Anthropic, OpenAI, Google)."
