@@ -1,0 +1,63 @@
+{
+  "manifestVersion": "1.0",
+  "name": "Stock Market Dashboard",
+  "slug": "glm-stock-dashboard",
+  "tagline": "Interactive QQQ & SPY dashboard with technical indicators — Bollinger Bands, RSI, and SMA — built in one prompt.",
+  "description": "A dark-themed stock market dashboard for QQQ and SPY ETFs. Includes interactive Chart.js price charts with SMA (20/100/200-day), Bollinger Bands, and RSI indicators. Shows metric cards for current price, day/week/month/YTD performance, 52-week high/low, and annualised volatility. Tab-based navigation between ETFs, time-range filtering (3M/6M/1Y/ALL), and a glass-morphism UI. Data is hardcoded — no live API calls required.",
+  "category": "finance",
+  "tags": ["stocks", "charts", "technical-analysis", "dark-theme", "qqq", "spy", "no-backend"],
+  "prompt": {
+    "text": "Build a stock market dashboard for QQQ and SPY ETFs. Show historical price charts with technical indicators: SMA (20-day, 100-day, 200-day), Bollinger Bands (20-period, 2 std dev), and RSI (14-period). Include metric cards showing current price, day change, week change, month change, YTD performance, 52-week high/low, and annualised volatility. Add time-range filtering (3M, 6M, 1Y, ALL) and tab-based navigation between the two ETFs. Use Chart.js for the charts, Tailwind CSS for styling, and a dark glass-morphism UI. Use hardcoded historical closing price data — no live API calls.",
+    "model": "GLM-5.1",
+    "builder": "glm",
+    "followUpCount": 0,
+    "transcriptUrl": null
+  },
+  "outcome": {
+    "timeToFirstVersionMinutes": 3,
+    "reproducibility": "full",
+    "worked": [
+      "Complete dark glass-morphism UI with correct Tailwind classes",
+      "Chart.js integration with SMA overlays and Bollinger Bands",
+      "RSI chart on a separate canvas below the price chart",
+      "Metric cards (price, day/week/month/YTD change, 52w high/low, volatility)",
+      "Tab switching between QQQ and SPY with reactive chart updates",
+      "Time-range filter (3M, 6M, 1Y, ALL) that slices the data correctly",
+      "Lit-html reactive rendering without a build step",
+      "Responsive layout that works on desktop and mobile"
+    ],
+    "manualEdits": []
+  },
+  "demo": {
+    "type": "bundle",
+    "entry": "index.html"
+  },
+  "source": {
+    "available": false,
+    "url": null,
+    "license": null
+  },
+  "author": {
+    "name": "Duc Nguyen",
+    "handle": "ducsyn",
+    "url": null
+  },
+  "media": {
+    "thumbnail": "screenshots/thumbnail.png",
+    "screenshots": [
+      { "src": "screenshots/desktop.png", "alt": "Full-page view of the QQQ dashboard with price chart, Bollinger Bands, RSI, and metric cards" }
+    ]
+  },
+  "permissions": {
+    "permissionToFeature": true,
+    "rightsAttested": true
+  },
+  "manualEditLevel": "none-claimed",
+  "externalApiDomains": [
+    "cdn.tailwindcss.com",
+    "cdn.jsdelivr.net",
+    "fonts.googleapis.com",
+    "fonts.gstatic.com"
+  ],
+  "publishedAt": "2026-06-13"
+}

@@ -1,0 +1,55 @@
+{
+  "manifestVersion": "1.0",
+  "name": "My App Name",
+  "slug": "my-app-slug",
+  "tagline": "A one-sentence description of what this app does.",
+  "description": "Optional longer description (max 2000 chars). Supports plain text.",
+  "category": "productivity",
+  "tags": ["tag1", "tag2"],
+  "prompt": {
+    "text": "Paste your exact original prompt here. Be as accurate as possible.",
+    "model": "claude-opus-4-8",
+    "builder": "claude",
+    "followUpCount": 0,
+    "transcriptUrl": null
+  },
+  "outcome": {
+    "timeToFirstVersionMinutes": 15,
+    "reproducibility": "full",
+    "worked": [
+      "Describe what worked out of the box",
+      "Each bullet on a new line"
+    ],
+    "manualEdits": [
+      "Describe what you had to fix manually",
+      "Be honest — it builds trust"
+    ]
+  },
+  "demo": {
+    "type": "bundle",
+    "entry": "index.html"
+  },
+  "source": {
+    "available": false,
+    "url": null,
+    "license": null
+  },
+  "author": {
+    "name": "Your Name",
+    "handle": "your-github-username",
+    "url": null
+  },
+  "media": {
+    "thumbnail": "screenshots/thumbnail.png",
+    "screenshots": [
+      { "src": "screenshots/desktop.png", "alt": "Describe what's shown" }
+    ]
+  },
+  "permissions": {
+    "permissionToFeature": true,
+    "rightsAttested": true
+  },
+  "manualEditLevel": "minor",
+  "externalApiDomains": [],
+  "publishedAt": "2026-06-13"
+}

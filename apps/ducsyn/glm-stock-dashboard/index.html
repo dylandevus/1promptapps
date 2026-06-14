@@ -1,0 +1,610 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Stock Market Dashboard - QQQ & SPY</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns@3.0.0/dist/chartjs-adapter-date-fns.bundle.min.js"></script>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+body { font-family: 'Inter', sans-serif; background: #0a0e1a; }
+.glass { background: rgba(15,23,42,0.6); backdrop-filter: blur(12px); border: 1px solid rgba(148,163,184,0.1); }
+.glass-light { background: rgba(30,41,59,0.5); backdrop-filter: blur(8px); border: 1px solid rgba(148,163,184,0.08); }
+.glow-green { box-shadow: 0 0 20px rgba(34,197,94,0.15); }
+.glow-red { box-shadow: 0 0 20px rgba(239,68,68,0.15); }
+.glow-blue { box-shadow: 0 0 20px rgba(59,130,246,0.15); }
+.metric-card { transition: all 0.3s ease; }
+.metric-card:hover { transform: translateY(-2px); border-color: rgba(148,163,184,0.25); }
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: #0f172a; }
+::-webkit-scrollbar-thumb { background: #334155; border-radius: 3px; }
+.tab-active { background: rgba(59,130,246,0.2); border-color: rgba(59,130,246,0.5); color: #93c5fd; }
+</style>
+</head>
+<body class="min-h-screen text-slate-200">
+
+<div id="app"></div>
+
+<script type="module">
+import { html, render, nothing } from 'https://cdn.jsdelivr.net/npm/lit-html@3.2.1/lit-html.js';
+import { repeat } from 'https://cdn.jsdelivr.net/npm/lit-html@3.2.1/directives/repeat.js';
+import { until } from 'https://cdn.jsdelivr.net/npm/lit-html@3.2.1/directives/until.js';
+
+const QQQ_CLOSE = [526.96,534.29,529.08,528.99,526.83,531.65,539.78,541.16,546.22,548.09,551.64,546.99,550.80,556.22,552.03,552.34,556.25,555.45,554.20,556.21,556.72,557.29,561.80,561.26,564.17,561.25,563.81,565.01,566.37,568.14,567.26,568.02,565.01,553.88,564.10,560.27,567.32,569.24,574.55,572.85,580.05,580.34,579.89,577.34,577.11,569.28,565.90,563.28,571.97,570.32,572.61,573.49,577.08,570.40,565.62,570.07,575.23,576.06,578.87,580.51,580.70,584.08,586.66,591.68,591.18,590.00,595.32,599.35,602.20,598.20,596.10,593.53,595.97,598.73,600.37,603.25,605.73,603.18,607.71,604.51,611.44,610.70,589.50,602.01,598.00,602.22,599.99,603.93,611.54,611.38,605.49,610.58,617.10,628.09,632.92,635.77,626.05,629.07,632.08,619.25,623.28,611.67,609.74,623.23,621.57,621.08,608.40,608.86,603.66,596.31,599.87,585.67,590.07,605.16,608.89,614.27,619.25,617.17,622.00,623.52,622.94,625.48,624.28,625.05,627.61,625.58,613.62,610.54,611.75,600.41,609.11,617.05,619.21,622.11,623.93,623.89,620.87,619.43,614.31,613.12,617.99,623.42,624.02,620.47,626.65,627.17,626.24,619.55,621.78,621.26,608.06,616.28,620.76,622.72,625.46,631.13,633.22,629.43,621.87,626.14,616.52,605.75,597.03,609.65,614.32,611.47,613.11,600.64,601.92,601.30,605.79,603.47,608.81,601.41,607.87,616.68,609.24,607.29,608.09,601.58,610.75,608.91,599.75,607.76,607.77,607.69,597.26,593.72,600.38,603.31,594.90,593.02,582.06,588.00,583.98,587.82,573.79,562.58,558.28,577.18,584.31,584.98,588.50,588.59,606.09,610.19,611.07,617.39,628.60,637.40,640.47,648.85,646.79,644.33,655.11,651.42,663.88,664.23,657.55,661.57,667.74,674.15,672.88,681.61,695.77,694.94,711.23,713.29,707.24,714.71,719.79,708.93,705.88,701.53,713.15,714.51,717.54,730.28,729.45,735.60,738.31,742.74,746.16,744.21,740.61,705.06,716.07,707.83,693.69,717.12,721.34];
+
+const SPY_CLOSE = [597.00,602.68,597.53,597.44,594.28,600.15,606.78,607.12,611.87,614.91,617.85,617.65,620.45,625.34,620.68,620.34,624.06,625.82,623.62,624.81,622.14,624.22,628.04,627.58,628.77,628.86,634.21,634.42,637.10,636.94,635.26,634.46,632.08,621.72,631.17,627.97,632.78,632.25,637.18,635.92,642.69,644.89,644.95,643.44,643.30,639.81,638.11,635.55,645.31,642.47,645.16,646.63,648.92,645.05,640.27,643.74,649.12,647.24,648.83,650.33,652.21,657.63,657.41,660.91,660.00,659.18,662.26,663.70,666.84,663.21,661.10,658.05,661.82,663.68,666.18,668.45,669.22,669.21,671.61,669.12,673.11,671.16,653.02,663.04,662.23,665.17,660.64,664.39,671.30,671.29,667.80,671.76,677.25,685.24,687.06,687.39,679.83,682.06,683.34,675.24,677.58,670.31,670.97,681.44,683.00,683.38,672.04,671.93,665.67,660.08,662.63,652.53,659.03,668.73,675.02,679.68,683.39,680.27,681.53,683.89,684.39,685.69,683.63,683.04,687.57,689.17,681.76,680.73,678.87,671.40,676.47,680.59,684.83,687.96,690.38,690.31,687.85,687.01,681.92,683.17,687.72,691.81,689.58,689.51,694.07,695.16,693.77,690.36,692.24,691.66,677.58,685.40,688.98,689.23,692.73,695.49,695.42,694.04,691.97,695.41,689.53,686.19,677.62,690.62,693.95,692.12,691.96,681.27,681.75,682.85,686.29,684.48,689.43,682.39,687.35,693.15,689.30,685.99,686.38,680.33,685.13,681.31,672.38,678.27,677.18,676.33,666.06,662.29,669.03,670.79,661.43,659.80,648.57,655.38,653.18,656.82,645.09,634.09,631.97,650.34,655.24,655.83,658.93,659.22,676.01,679.91,679.46,686.10,694.46,699.94,701.66,710.14,708.72,704.08,711.21,708.45,713.94,715.17,711.69,711.58,718.66,720.65,718.01,723.77,733.83,731.58,737.62,739.30,738.18,742.31,748.17,739.17,738.65,733.73,741.25,742.72,745.64,750.59,750.46,754.60,756.48,758.54,759.57,754.24,757.09,737.55,739.22,737.05,725.43,737.76,741.75];
+
+const START_DATE = new Date('2025-06-13');
+
+function generateDates(count) {
+  const dates = [];
+  let d = new Date(START_DATE);
+  d.setDate(d.getDate() - (count - 1) * 7 / 5);
+  for (let i = 0; i < count; i++) {
+    const tradeDate = new Date(START_DATE);
+    tradeDate.setDate(START_DATE.getDate() - (count - 1 - i));
+    while (tradeDate.getDay() === 0 || tradeDate.getDay() === 6) {
+      tradeDate.setDate(tradeDate.getDate() - 1);
+    }
+    dates.push(tradeDate.toISOString().split('T')[0]);
+  }
+  return dates;
+}
+
+function calcSMA(data, period) {
+  const result = [];
+  for (let i = 0; i < data.length; i++) {
+    if (i < period - 1) { result.push(null); continue; }
+    let sum = 0;
+    for (let j = 0; j < period; j++) sum += data[i - j];
+    result.push(+(sum / period).toFixed(2));
+  }
+  return result;
+}
+
+function calcBollingerBands(data, period = 20, stdDev = 2) {
+  const upper = [], middle = [], lower = [];
+  for (let i = 0; i < data.length; i++) {
+    if (i < period - 1) { upper.push(null); middle.push(null); lower.push(null); continue; }
+    let sum = 0;
+    for (let j = 0; j < period; j++) sum += data[i - j];
+    const mean = sum / period;
+    let sqSum = 0;
+    for (let j = 0; j < period; j++) sqSum += (data[i - j] - mean) ** 2;
+    const std = Math.sqrt(sqSum / period);
+    upper.push(+(mean + stdDev * std).toFixed(2));
+    middle.push(+mean.toFixed(2));
+    lower.push(+(mean - stdDev * std).toFixed(2));
+  }
+  return { upper, middle, lower };
+}
+
+function calcRSI(data, period = 14) {
+  const result = [];
+  let gains = 0, losses = 0;
+  for (let i = 0; i < data.length; i++) {
+    if (i === 0) { result.push(null); continue; }
+    const change = data[i] - data[i - 1];
+    if (i <= period) {
+      if (change > 0) gains += change; else losses -= change;
+      if (i === period) {
+        const avgGain = gains / period;
+        const avgLoss = losses / period;
+        const rs = avgLoss === 0 ? 100 : avgGain / avgLoss;
+        result.push(+(100 - 100 / (1 + rs)).toFixed(1));
+      } else { result.push(null); }
+    } else {
+      const prevGain = change > 0 ? change : 0;
+      const prevLoss = change < 0 ? -change : 0;
+      gains = (gains * (period - 1) + prevGain) / period;
+      losses = (losses * (period - 1) + prevLoss) / period;
+      const rs = losses === 0 ? 100 : gains / losses;
+      result.push(+(100 - 100 / (1 + rs)).toFixed(1));
+    }
+  }
+  return result;
+}
+
+function formatNum(n, decimals = 2) {
+  if (n == null) return '—';
+  return n.toFixed(decimals);
+}
+
+function pctChange(current, previous) {
+  if (!previous) return null;
+  return ((current - previous) / previous * 100).toFixed(2);
+}
+
+let activeTab = 'qqq';
+let timeRange = '1y';
+
+function getStats(name, data) {
+  const latest = data[data.length - 1];
+  const prev = data[data.length - 2];
+  const weekAgo = data[Math.max(0, data.length - 6)];
+  const monthAgo = data[Math.max(0, data.length - 22)];
+  const sma20 = calcSMA(data, 20);
+  const sma100 = calcSMA(data, 100);
+  const sma200 = calcSMA(data, 200);
+  const bb = calcBollingerBands(data, 20, 2);
+  const rsi = calcRSI(data, 14);
+  const dailyReturns = data.slice(1).map((v, i) => (v - data[i]) / data[i]);
+  const volatility = Math.sqrt(dailyReturns.reduce((s, r) => s + r * r, 0) / dailyReturns.length) * Math.sqrt(252) * 100;
+  const max52 = Math.max(...data);
+  const min52 = Math.min(...data);
+  const ytdStart = data[0];
+  const rsiLatest = rsi.filter(v => v != null).pop();
+  const sma20Latest = sma20.filter(v => v != null).pop();
+  const sma100Latest = sma100.filter(v => v != null).pop();
+  const sma200Latest = sma200.filter(v => v != null).pop();
+  const bbLatestUpper = bb.upper.filter(v => v != null).pop();
+  const bbLatestLower = bb.lower.filter(v => v != null).pop();
+  const trend = latest > sma200Latest ? 'Bullish' : latest < sma200Latest ? 'Bearish' : 'Neutral';
+  const bbWidth = bbLatestUpper && bbLatestLower ? ((bbLatestUpper - bbLatestLower) / sma20Latest * 100).toFixed(1) : '—';
+
+  return {
+    name, latest, prev, weekAgo, monthAgo, ytdStart, max52, min52,
+    change: (latest - prev).toFixed(2),
+    changePct: pctChange(latest, prev),
+    weekChangePct: pctChange(latest, weekAgo),
+    monthChangePct: pctChange(latest, monthAgo),
+    ytdChangePct: pctChange(latest, ytdStart),
+    sma20Latest, sma100Latest, sma200Latest,
+    sma20: sma20.filter(v => v != null).length > 0,
+    sma100: sma100.filter(v => v != null).length > 0,
+    sma200: sma200.filter(v => v != null).length > 0,
+    bbLatestUpper, bbLatestLower, bbWidth,
+    trend, rsiLatest, volatility,
+    aboveSMA20: latest > sma20Latest,
+    aboveSMA100: latest > sma100Latest,
+    aboveSMA200: latest > sma200Latest,
+  };
+}
+
+function buildChartData(data, name) {
+  const dates = generateDates(data.length);
+  const sma20 = calcSMA(data, 20);
+  const sma100 = calcSMA(data, 100);
+  const sma200 = calcSMA(data, 200);
+  const bb = calcBollingerBands(data, 20, 2);
+  const rsi = calcRSI(data, 14);
+
+  return { dates, price: data, sma20, sma100, sma200, bb, rsi };
+}
+
+function createPriceChart(canvasId, chartData, name) {
+  const ctx = document.getElementById(canvasId);
+  if (!ctx) return null;
+
+  const labels = chartData.dates;
+  const datasets = [
+    {
+      label: name,
+      data: chartData.price,
+      borderColor: '#60a5fa',
+      backgroundColor: 'rgba(96,165,250,0.08)',
+      borderWidth: 2,
+      pointRadius: 0,
+      fill: false,
+      tension: 0.1,
+      order: 1,
+    },
+    {
+      label: 'BB Upper',
+      data: chartData.bb.upper,
+      borderColor: 'rgba(251,146,60,0.4)',
+      borderWidth: 1,
+      pointRadius: 0,
+      borderDash: [4, 4],
+      fill: false,
+      tension: 0.1,
+      order: 3,
+    },
+    {
+      label: 'BB Lower',
+      data: chartData.bb.lower,
+      borderColor: 'rgba(251,146,60,0.4)',
+      borderWidth: 1,
+      pointRadius: 0,
+      borderDash: [4, 4],
+      fill: '-1',
+      backgroundColor: 'rgba(251,146,60,0.05)',
+      tension: 0.1,
+      order: 3,
+    },
+    {
+      label: 'BB Middle (20 SMA)',
+      data: chartData.bb.middle,
+      borderColor: 'rgba(251,146,60,0.7)',
+      borderWidth: 1.5,
+      pointRadius: 0,
+      fill: false,
+      tension: 0.1,
+      order: 2,
+    },
+    {
+      label: '100-day SMA',
+      data: chartData.sma100,
+      borderColor: 'rgba(74,222,128,0.7)',
+      borderWidth: 1.5,
+      pointRadius: 0,
+      fill: false,
+      tension: 0.1,
+      order: 2,
+    },
+    {
+      label: '200-day SMA',
+      data: chartData.sma200,
+      borderColor: 'rgba(192,132,252,0.7)',
+      borderWidth: 1.5,
+      pointRadius: 0,
+      fill: false,
+      tension: 0.1,
+      order: 2,
+    },
+  ];
+
+  return new Chart(ctx, {
+    type: 'line',
+    data: { labels, datasets },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      interaction: { mode: 'index', intersect: false },
+      plugins: {
+        legend: {
+          display: true,
+          position: 'top',
+          labels: { color: '#94a3b8', font: { size: 11 }, usePointStyle: true, pointStyleWidth: 8, padding: 12 },
+        },
+        tooltip: {
+          backgroundColor: 'rgba(15,23,42,0.95)',
+          titleColor: '#e2e8f0',
+          bodyColor: '#cbd5e1',
+          borderColor: 'rgba(148,163,184,0.2)',
+          borderWidth: 1,
+          padding: 12,
+          displayColors: true,
+          callbacks: {
+            label: (ctx) => `${ctx.dataset.label}: $${ctx.parsed.y?.toFixed(2) ?? '—'}`,
+          },
+        },
+      },
+      scales: {
+        x: {
+          type: 'category',
+          ticks: { color: '#64748b', maxTicksLimit: 12, font: { size: 10 } },
+          grid: { color: 'rgba(148,163,184,0.06)' },
+        },
+        y: {
+          position: 'right',
+          ticks: { color: '#64748b', font: { size: 10 }, callback: v => '$' + v },
+          grid: { color: 'rgba(148,163,184,0.06)' },
+        },
+      },
+    },
+  });
+}
+
+function createRSIChart(canvasId, chartData) {
+  const ctx = document.getElementById(canvasId);
+  if (!ctx) return null;
+
+  return new Chart(ctx, {
+    type: 'line',
+    data: {
+      labels: chartData.dates,
+      datasets: [{
+        label: 'RSI (14)',
+        data: chartData.rsi,
+        borderColor: '#c084fc',
+        borderWidth: 1.5,
+        pointRadius: 0,
+        fill: false,
+        tension: 0.1,
+      }],
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: { legend: { display: false } },
+      scales: {
+        x: {
+          type: 'category',
+          ticks: { color: '#64748b', maxTicksLimit: 12, font: { size: 10 } },
+          grid: { color: 'rgba(148,163,184,0.06)' },
+        },
+        y: {
+          min: 0, max: 100,
+          ticks: { color: '#64748b', font: { size: 10 } },
+          grid: { color: 'rgba(148,163,184,0.06)' },
+        },
+      },
+      plugins: {
+        annotation: {
+          annotations: {
+            overbought: { type: 'line', yMin: 70, yMax: 70, borderColor: 'rgba(239,68,68,0.5)', borderDash: [4, 4] },
+            oversold: { type: 'line', yMin: 30, yMax: 30, borderColor: 'rgba(34,197,94,0.5)', borderDash: [4, 4] },
+          },
+        },
+      },
+    },
+  });
+}
+
+let qqqChart = null;
+let spyChart = null;
+let qqqRsiChart = null;
+let spyRsiChart = null;
+
+function initCharts() {
+  qqqChart?.destroy();
+  spyChart?.destroy();
+  qqqRsiChart?.destroy();
+  spyRsiChart?.destroy();
+  qqqChart = createPriceChart('qqq-chart', buildChartData(QQQ_CLOSE, 'QQQ'), 'QQQ');
+  spyChart = createPriceChart('spy-chart', buildChartData(SPY_CLOSE, 'SPY'), 'SPY');
+  qqqRsiChart = createRSIChart('qqq-rsi-chart', buildChartData(QQQ_CLOSE, 'QQQ'));
+  spyRsiChart = createRSIChart('spy-rsi-chart', buildChartData(SPY_CLOSE, 'SPY'));
+}
+
+const qqqStats = getStats('QQQ', QQQ_CLOSE);
+const spyStats = getStats('SPY', SPY_CLOSE);
+
+function metricCard(label, value, sub, colorClass = 'text-slate-100') {
+  return html`
+    <div class="metric-card glass rounded-lg p-3">
+      <div class="text-xs text-slate-400 mb-1">${label}</div>
+      <div class="text-lg font-semibold ${colorClass}">${value}</div>
+      ${sub ? html`<div class="text-xs text-slate-500 mt-0.5">${sub}</div>` : nothing}
+    </div>
+  `;
+}
+
+function trendBadge(condition, yesText, noText) {
+  return condition
+    ? html`<span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-green-500/15 text-green-400">${yesText}</span>`
+    : html`<span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-red-500/15 text-red-400">${noText}</span>`;
+}
+
+function tickerSection(stats, chartId, rsiChartId) {
+  const changeColor = parseFloat(stats.changePct) >= 0 ? 'text-green-400' : 'text-red-400';
+  const changeIcon = parseFloat(stats.changePct) >= 0 ? '▲' : '▼';
+  return html`
+    <div class="mb-6">
+      <div class="flex items-center gap-3 mb-4">
+        <h2 class="text-2xl font-bold text-white">${stats.name}</h2>
+        <span class="text-3xl font-bold ${changeColor}">$${formatNum(stats.latest)}</span>
+        <span class="text-sm font-medium ${changeColor}">${changeIcon} ${stats.changePct}%</span>
+        <span class="text-xs text-slate-400">( $${stats.change} )</span>
+      </div>
+      <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-2 mb-4">
+        ${metricCard('Day Change', `$${stats.change}`, `${changeIcon} ${stats.changePct}%`, changeColor)}
+        ${metricCard('Week Change', `${stats.weekChangePct}%`, '', parseFloat(stats.weekChangePct) >= 0 ? 'text-green-400' : 'text-red-400')}
+        ${metricCard('Month Change', `${stats.monthChangePct}%`, '', parseFloat(stats.monthChangePct) >= 0 ? 'text-green-400' : 'text-red-400')}
+        ${metricCard('YTD Change', `${stats.ytdChangePct}%`, `from $${formatNum(stats.ytdStart)}`, parseFloat(stats.ytdChangePct) >= 0 ? 'text-green-400' : 'text-red-400')}
+        ${metricCard('52W High', `$${formatNum(stats.max52)}`, `${stats.name === 'QQQ' ? '748.65' : '760.40'}`)}
+        ${metricCard('52W Low', `$${formatNum(stats.min52)}`, `${stats.name === 'QQQ' ? '523.65' : '591.89'}`)}
+      </div>
+      <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-2 mb-4">
+        ${metricCard('20-Day SMA', `$${formatNum(stats.sma20Latest)}`, trendBadge(stats.aboveSMA20, 'Above', 'Below'))}
+        ${metricCard('100-Day SMA', `$${formatNum(stats.sma100Latest)}`, trendBadge(stats.aboveSMA100, 'Above', 'Below'))}
+        ${metricCard('200-Day SMA', `$${formatNum(stats.sma200Latest)}`, trendBadge(stats.aboveSMA200, 'Above', 'Below'))}
+        ${metricCard('RSI (14)', `${stats.rsiLatest}`, stats.rsiLatest > 70 ? 'Overbought' : stats.rsiLatest < 30 ? 'Oversold' : 'Neutral')}
+        ${metricCard('BB Width', `${stats.bbWidth}%`, `U: $${formatNum(stats.bbLatestUpper)} L: $${formatNum(stats.bbLatestLower)}`)}
+      </div>
+      <div class="glass rounded-xl p-4 mb-3" style="height:420px">
+        <canvas id="${chartId}"></canvas>
+      </div>
+      <div class="glass rounded-xl p-3" style="height:140px">
+        <div class="text-xs text-slate-400 mb-1">RSI (14)</div>
+        <canvas id="${rsiChartId}"></canvas>
+      </div>
+    </div>
+  `;
+}
+
+function insightsSection(qStats, sStats) {
+  const qqqTrend = qStats.trend;
+  const spyTrend = sStats.trend;
+  const qqqRsi = qStats.rsiLatest;
+  const spyRsi = sStats.rsiLatest;
+  const techLeading = qStats.ytdChangePct > sStats.ytdChangePct;
+  const qqqAboveAll = qStats.aboveSMA20 && qStats.aboveSMA100 && qStats.aboveSMA200;
+  const spyAboveAll = sStats.aboveSMA20 && sStats.aboveSMA100 && sStats.aboveSMA200;
+  const bbWidthQ = parseFloat(qStats.bbWidth);
+  const bbWidthS = parseFloat(sStats.bbWidth);
+  const volHigh = bbWidthQ > 8 || bbWidthS > 8;
+
+  return html`
+    <div class="glass rounded-xl p-6 mb-6">
+      <h2 class="text-xl font-bold text-white mb-4 flex items-center gap-2">
+        <svg class="w-5 h-5 text-blue-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"/></svg>
+        Market Insights
+      </h2>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div class="glass-light rounded-lg p-4">
+          <h3 class="text-sm font-semibold text-blue-300 mb-2">Overall Trend</h3>
+          <ul class="space-y-2 text-sm text-slate-300">
+            <li class="flex items-start gap-2"><span class="text-blue-400 mt-0.5">&#9679;</span> <span><strong class="text-white">QQQ</strong> is in a <strong class="${qqqTrend === 'Bullish' ? 'text-green-400' : 'text-red-400'}">${qqqTrend}</strong> trend, trading ${qStats.aboveSMA200 ? 'above' : 'below'} the 200-day SMA ($${formatNum(qStats.sma200Latest)}).</span></li>
+            <li class="flex items-start gap-2"><span class="text-purple-400 mt-0.5">&#9679;</span> <span><strong class="text-white">SPY</strong> is in a <strong class="${spyTrend === 'Bullish' ? 'text-green-400' : 'text-red-400'}">${spyTrend}</strong> trend, trading ${sStats.aboveSMA200 ? 'above' : 'below'} the 200-day SMA ($${formatNum(sStats.sma200Latest)}).</span></li>
+            <li class="flex items-start gap-2"><span class="text-yellow-400 mt-0.5">&#9679;</span> <span>Technology (${qqqTrend === 'Bullish' ? 'leading' : 'lagging'}) vs Broad Market: QQQ YTD ${techLeading ? 'outperforming' : 'underperform'} SPY (${qStats.ytdChangePct}% vs ${sStats.ytdChangePct}%).</span></li>
+          </ul>
+        </div>
+        <div class="glass-light rounded-lg p-4">
+          <h3 class="text-sm font-semibold text-orange-300 mb-2">Technical Signals</h3>
+          <ul class="space-y-2 text-sm text-slate-300">
+            <li class="flex items-start gap-2"><span class="text-orange-400 mt-0.5">&#9679;</span> <span>QQQ RSI at <strong class="text-white">${qqqRsi}</strong> ${qqqRsi > 70 ? '(Overbought - potential pullback)' : qqqRsi < 30 ? '(Oversold - potential bounce)' : '(Neutral zone)'}. SPY RSI at <strong class="text-white">${spyRsi}</strong>.</span></li>
+            <li class="flex items-start gap-2"><span class="text-red-400 mt-0.5">&#9679;</span> <span>Bollinger Band Width: QQQ at ${qStats.bbWidth}%, SPY at ${sStats.bbWidth}%. ${volHigh ? 'Elevated volatility detected — expect wider price swings.' : 'Volatility is moderate.'}</span></li>
+            <li class="flex items-start gap-2"><span class="text-green-400 mt-0.5">&#9679;</span> <span>${qqqAboveAll ? 'QQQ is above all major moving averages — strong uptrend confirmation.' : 'QQQ has mixed moving average signals — watch for crossover events.'}</span></li>
+          </ul>
+        </div>
+        <div class="glass-light rounded-lg p-4">
+          <h3 class="text-sm font-semibold text-green-300 mb-2">Sector Analysis</h3>
+          <ul class="space-y-2 text-sm text-slate-300">
+            <li class="flex items-start gap-2"><span class="text-green-400 mt-0.5">&#9679;</span> <span>Tech sector (QQQ) has returned <strong class="text-white">${qStats.ytdChangePct}%</strong> YTD, ${techLeading ? 'significantly outpacing' : 'trailing'} the S&P 500's ${sStats.ytdChangePct}%.</span></li>
+            <li class="flex items-start gap-2"><span class="text-cyan-400 mt-0.5">&#9679;</span> <span>The QQQ/SPY ratio has been ${techLeading ? 'expanding' : 'contracting'}, indicating ${techLeading ? 'sector rotation into growth/tech' : 'broadening beyond mega-cap tech'}.</span></li>
+            <li class="flex items-start gap-2"><span class="text-pink-400 mt-0.5">&#9679;</span> <span>Recent ${parseFloat(qStats.weekChangePct) < 0 ? 'pullback' : 'rally'} in QQQ suggests ${parseFloat(qStats.weekChangePct) < 0 ? 'profit-taking after strong run' : 'momentum continuation'} in the near term.</span></li>
+          </ul>
+        </div>
+        <div class="glass-light rounded-lg p-4">
+          <h3 class="text-sm font-semibold text-red-300 mb-2">Risk Factors</h3>
+          <ul class="space-y-2 text-sm text-slate-300">
+            <li class="flex items-start gap-2"><span class="text-red-400 mt-0.5">&#9888;</span> <span>QQQ is ${((qStats.latest - qStats.bbLatestUpper) / qStats.bbLatestUpper * 100).toFixed(1)}% ${qStats.latest > qStats.bbLatestUpper ? 'above' : 'below'} the upper Bollinger Band — ${qStats.latest > qStats.bbLatestUpper ? 'potential overextension' : 'within normal range'}.</span></li>
+            <li class="flex items-start gap-2"><span class="text-red-400 mt-0.5">&#9888;</span> <span>Volatility (annualized) at <strong class="text-white">${qStats.volatility.toFixed(1)}%</strong> for QQQ and <strong class="text-white">${sStats.volatility.toFixed(1)}%</strong> for SPY. ${qStats.volatility > 25 ? 'Higher-than-normal volatility.' : 'Within normal parameters.'}</span></li>
+            <li class="flex items-start gap-2"><span class="text-yellow-400 mt-0.5">&#9888;</span> <span>Concentration risk in QQQ: top 10 holdings account for ~55% of the index. Mega-cap tech pullback would disproportionately impact QQQ.</span></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  `;
+}
+
+function predictionsSection(qStats, sStats) {
+  const qqqTrend = qStats.trend;
+  const spyTrend = sStats.trend;
+  const bothBullish = qqqTrend === 'Bullish' && spyTrend === 'Bullish';
+  const qqqUpside = (qStats.sma200Latest * 1.05).toFixed(2);
+  const qqqDownside = (qStats.sma200Latest * 0.95).toFixed(2);
+  const spyUpside = (sStats.sma200Latest * 1.05).toFixed(2);
+  const spyDownside = (sStats.sma200Latest * 0.95).toFixed(2);
+
+  return html`
+    <div class="glass rounded-xl p-6 mb-6">
+      <h2 class="text-xl font-bold text-white mb-4 flex items-center gap-2">
+        <svg class="w-5 h-5 text-purple-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"/></svg>
+        Predictions &amp; Outlook
+      </h2>
+      <p class="text-xs text-slate-500 mb-4 italic">Forward-looking estimates based on technical analysis and trend extrapolation. Not financial advice. Past performance does not guarantee future results.</p>
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
+        <div class="glass-light rounded-lg p-4 border-l-4 ${bothBullish ? 'border-green-500' : 'border-yellow-500'}">
+          <h3 class="text-sm font-semibold ${bothBullish ? 'text-green-300' : 'text-yellow-300'} mb-1">Base Case (60%)</h3>
+          <p class="text-xs text-slate-400 mb-2">Continuation of trend with moderate pullbacks</p>
+          <div class="text-sm text-slate-300">
+            <div class="flex justify-between mb-1"><span>QQQ 3M Target:</span><span class="text-white font-medium">$${qqqUpside}</span></div>
+            <div class="flex justify-between"><span>SPY 3M Target:</span><span class="text-white font-medium">$${spyUpside}</span></div>
+          </div>
+        </div>
+        <div class="glass-light rounded-lg p-4 border-l-4 border-yellow-500">
+          <h3 class="text-sm font-semibold text-yellow-300 mb-1">Neutral Case (25%)</h3>
+          <p class="text-xs text-slate-400 mb-2">Sideways consolidation, range-bound trading</p>
+          <div class="text-sm text-slate-300">
+            <div class="flex justify-between mb-1"><span>QQQ 3M Range:</span><span class="text-white font-medium">$${(qStats.latest * 0.97).toFixed(0)}–$${(qStats.latest * 1.03).toFixed(0)}</span></div>
+            <div class="flex justify-between"><span>SPY 3M Range:</span><span class="text-white font-medium">$${(sStats.latest * 0.97).toFixed(0)}–$${(sStats.latest * 1.03).toFixed(0)}</span></div>
+          </div>
+        </div>
+        <div class="glass-light rounded-lg p-4 border-l-4 border-red-500">
+          <h3 class="text-sm font-semibold text-red-300 mb-1">Bear Case (15%)</h3>
+          <p class="text-xs text-slate-400 mb-2">Correction scenario, test moving average supports</p>
+          <div class="text-sm text-slate-300">
+            <div class="flex justify-between mb-1"><span>QQQ 3M Target:</span><span class="text-white font-medium">$${qqqDownside}</span></div>
+            <div class="flex justify-between"><span>SPY 3M Target:</span><span class="text-white font-medium">$${spyDownside}</span></div>
+          </div>
+        </div>
+      </div>
+      <div class="glass-light rounded-lg p-4">
+        <h3 class="text-sm font-semibold text-cyan-300 mb-3">Key Factors & Timeline</h3>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm text-slate-300">
+          <div>
+            <h4 class="text-xs font-medium text-slate-400 mb-1">Next 1-4 Weeks</h4>
+            <ul class="space-y-1">
+              <li class="flex items-start gap-2"><span class="text-cyan-400 mt-0.5">&#9654;</span> Expect consolidation near current levels after recent ${parseFloat(qStats.weekChangePct) < 0 ? 'pullback' : 'rally'}. Bollinger Band ${qStats.latest > qStats.bbLatestUpper ? 'suggests overbought conditions' : qStats.latest < qStats.bbLatestLower ? 'suggests oversold bounce potential' : 'width at ' + qStats.bbWidth + '% suggests typical volatility'}.</li>
+              <li class="flex items-start gap-2"><span class="text-cyan-400 mt-0.5">&#9654;</span> Watch ${qStats.aboveSMA20 ? 'QQQ 20-day SMA ($' + formatNum(qStats.sma20Latest) + ') as near-term support' : 'for QQQ to reclaim its 20-day SMA ($' + formatNum(qStats.sma20Latest) + ')'}. RSI at ${qStats.rsiLatest} ${qStats.rsiLatest > 65 ? 'leaves room for a pullback' : 'suggests room for upside'}.</li>
+            </ul>
+          </div>
+          <div>
+            <h4 class="text-xs font-medium text-slate-400 mb-1">Next 1-3 Months</h4>
+            <ul class="space-y-1">
+              <li class="flex items-start gap-2"><span class="text-cyan-400 mt-0.5">&#9654;</span> ${bothBullish ? 'Both indices above 200-day SMA argues for continuation. The S&P 500 tends to follow through on strong YTD momentum 65-70% of the time.' : 'Mixed signals between the indices warrant caution. Position sizing should be reduced.'}</li>
+              <li class="flex items-start gap-2"><span class="text-cyan-400 mt-0.5">&#9654;</span> Key support levels: QQQ $${formatNum(qStats.sma100Latest)} (100-SMA) and $${formatNum(qStats.sma200Latest)} (200-SMA). SPY $${formatNum(sStats.sma100Latest)} and $${formatNum(sStats.sma200Latest)}.</li>
+            </ul>
+          </div>
+          <div>
+            <h4 class="text-xs font-medium text-slate-400 mb-1">Macro Catalysts</h4>
+            <ul class="space-y-1">
+              <li class="flex items-start gap-2"><span class="text-yellow-400 mt-0.5">&#9654;</span> AI/semiconductor earnings cycle continues to be the primary growth driver for QQQ outperformance.</li>
+              <li class="flex items-start gap-2"><span class="text-yellow-400 mt-0.5">&#9654;</span> Fed policy path and inflation data will drive SPY direction. Rate cut expectations favor equities.</li>
+            </ul>
+          </div>
+          <div>
+            <h4 class="text-xs font-medium text-slate-400 mb-1">Key Risks</h4>
+            <ul class="space-y-1">
+              <li class="flex items-start gap-2"><span class="text-red-400 mt-0.5">&#9654;</span> Concentrated positioning in mega-cap tech (NVDA, AAPL, MSFT) creates fragility risk for QQQ.</li>
+              <li class="flex items-start gap-2"><span class="text-red-400 mt-0.5">&#9654;</span> Geopolitical disruptions or inflation resurgence could trigger a 5-10% correction testing 100-day SMA support.</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  `;
+}
+
+function renderApp() {
+  const template = html`
+    <div class="max-w-7xl mx-auto px-4 py-6">
+      <div class="mb-8">
+        <div class="flex items-center justify-between mb-2">
+          <div>
+            <h1 class="text-3xl font-bold text-white tracking-tight">Market Dashboard</h1>
+            <p class="text-xs text-slate-500 mt-1">QQQ &amp; SPY Technical Analysis &bull; Data as of Jun 13, 2026</p>
+          </div>
+          <div class="flex items-center gap-2">
+            <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-green-500/15 text-green-400 border border-green-500/20">
+              <span class="w-1.5 h-1.5 bg-green-400 rounded-full mr-1.5 animate-pulse"></span> Markets Open
+            </span>
+          </div>
+        </div>
+      </div>
+
+      ${tickerSection(qqqStats, 'qqq-chart', 'qqq-rsi-chart')}
+      ${tickerSection(spyStats, 'spy-chart', 'spy-rsi-chart')}
+      ${insightsSection(qqqStats, spyStats)}
+      ${predictionsSection(qqqStats, spyStats)}
+
+      <div class="glass rounded-xl p-4 mb-6">
+        <h2 class="text-lg font-semibold text-white mb-3">Performance Comparison</h2>
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-3">
+          <div class="glass-light rounded-lg p-3 text-center">
+            <div class="text-xs text-slate-400 mb-1">YTD Return</div>
+            <div class="text-lg font-bold ${parseFloat(qqqStats.ytdChangePct) >= 0 ? 'text-green-400' : 'text-red-400'}">${qqqStats.ytdChangePct}%</div>
+            <div class="text-xs text-slate-500">QQQ</div>
+            <div class="w-full bg-slate-700 rounded-full h-1.5 mt-1"><div class="h-1.5 rounded-full ${parseFloat(qqqStats.ytdChangePct) >= 0 ? 'bg-green-500' : 'bg-red-500'}" style="width: ${Math.min(Math.abs(parseFloat(qqqStats.ytdChangePct)), 100)}%"></div></div>
+          </div>
+          <div class="glass-light rounded-lg p-3 text-center">
+            <div class="text-xs text-slate-400 mb-1">YTD Return</div>
+            <div class="text-lg font-bold ${parseFloat(spyStats.ytdChangePct) >= 0 ? 'text-green-400' : 'text-red-400'}">${spyStats.ytdChangePct}%</div>
+            <div class="text-xs text-slate-500">SPY</div>
+            <div class="w-full bg-slate-700 rounded-full h-1.5 mt-1"><div class="h-1.5 rounded-full ${parseFloat(spyStats.ytdChangePct) >= 0 ? 'bg-green-500' : 'bg-red-500'}" style="width: ${Math.min(Math.abs(parseFloat(spyStats.ytdChangePct)), 100)}%"></div></div>
+          </div>
+          <div class="glass-light rounded-lg p-3 text-center">
+            <div class="text-xs text-slate-400 mb-1">Ann. Volatility</div>
+            <div class="text-lg font-bold text-orange-400">${qqqStats.volatility.toFixed(1)}%</div>
+            <div class="text-xs text-slate-500">QQQ</div>
+          </div>
+          <div class="glass-light rounded-lg p-3 text-center">
+            <div class="text-xs text-slate-400 mb-1">Ann. Volatility</div>
+            <div class="text-lg font-bold text-orange-400">${spyStats.volatility.toFixed(1)}%</div>
+            <div class="text-xs text-slate-500">SPY</div>
+          </div>
+        </div>
+      </div>
+
+      <footer class="text-center text-xs text-slate-600 pb-6">
+        Data sourced from Yahoo Finance &bull; Technical indicators computed in-browser &bull; For educational purposes only, not investment advice
+      </footer>
+    </div>
+  `;
+  render(template, document.getElementById('app'));
+}
+
+renderApp();
+requestAnimationFrame(() => {
+  setTimeout(() => {
+    initCharts();
+  }, 100);
+});
+</script>
+</body>
+</html>

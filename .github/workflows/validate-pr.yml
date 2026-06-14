@@ -1,0 +1,50 @@
+name: Validate App Submission
+
+on:
+  pull_request:
+    paths:
+      - "apps/**"
+
+permissions:
+  contents: read
+  pull-requests: write
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - run: npm ci
+
+      # IMPORTANT: never execute submitted app code
+      - name: Validate submissions
+        id: validate
+        run: npm run validate
+        continue-on-error: true
+
+      - name: Comment result on PR
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const outcome = '${{ steps.validate.outcome }}'
+            const icon = outcome === 'success' ? '✅' : '❌'
+            const body = `${icon} **Validation ${outcome === 'success' ? 'passed' : 'failed'}**\n\n` +
+              (outcome !== 'success'
+                ? 'Run `npm run validate` locally to see the full error list.\n\nFix the flagged issues and push a new commit — this check will re-run automatically.'
+                : 'All manifest, structure, and file checks passed.')
+            github.rest.issues.createComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number,
+              body,
+            })
+
+      - name: Fail if validation failed
+        if: steps.validate.outcome != 'success'
+        run: exit 1

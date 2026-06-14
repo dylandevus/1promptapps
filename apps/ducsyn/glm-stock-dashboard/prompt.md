@@ -1,0 +1,3 @@
+# Original Prompt
+
+Build a stock market dashboard for QQQ and SPY ETFs. Show historical price charts with technical indicators: SMA (20-day, 100-day, 200-day), Bollinger Bands (20-period, 2 std dev), and RSI (14-period). Include metric cards showing current price, day change, week change, month change, YTD performance, 52-week high/low, and annualised volatility. Add time-range filtering (3M, 6M, 1Y, ALL) and tab-based navigation between the two ETFs. Use Chart.js for the charts, Tailwind CSS for styling, and a dark glass-morphism UI. Use hardcoded historical closing price data — no live API calls.

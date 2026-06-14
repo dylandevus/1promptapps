@@ -1,0 +1,13 @@
+# Site code — maintainers only
+/app/           @ducsyn
+/lib/           @ducsyn
+/scripts/       @ducsyn
+/schemas/       @ducsyn
+/templates/     @ducsyn
+/.github/       @ducsyn
+/next.config.ts @ducsyn
+/package.json   @ducsyn
+/tsconfig.json  @ducsyn
+
+# App submissions — maintainer approval required before merge
+/apps/          @ducsyn

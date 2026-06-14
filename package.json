@@ -1,0 +1,28 @@
+{
+  "name": "1promptapps",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "tsx scripts/build-registry.ts && next build",
+    "start": "next start",
+    "validate": "tsx scripts/validate-all.ts",
+    "validate:app": "tsx scripts/validate-all.ts --app"
+  },
+  "dependencies": {
+    "next": "^15.3.3",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0"
+  },
+  "devDependencies": {
+    "@tailwindcss/postcss": "^4.1.10",
+    "@types/node": "^22",
+    "@types/react": "^19",
+    "@types/react-dom": "^19",
+    "ajv": "^8.17.1",
+    "ajv-formats": "^3.0.1",
+    "tailwindcss": "^4.1.10",
+    "tsx": "^4.19.2",
+    "typescript": "^5"
+  }
+}
