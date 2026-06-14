@@ -2,10 +2,10 @@
   "manifestVersion": "1.0",
   "name": "Stock Market Dashboard",
   "slug": "stock-dashboard-glm-5.1",
-  "tagline": "Interactive QQQ & SPY dashboard with technical indicators — Bollinger Bands, RSI, and SMA — built in one prompt.",
-  "description": "A dark-themed stock market dashboard for QQQ and SPY ETFs. Includes interactive Chart.js price charts with SMA (20/100/200-day), Bollinger Bands, and RSI indicators. Shows metric cards for current price, day/week/month/YTD performance, 52-week high/low, and annualised volatility. Tab-based navigation between ETFs, time-range filtering (3M/6M/1Y/ALL), and a glass-morphism UI. Data is hardcoded — no live API calls required.",
+  "tagline": "QQQ, SPY & SCHD with live indices bar, sector allocations, fundamental metrics, Bollinger Bands, and scenario analysis.",
+  "description": "A light-themed ETF dashboard for QQQ, SPY, and SCHD. Includes a live market indices bar (S&P 500, Nasdaq, Russell 2000, VIX, Gold, Crude Oil), per-ETF cards with 52-week range, P/E, YTD, Beta, Expense Ratio, Volume, and sector allocations, 2-year Chart.js price charts with Bollinger Bands, 100d and 200d SMA, after-hours pricing, and an Insights section. Data is hardcoded — no live API calls required.",
   "category": "finance",
-  "tags": ["stocks", "charts", "technical-analysis", "dark-theme", "qqq", "spy", "no-backend"],
+  "tags": ["stocks", "charts", "technical-analysis", "etf", "qqq", "spy", "schd", "light-theme", "fundamentals"],
   "prompt": {
     "text": "Create a stock market dashboard using Lit-HTML, Tailwind, JS libs from CDNs, in a single HTML file. Add 2-year charts for QQQ, SPY, SCHD, do a web search to get latest market prices. Each chart has Bollinger Bands, 100d SMA, 200d SMA lines. Add an Insights section to analyze market, sectors. Add another section for Prediction for next few months.",
     "model": "GLM-5.1",
@@ -15,22 +15,20 @@
     "builtWith": "OpenCode",
     "followUpCount": 0,
     "errorFixes": 0,
-    "generationDurationSeconds": 38,
-    "toolsUsed": ["web-search"],
-    "transcriptUrl": null
+    "generationDurationSeconds": 102,
+    "toolsUsed": ["web-search"]
   },
   "outcome": {
-    "timeToFirstVersionMinutes": 3,
+    "timeToFirstVersionMinutes": 1,
     "reproducibility": "full",
     "worked": [
-      "Complete dark glass-morphism UI with correct Tailwind classes",
-      "Chart.js integration with SMA overlays and Bollinger Bands",
-      "RSI chart on a separate canvas below the price chart",
-      "Metric cards (price, day/week/month/YTD change, 52w high/low, volatility)",
-      "Tab switching between QQQ and SPY with reactive chart updates",
-      "Time-range filter (3M, 6M, 1Y, ALL) that slices the data correctly",
-      "Lit-html reactive rendering without a build step",
-      "Responsive layout that works on desktop and mobile"
+      "Live market indices bar (S&P 500, Nasdaq, Russell 2000, VIX, Gold, Crude Oil)",
+      "Three ETF cards with 52-week range, P/E, YTD return, Beta, Expense Ratio, Volume",
+      "Sector allocation chips per ETF",
+      "After-hours price and change display",
+      "Tab-switched 2-year price charts with Bollinger Bands, 100d and 200d SMA",
+      "Insights section with per-ETF market analysis",
+      "Light editorial theme with Inter font"
     ],
     "manualEdits": []
   },
@@ -51,7 +49,7 @@
   "media": {
     "thumbnail": "screenshots/thumbnail.png",
     "screenshots": [
-      { "src": "screenshots/desktop.png", "alt": "Full-page view of the QQQ dashboard with price chart, Bollinger Bands, RSI, and metric cards" }
+      { "src": "screenshots/desktop.png", "alt": "Full-page Stock Market Dashboard with indices bar, QQQ/SPY/SCHD metric cards with sector allocations, and 2-year price chart" }
     ]
   },
   "permissions": {
