@@ -5,7 +5,7 @@ Open a PR to this repo adding your app folder.
 ## What qualifies
 
 - Static HTML/CSS/JS — runs in the browser, no server.
-- Built from one AI prompt. Follow-up feature prompts are fine — disclose them.
+- Built from one AI prompt. Follow-up feature prompts are fine for fixing bugs — disclose them.
 - Use CDN-based libs: lit-html, Tailwind, Chart.js, Alpine.js, htmx, Lucide, etc. Avoid build-step frameworks (React, Vue, Svelte) — they don't work in a single HTML file.
 - You have the right to share it and grant permission to feature it.
 
@@ -41,9 +41,7 @@ Open a PR to this repo adding your app folder.
 5. Add prompt.md — paste your exact original prompt.
    Append this to the end of your prompt for consistent, comparable outputs:
 
-   > Output to a single HTML file with a light theme that works on both desktop
-   > and mobile screens (responsive). Measure the total time it takes you to
-   > complete this app.
+   > Output to a single HTML file with a light theme that works on both desktop and mobile screens (responsive). Measure the total time it takes you to complete this app.
 
 6. Add screenshots/:
    thumbnail.png   1280×800 (16:10), ≤ 2 MB
@@ -63,9 +61,9 @@ Open a PR to this repo adding your app folder.
 
 | | |
 |---|---|
-| Folder | ≤ 10 MB |
+| Folder | ≤ 5 MB |
 | Per file | ≤ 2 MB |
-| Files | ≤ 100 |
+| Files | ≤ 50 |
 | Path depth | ≤ 6 |
 
 ## Allowed extensions

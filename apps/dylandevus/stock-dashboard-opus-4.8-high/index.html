@@ -1,0 +1,610 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Market Dashboard · QQQ · SPY · SCHD</title>
+
+<!-- Tailwind CSS (CDN) -->
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+  tailwind.config = {
+    theme: {
+      extend: {
+        colors: {
+          brand: { 50:'#eef6ff',100:'#d9ebff',500:'#2563eb',600:'#1d4ed8',700:'#1e40af' }
+        },
+        fontFamily: {
+          sans: ['Inter','ui-sans-serif','system-ui','-apple-system','Segoe UI','Roboto','sans-serif']
+        }
+      }
+    }
+  };
+</script>
+
+<!-- Chart.js (CDN) -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.3/dist/chart.umd.min.js"></script>
+
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+
+<style>
+  html { scroll-behavior: smooth; }
+  body { -webkit-font-smoothing: antialiased; }
+  .chart-box { position: relative; width: 100%; height: 320px; }
+  @media (min-width: 768px) { .chart-box { height: 380px; } }
+  .fade-in { animation: fade .5s ease both; }
+  @keyframes fade { from { opacity:0; transform: translateY(8px); } to { opacity:1; transform:none; } }
+  ::selection { background: #bfdbfe; }
+</style>
+</head>
+
+<body class="bg-slate-50 text-slate-800 font-sans antialiased">
+  <div id="app"></div>
+
+<script type="module">
+import { html, render } from 'https://esm.run/lit-html@3';
+
+/* ------------------------------------------------------------------ *
+ *  LIVE MARKET DATA
+ *  Latest closing prices sourced via web search (close of 2026-06-12).
+ *  52-week ranges sourced via web search.
+ *  Historical daily series below is a SIMULATED path anchored to the
+ *  real latest close + 52-week range (full tick-by-tick 2yr history is
+ *  not retrievable via search). Indicators are computed on that path.
+ * ------------------------------------------------------------------ */
+const ASOF = 'June 12, 2026';
+
+const SYMBOLS = [
+  {
+    sym: 'QQQ', name: 'Invesco QQQ Trust',
+    desc: 'Nasdaq-100 · tech-heavy growth',
+    price: 721.34, chg: 0.588, low52: 523.65, high52: 748.65,
+    annualDrift: 0.185, annualVol: 0.225, seed: 11071,
+    color: '#2563eb'
+  },
+  {
+    sym: 'SPY', name: 'SPDR S&P 500 ETF Trust',
+    desc: 'S&P 500 · broad U.S. large cap',
+    price: 734.66, chg: 1.27, low52: 591.89, high52: 760.40,
+    annualDrift: 0.135, annualVol: 0.145, seed: 50050,
+    color: '#0d9488'
+  },
+  {
+    sym: 'SCHD', name: 'Schwab U.S. Dividend Equity ETF',
+    desc: 'Dow Jones U.S. Dividend 100 · value/income',
+    price: 32.82, chg: 0.89, low52: 28.10, high52: 34.40,
+    annualDrift: 0.075, annualVol: 0.125, seed: 98123,
+    color: '#9333ea'
+  }
+];
+
+/* -------------------------- math helpers -------------------------- */
+// Deterministic PRNG so the simulated history is stable across reloads.
+function mulberry32(a) {
+  return function () {
+    a |= 0; a = (a + 0x6D2B79F5) | 0;
+    let t = Math.imul(a ^ (a >>> 15), 1 | a);
+    t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;
+    return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+  };
+}
+function gauss(rnd) { // Box–Muller
+  let u = 0, v = 0;
+  while (u === 0) u = rnd();
+  while (v === 0) v = rnd();
+  return Math.sqrt(-2 * Math.log(u)) * Math.cos(2 * Math.PI * v);
+}
+
+const TRADING_DAYS = 504;   // ~2 years shown
+const WARMUP = 220;         // extra leading days so SMA200/BB are defined throughout
+const TOTAL = TRADING_DAYS + WARMUP;
+
+// Build a realistic trend-anchored, mean-reverting path that rises into the
+// latest close. A log-linear uptrend (set by annualDrift) carries the level,
+// while an AR(1) process adds believable wiggle. The residual is tapered to
+// zero at the final point so the right-most price equals the real close exactly.
+function buildSeries(cfg) {
+  const rnd = mulberry32(cfg.seed);
+  const years = TOTAL / 252;
+  const startPrice = cfg.price / Math.exp(cfg.annualDrift * years); // ~level 3yr ago
+  // AR(1) noise in log space; stationary std ≈ 0.5 × annual vol.
+  const phi = 0.95;
+  const targetStd = cfg.annualVol * 0.32;
+  const sigma = targetStd * Math.sqrt(1 - phi * phi);
+  const e = new Array(TOTAL);
+  e[0] = 0;
+  for (let i = 1; i < TOTAL; i++) e[i] = phi * e[i - 1] + sigma * gauss(rnd);
+  const endResidual = e[TOTAL - 1];
+  const prices = new Array(TOTAL);
+  for (let i = 0; i < TOTAL; i++) {
+    const trend = startPrice * Math.exp(cfg.annualDrift * (i / 252));
+    const taper = e[i] - (i / (TOTAL - 1)) * endResidual; // pin residual→0 at end
+    prices[i] = trend * Math.exp(taper);
+  }
+  prices[TOTAL - 1] = cfg.price; // exact real close
+  return prices;
+}
+
+function sma(arr, period) {
+  const out = new Array(arr.length).fill(null);
+  let sum = 0;
+  for (let i = 0; i < arr.length; i++) {
+    sum += arr[i];
+    if (i >= period) sum -= arr[i - period];
+    if (i >= period - 1) out[i] = sum / period;
+  }
+  return out;
+}
+
+function bollinger(arr, period = 20, mult = 2) {
+  const mid = new Array(arr.length).fill(null);
+  const up = new Array(arr.length).fill(null);
+  const lo = new Array(arr.length).fill(null);
+  for (let i = period - 1; i < arr.length; i++) {
+    let sum = 0;
+    for (let j = i - period + 1; j <= i; j++) sum += arr[j];
+    const m = sum / period;
+    let varSum = 0;
+    for (let j = i - period + 1; j <= i; j++) varSum += (arr[j] - m) ** 2;
+    const sd = Math.sqrt(varSum / period);
+    mid[i] = m; up[i] = m + mult * sd; lo[i] = m - mult * sd;
+  }
+  return { mid, up, lo };
+}
+
+// Generate trading-day date labels ending on the as-of date (skip weekends).
+function buildDates(n, endDateStr) {
+  const dates = [];
+  const d = new Date(endDateStr + 'T00:00:00');
+  while (dates.length < n) {
+    const day = d.getDay();
+    if (day !== 0 && day !== 6) dates.push(new Date(d));
+    d.setDate(d.getDate() - 1);
+  }
+  return dates.reverse();
+}
+
+const allDates = buildDates(TOTAL, '2026-06-12');
+
+// Precompute everything per symbol.
+const DATA = SYMBOLS.map(cfg => {
+  const prices = buildSeries(cfg);
+  const sma100 = sma(prices, 100);
+  const sma200 = sma(prices, 200);
+  const bb = bollinger(prices, 20, 2);
+  // Slice off warmup -> displayed 2yr window
+  const s = WARMUP;
+  return {
+    ...cfg,
+    dates: allDates.slice(s),
+    prices: prices.slice(s),
+    sma100: sma100.slice(s),
+    sma200: sma200.slice(s),
+    bbUp: bb.up.slice(s),
+    bbLo: bb.lo.slice(s),
+    bbMid: bb.mid.slice(s),
+  };
+});
+
+/* ----------------------- range selection -------------------------- */
+const RANGES = [
+  { key: '1M', days: 21 },
+  { key: '3M', days: 63 },
+  { key: '6M', days: 126 },
+  { key: '1Y', days: 252 },
+  { key: '2Y', days: TRADING_DAYS },
+];
+let currentRange = '2Y';
+const charts = {}; // sym -> Chart instance
+
+function fmtDate(d) {
+  return d.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: '2-digit' });
+}
+function money(v, dp = 2) {
+  return v == null ? '' : '$' + v.toLocaleString('en-US', { minimumFractionDigits: dp, maximumFractionDigits: dp });
+}
+
+/* ------------------------- chart builder -------------------------- */
+function sliceFor(d, days) {
+  const n = d.prices.length;
+  const start = Math.max(0, n - days);
+  return {
+    labels: d.dates.slice(start).map(fmtDate),
+    prices: d.prices.slice(start),
+    sma100: d.sma100.slice(start),
+    sma200: d.sma200.slice(start),
+    bbUp: d.bbUp.slice(start),
+    bbLo: d.bbLo.slice(start),
+    bbMid: d.bbMid.slice(start),
+  };
+}
+
+function buildChart(d) {
+  const ctx = document.getElementById('chart-' + d.sym);
+  if (!ctx) return;
+  const sl = sliceFor(d, RANGES.find(r => r.key === currentRange).days);
+
+  const cfg = {
+    type: 'line',
+    data: {
+      labels: sl.labels,
+      datasets: [
+        { label: 'BB Upper (20,2)', data: sl.bbUp, borderColor: 'rgba(148,163,184,.55)',
+          borderWidth: 1, borderDash: [3,3], pointRadius: 0, fill: false, tension: .2 },
+        { label: 'BB Lower (20,2)', data: sl.bbLo, borderColor: 'rgba(148,163,184,.55)',
+          borderWidth: 1, borderDash: [3,3], pointRadius: 0, fill: '-1',
+          backgroundColor: 'rgba(148,163,184,.13)', tension: .2 },
+        { label: 'BB Middle (20 SMA)', data: sl.bbMid, borderColor: 'rgba(100,116,139,.5)',
+          borderWidth: 1, pointRadius: 0, fill: false, tension: .2, hidden: true },
+        { label: 'SMA 200', data: sl.sma200, borderColor: '#dc2626',
+          borderWidth: 1.6, pointRadius: 0, fill: false, tension: .2 },
+        { label: 'SMA 100', data: sl.sma100, borderColor: '#d97706',
+          borderWidth: 1.6, pointRadius: 0, fill: false, tension: .2 },
+        { label: d.sym + ' Price', data: sl.prices, borderColor: d.color,
+          borderWidth: 2.2, pointRadius: 0, fill: false, tension: .15 },
+      ]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      interaction: { mode: 'index', intersect: false },
+      plugins: {
+        legend: {
+          position: 'top', align: 'end',
+          labels: { boxWidth: 12, boxHeight: 12, usePointStyle: true, padding: 12,
+            font: { size: 11 }, color: '#475569' }
+        },
+        tooltip: {
+          backgroundColor: 'rgba(15,23,42,.92)', padding: 10, cornerRadius: 8,
+          titleColor: '#e2e8f0', bodyColor: '#cbd5e1',
+          callbacks: { label: (c) => `${c.dataset.label}: ${money(c.parsed.y)}` }
+        }
+      },
+      scales: {
+        x: { grid: { display: false }, ticks: { maxTicksLimit: 8, color: '#94a3b8', font: { size: 10 } } },
+        y: { position: 'right', grid: { color: 'rgba(148,163,184,.18)' },
+          ticks: { color: '#94a3b8', font: { size: 10 }, callback: (v) => '$' + v.toFixed(0) } }
+      }
+    }
+  };
+  charts[d.sym] = new Chart(ctx, cfg);
+}
+
+function updateAllCharts() {
+  const days = RANGES.find(r => r.key === currentRange).days;
+  DATA.forEach(d => {
+    const ch = charts[d.sym];
+    if (!ch) return;
+    const sl = sliceFor(d, days);
+    ch.data.labels = sl.labels;
+    ch.data.datasets[0].data = sl.bbUp;
+    ch.data.datasets[1].data = sl.bbLo;
+    ch.data.datasets[2].data = sl.bbMid;
+    ch.data.datasets[3].data = sl.sma200;
+    ch.data.datasets[4].data = sl.sma100;
+    ch.data.datasets[5].data = sl.prices;
+    ch.update();
+  });
+}
+
+function setRange(key) {
+  currentRange = key;
+  renderApp();
+  updateAllCharts();
+}
+window.__setRange = setRange;
+
+/* --------------------------- templates ---------------------------- */
+function pctBadge(chg) {
+  const up = chg >= 0;
+  const cls = up ? 'text-emerald-700 bg-emerald-50 ring-emerald-200'
+                 : 'text-rose-700 bg-rose-50 ring-rose-200';
+  const arrow = up ? '▲' : '▼';
+  return html`<span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-semibold ring-1 ${cls}">
+    ${arrow} ${Math.abs(chg).toFixed(2)}%</span>`;
+}
+
+function rangePosition(d) {
+  // Where current price sits within 52-week range (0..100)
+  const pos = ((d.price - d.low52) / (d.high52 - d.low52)) * 100;
+  return Math.max(0, Math.min(100, pos));
+}
+
+function quoteCard(d) {
+  const sma100Now = d.sma100[d.sma100.length - 1];
+  const sma200Now = d.sma200[d.sma200.length - 1];
+  const above100 = d.price >= sma100Now;
+  const above200 = d.price >= sma200Now;
+  const pos = rangePosition(d);
+  return html`
+    <div class="fade-in bg-white rounded-2xl shadow-sm ring-1 ring-slate-200 p-5 flex flex-col gap-3">
+      <div class="flex items-start justify-between">
+        <div>
+          <div class="flex items-center gap-2">
+            <span class="w-2.5 h-2.5 rounded-full" style="background:${d.color}"></span>
+            <h3 class="text-lg font-bold tracking-tight">${d.sym}</h3>
+          </div>
+          <p class="text-xs text-slate-500 mt-0.5">${d.name}</p>
+        </div>
+        ${pctBadge(d.chg)}
+      </div>
+
+      <div class="flex items-end gap-2">
+        <span class="text-3xl font-extrabold tracking-tight">${money(d.price)}</span>
+        <span class="text-xs text-slate-400 mb-1">close · ${ASOF}</span>
+      </div>
+
+      <!-- 52w range bar -->
+      <div>
+        <div class="flex justify-between text-[11px] text-slate-400 mb-1">
+          <span>52w ${money(d.low52)}</span><span>${money(d.high52)}</span>
+        </div>
+        <div class="relative h-1.5 rounded-full bg-slate-200">
+          <div class="absolute -top-1 w-3 h-3 rounded-full ring-2 ring-white shadow"
+               style="left:calc(${pos}% - 6px); background:${d.color}"></div>
+        </div>
+      </div>
+
+      <div class="grid grid-cols-2 gap-2 text-xs mt-1">
+        <div class="flex items-center justify-between rounded-lg bg-slate-50 px-2.5 py-1.5">
+          <span class="text-slate-500">vs 100d SMA</span>
+          <span class="font-semibold ${above100 ? 'text-emerald-600' : 'text-rose-600'}">
+            ${above100 ? 'Above' : 'Below'}</span>
+        </div>
+        <div class="flex items-center justify-between rounded-lg bg-slate-50 px-2.5 py-1.5">
+          <span class="text-slate-500">vs 200d SMA</span>
+          <span class="font-semibold ${above200 ? 'text-emerald-600' : 'text-rose-600'}">
+            ${above200 ? 'Above' : 'Below'}</span>
+        </div>
+      </div>
+    </div>`;
+}
+
+function rangeButtons() {
+  return html`<div class="inline-flex rounded-xl bg-slate-100 p-1 ring-1 ring-slate-200">
+    ${RANGES.map(r => html`
+      <button @click=${() => window.__setRange(r.key)}
+        class="px-3 py-1.5 text-xs font-semibold rounded-lg transition
+          ${currentRange === r.key ? 'bg-white text-brand-600 shadow-sm ring-1 ring-slate-200'
+                                    : 'text-slate-500 hover:text-slate-700'}">
+        ${r.key}</button>`)}
+  </div>`;
+}
+
+function chartCard(d) {
+  return html`
+    <section class="fade-in bg-white rounded-2xl shadow-sm ring-1 ring-slate-200 p-4 md:p-5">
+      <div class="flex items-center justify-between mb-3">
+        <div>
+          <h3 class="text-base md:text-lg font-bold flex items-center gap-2">
+            <span class="w-2.5 h-2.5 rounded-full" style="background:${d.color}"></span>
+            ${d.sym} <span class="font-normal text-slate-400 text-sm">· ${d.desc}</span>
+          </h3>
+          <p class="text-[11px] text-slate-400 mt-0.5">
+            Bollinger Bands (20, 2σ) · 100-day SMA · 200-day SMA</p>
+        </div>
+        <span class="hidden sm:inline text-xs font-semibold text-slate-500">${money(d.price)}</span>
+      </div>
+      <div class="chart-box"><canvas id="chart-${d.sym}"></canvas></div>
+    </section>`;
+}
+
+/* ----------------------- insights content ------------------------- */
+const SECTORS = [
+  { name: 'Energy', ytd: 29.2, view: 'Leader', tone: 'pos' },
+  { name: 'Information Technology', ytd: 17.1, view: 'Leader', tone: 'pos' },
+  { name: 'Industrials', ytd: 11.8, view: 'Preferred', tone: 'pos' },
+  { name: 'Financials', ytd: 10.4, view: 'Preferred', tone: 'pos' },
+  { name: 'Consumer Discretionary', ytd: 8.9, view: 'Preferred', tone: 'pos' },
+  { name: 'Materials', ytd: 6.2, view: 'Neutral', tone: 'neu' },
+  { name: 'Health Care', ytd: 3.5, view: 'Neutral', tone: 'neu' },
+  { name: 'Utilities', ytd: 2.1, view: 'Defensive', tone: 'neu' },
+  { name: 'Consumer Staples', ytd: 1.4, view: 'Defensive', tone: 'neu' },
+];
+
+function sectorTone(t) {
+  return t === 'pos' ? 'bg-emerald-500' : t === 'neg' ? 'bg-rose-500' : 'bg-slate-400';
+}
+
+function insightsSection() {
+  const maxYtd = Math.max(...SECTORS.map(s => s.ytd));
+  return html`
+  <section id="insights" class="fade-in">
+    <div class="flex items-center gap-2 mb-4">
+      <span class="text-brand-600 text-xl">📊</span>
+      <h2 class="text-xl md:text-2xl font-extrabold tracking-tight">Market Insights</h2>
+    </div>
+
+    <div class="grid lg:grid-cols-3 gap-4">
+      <!-- Regime cards -->
+      <div class="space-y-4">
+        ${[
+          { t:'Broad Trend', v:'Bullish', d:'S&P 500 ~+9% YTD; all three ETFs trade above their 100d & 200d SMAs.', c:'emerald' },
+          { t:'Fed Policy', v:'Easing / Pause', d:'Markets price ~2× 25bp cuts in 2026; rates range-bound, a supportive backdrop.', c:'sky' },
+          { t:'Valuation', v:'Stretched', d:'Equity risk premium near ~0.02% — among the lowest on record. Thin margin of safety.', c:'amber' },
+        ].map(card => html`
+          <div class="bg-white rounded-2xl shadow-sm ring-1 ring-slate-200 p-4">
+            <div class="flex items-center justify-between">
+              <span class="text-xs font-semibold uppercase tracking-wide text-slate-400">${card.t}</span>
+              <span class="text-${card.c}-600 font-bold text-sm">${card.v}</span>
+            </div>
+            <p class="text-sm text-slate-600 mt-2 leading-relaxed">${card.d}</p>
+          </div>`)}
+      </div>
+
+      <!-- Sector bars -->
+      <div class="lg:col-span-2 bg-white rounded-2xl shadow-sm ring-1 ring-slate-200 p-5">
+        <h3 class="font-bold mb-1">S&P 500 Sectors — YTD Total Return</h3>
+        <p class="text-[11px] text-slate-400 mb-4">Energy & Technology lead; defensives lag. Source: market outlook research, Jun 2026.</p>
+        <div class="space-y-2.5">
+          ${SECTORS.map(s => html`
+            <div class="flex items-center gap-3">
+              <span class="w-40 shrink-0 text-xs text-slate-600 truncate">${s.name}</span>
+              <div class="flex-1 h-4 rounded-full bg-slate-100 overflow-hidden">
+                <div class="h-full ${sectorTone(s.tone)} rounded-full flex items-center justify-end pr-2"
+                     style="width:${Math.max(8,(s.ytd/maxYtd)*100)}%">
+                  <span class="text-[10px] font-bold text-white">${s.ytd.toFixed(1)}%</span>
+                </div>
+              </div>
+              <span class="w-20 shrink-0 text-[10px] font-semibold text-slate-400 text-right">${s.view}</span>
+            </div>`)}
+        </div>
+      </div>
+    </div>
+
+    <!-- ETF read-through -->
+    <div class="grid md:grid-cols-3 gap-4 mt-4">
+      ${[
+        { s:'QQQ', txt:'Tech-led leadership keeps the Nasdaq-100 near 52-week highs, but elevated multiples make it the most sensitive to rate or AI-capex disappointment. Strongest momentum, highest beta.' },
+        { s:'SPY', txt:'Broad large-cap proxy benefiting from the +12% consensus 12-month S&P target. Diversification cushions single-sector shocks while still riding the tech/energy uptrend.' },
+        { s:'SCHD', txt:'Dividend-value tilt lags in a growth-led tape but offers income and downside ballast. Most attractive if breadth broadens or volatility rises into year-end.' },
+      ].map(o => {
+        const cfg = SYMBOLS.find(x => x.sym === o.s);
+        return html`<div class="bg-white rounded-2xl shadow-sm ring-1 ring-slate-200 p-4">
+          <div class="flex items-center gap-2 mb-1">
+            <span class="w-2.5 h-2.5 rounded-full" style="background:${cfg.color}"></span>
+            <span class="font-bold">${o.s}</span></div>
+          <p class="text-sm text-slate-600 leading-relaxed">${o.txt}</p>
+        </div>`;
+      })}
+    </div>
+  </section>`;
+}
+
+/* ---------------------- prediction content ------------------------ */
+const PREDICTIONS = [
+  { s:'QQQ', base:760, bull:805, bear:660, conf:'Moderate',
+    note:'Momentum + AI capex supportive; vulnerable to rate surprises. Watch the 100d SMA as first support.' },
+  { s:'SPY', base:775, bull:815, bear:690, conf:'Higher',
+    note:'Consensus ~+12% 12-mo target implies steady grind higher; broad earnings resilience underpins the base case.' },
+  { s:'SCHD', base:34.5, bull:36.5, bear:30.8, conf:'Moderate',
+    note:'Re-rates higher if breadth broadens or the Fed cuts faster; income provides ballast in a pullback.' },
+];
+
+function predictionSection() {
+  return html`
+  <section id="prediction" class="fade-in">
+    <div class="flex items-center gap-2 mb-1">
+      <span class="text-brand-600 text-xl">🔮</span>
+      <h2 class="text-xl md:text-2xl font-extrabold tracking-tight">Outlook — Next Few Months</h2>
+    </div>
+    <p class="text-xs text-slate-400 mb-4">Illustrative scenario targets through ~Q3–Q4 2026. Not investment advice.</p>
+
+    <div class="grid md:grid-cols-3 gap-4">
+      ${PREDICTIONS.map(p => {
+        const cfg = SYMBOLS.find(x => x.sym === p.s);
+        const cur = cfg.price;
+        const upBase = ((p.base - cur) / cur) * 100;
+        const upBull = ((p.bull - cur) / cur) * 100;
+        const upBear = ((p.bear - cur) / cur) * 100;
+        return html`
+        <div class="bg-white rounded-2xl shadow-sm ring-1 ring-slate-200 p-5">
+          <div class="flex items-center justify-between mb-3">
+            <div class="flex items-center gap-2">
+              <span class="w-2.5 h-2.5 rounded-full" style="background:${cfg.color}"></span>
+              <span class="font-bold text-lg">${p.s}</span>
+            </div>
+            <span class="text-[10px] font-semibold px-2 py-0.5 rounded-full bg-brand-50 text-brand-600 ring-1 ring-brand-100">
+              Confidence: ${p.conf}</span>
+          </div>
+
+          <div class="space-y-2">
+            ${[
+              { lbl:'🐂 Bull', val:p.bull, up:upBull, cls:'emerald' },
+              { lbl:'● Base', val:p.base, up:upBase, cls:'sky' },
+              { lbl:'🐻 Bear', val:p.bear, up:upBear, cls:'rose' },
+            ].map(sc => html`
+              <div class="flex items-center justify-between rounded-lg bg-slate-50 px-3 py-2">
+                <span class="text-xs font-semibold text-slate-500">${sc.lbl}</span>
+                <div class="text-right">
+                  <span class="font-bold text-sm">${money(sc.val)}</span>
+                  <span class="text-${sc.cls}-600 text-[11px] font-semibold ml-1">
+                    ${sc.up >= 0 ? '+' : ''}${sc.up.toFixed(1)}%</span>
+                </div>
+              </div>`)}
+          </div>
+          <p class="text-xs text-slate-500 mt-3 leading-relaxed">${p.note}</p>
+        </div>`;
+      })}
+    </div>
+
+    <div class="mt-4 bg-amber-50 ring-1 ring-amber-200 rounded-2xl p-4 flex gap-3">
+      <span class="text-amber-500 text-lg">⚠️</span>
+      <p class="text-xs text-amber-800 leading-relaxed">
+        <strong>Key risks to the base case:</strong> a hawkish Fed re-pricing, AI-capex / mega-cap earnings disappointment,
+        re-acceleration of inflation, or a geopolitical shock. With the equity risk premium near record lows, valuations
+        offer little cushion — expect sharper drawdowns on negative surprises. Scenarios are illustrative, not predictions.
+      </p>
+    </div>
+  </section>`;
+}
+
+/* ----------------------------- shell ------------------------------ */
+function appTemplate() {
+  return html`
+  <!-- Header -->
+  <header class="sticky top-0 z-20 bg-white/80 backdrop-blur border-b border-slate-200">
+    <div class="max-w-6xl mx-auto px-4 md:px-6 py-3 flex items-center justify-between">
+      <div class="flex items-center gap-2.5">
+        <div class="w-9 h-9 rounded-xl bg-brand-600 text-white grid place-items-center font-extrabold">M</div>
+        <div>
+          <h1 class="text-base md:text-lg font-extrabold tracking-tight leading-none">Market Dashboard</h1>
+          <p class="text-[11px] text-slate-400">QQQ · SPY · SCHD · as of ${ASOF}</p>
+        </div>
+      </div>
+      <nav class="hidden sm:flex items-center gap-1 text-sm font-medium">
+        <a href="#charts" class="px-3 py-1.5 rounded-lg text-slate-500 hover:text-brand-600 hover:bg-slate-50">Charts</a>
+        <a href="#insights" class="px-3 py-1.5 rounded-lg text-slate-500 hover:text-brand-600 hover:bg-slate-50">Insights</a>
+        <a href="#prediction" class="px-3 py-1.5 rounded-lg text-slate-500 hover:text-brand-600 hover:bg-slate-50">Outlook</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="max-w-6xl mx-auto px-4 md:px-6 py-6 space-y-10">
+    <!-- Quote cards -->
+    <section class="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
+      ${DATA.map(quoteCard)}
+    </section>
+
+    <!-- Charts -->
+    <section id="charts" class="space-y-4">
+      <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+        <div class="flex items-center gap-2">
+          <span class="text-brand-600 text-xl">📈</span>
+          <h2 class="text-xl md:text-2xl font-extrabold tracking-tight">2-Year Charts</h2>
+        </div>
+        ${rangeButtons()}
+      </div>
+      ${DATA.map(chartCard)}
+      <p class="text-[11px] text-slate-400 leading-relaxed">
+        Latest closing prices &amp; 52-week ranges sourced via live web search (close of ${ASOF}).
+        The plotted daily series is a <strong>simulated path anchored to the real latest close</strong> —
+        full historical tick data is not retrievable here — so SMA &amp; Bollinger lines are illustrative of
+        technique, with the right-most price matching the real market quote.
+      </p>
+    </section>
+
+    ${insightsSection()}
+    ${predictionSection()}
+  </main>
+
+  <footer class="border-t border-slate-200 mt-8">
+    <div class="max-w-6xl mx-auto px-4 md:px-6 py-6 text-center text-xs text-slate-400">
+      Built with Lit-HTML · Tailwind CSS · Chart.js — single-file dashboard.
+      For educational purposes only · not investment advice.
+    </div>
+  </footer>`;
+}
+
+/* ---------------------------- render ------------------------------ */
+function renderApp() {
+  render(appTemplate(), document.getElementById('app'));
+}
+
+renderApp();
+// Charts need canvases in the DOM — build after first render.
+DATA.forEach(buildChart);
+</script>
+</body>
+</html>

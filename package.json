@@ -7,7 +7,8 @@
     "build": "tsx scripts/build-registry.ts && next build",
     "start": "next start",
     "validate": "tsx scripts/validate-all.ts",
-    "validate:app": "tsx scripts/validate-all.ts --app"
+    "validate:app": "tsx scripts/validate-all.ts --app",
+    "screenshot": "tsx scripts/screenshot.ts"
   },
   "dependencies": {
     "next": "^15.3.3",
@@ -21,6 +22,7 @@
     "@types/react-dom": "^19",
     "ajv": "^8.17.1",
     "ajv-formats": "^3.0.1",
+    "playwright": "^1.60.0",
     "tailwindcss": "^4.1.10",
     "tsx": "^4.19.2",
     "typescript": "^5"
