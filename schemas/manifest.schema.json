@@ -53,6 +53,11 @@
           "description": "Reasoning effort level passed to the model, e.g. low, medium, high, default. Relevant for o-series and reasoning models."
         },
         "followUpCount": { "type": "integer", "minimum": 0 },
+        "errorFixes": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "Number of times the model was prompted to fix an error after initial generation. 0 = ran clean first try."
+        },
         "generationDurationSeconds": {
           "type": "integer",
           "minimum": 0,

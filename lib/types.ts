@@ -14,6 +14,7 @@ export interface AppManifest {
     effort?: string
     generationDurationSeconds?: number
     followUpCount: number
+    errorFixes?: number
     transcriptUrl?: string
   }
   outcome: {
