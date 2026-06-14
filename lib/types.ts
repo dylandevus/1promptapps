@@ -11,6 +11,7 @@ export interface AppManifest {
     builtWith: string
     model?: string
     provider?: string
+    effort?: string
     followUpCount: number
     transcriptUrl?: string
   }

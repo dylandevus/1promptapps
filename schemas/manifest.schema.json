@@ -48,6 +48,10 @@
           "type": "string",
           "description": "API provider used to access the model, e.g. DeepInfra, OpenRouter, Together AI, Anthropic, OpenAI, Google."
         },
+        "effort": {
+          "type": "string",
+          "description": "Reasoning effort level passed to the model, e.g. low, medium, high, default. Relevant for o-series and reasoning models."
+        },
         "followUpCount": { "type": "integer", "minimum": 0 },
         "generationDurationSeconds": {
           "type": "integer",

@@ -11,6 +11,7 @@
     "model": "GLM-5.1",
     "modelId": "zai-org/GLM-5.1",
     "provider": "DeepInfra",
+    "effort": "default",
     "builtWith": "OpenCode",
     "followUpCount": 0,
     "generationDurationSeconds": 38,
