@@ -128,7 +128,10 @@ export function GalleryClient({ apps, categories, builtWithOptions, models, cate
       const q = search.toLowerCase()
       return (
         app.name.toLowerCase().includes(q) ||
+        app.slug.toLowerCase().includes(q) ||
         app.tagline.toLowerCase().includes(q) ||
+        app.model.toLowerCase().includes(q) ||
+        app.builtWith.toLowerCase().includes(q) ||
         app.tags.some(t => t.toLowerCase().includes(q))
       )
     }
