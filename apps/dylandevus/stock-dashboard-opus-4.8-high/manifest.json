@@ -12,7 +12,7 @@
     "modelId": "claude-opus-4-8",
     "provider": "Anthropic",
     "effort": "high",
-    "builtWith": "OpenCode",
+    "builtWith": "Claude Code",
     "followUpCount": 0,
     "followUpPrompts": [],
     "errorFixes": 0,
