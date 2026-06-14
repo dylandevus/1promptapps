@@ -44,6 +44,10 @@
           "type": "string",
           "description": "API provider used to access the model (e.g. DeepInfra, OpenRouter, Together AI, Anthropic, OpenAI, Google)."
         },
+        "tool": {
+          "type": "string",
+          "description": "Coding tool or agent interface used to write and run the prompt (e.g. OpenCode, Claude Code, Cursor, Windsurf, ChatGPT web, API directly)."
+        },
         "builder": {
           "type": "string",
           "enum": ["v0", "lovable", "bolt", "replit", "cursor", "claude", "chatgpt", "windsurf", "glm", "other"]

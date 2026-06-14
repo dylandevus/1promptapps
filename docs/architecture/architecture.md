@@ -161,7 +161,7 @@ The PR thread is the contributor's status surface and the permanent audit trail.
 ### 0.4 v0 build & deploy checklist
 
 **Repo & contract**
-- [x] In **this repo**, add the `apps/<username>/<slug>/` tree (the submissions root) alongside the site code — no separate gallery repo. (`apps/ducsyn/glm-stock-dashboard/` is the first entry)
+- [x] In **this repo**, add the `apps/<username>/<slug>/` tree (the submissions root) alongside the site code — no separate gallery repo. (`apps/dylandevus/glm-stock-dashboard/` is the first entry)
 - [x] Make the repo **public** so anyone can fork and open a PR. → `github.com/dylandevus/1promptapps` (public). Vercel connection: **TODO** — connect in Vercel dashboard.
 - [x] Publish `schemas/manifest.schema.json` derived from the §9.2 manifest (v0 fields — see §0.6).
 - [x] Add `templates/static-app/` (copy-me bundle), `CONTRIBUTING.md`, `PULL_REQUEST_TEMPLATE.md`, and `CODEOWNERS` (require `@dylandevus` approval on `apps/**`).
@@ -203,8 +203,8 @@ The PR thread is the contributor's status surface and the permanent audit trail.
 
 **Deploy**
 - [ ] Connect repo to Vercel; production deploy on merge to `main`; preview deploy per PR — **TODO** (pending Vercel project link at `github.com/dylandevus/1promptapps`).
-- [ ] Seed ~30 hand-curated apps before opening contributions — **in progress** (1 of ~30 seeded: `ducsyn/glm-stock-dashboard`).
-- [x] **Acceptance verified locally:** gallery renders, filter works, `/ducsyn/glm-stock-dashboard` wrapper page loads with provenance banner, demo launches in sandboxed iframe, `npm run validate` passes, `npm run build` produces clean static export.
+- [ ] Seed ~30 hand-curated apps before opening contributions — **in progress** (1 of ~30 seeded: `dylandevus/glm-stock-dashboard`).
+- [x] **Acceptance verified locally:** gallery renders, filter works, `/dylandevus/glm-stock-dashboard` wrapper page loads with provenance banner, demo launches in sandboxed iframe, `npm run validate` passes, `npm run build` produces clean static export.
 
 ### 0.5 Explicitly deferred to v1+ (NOT in v0)
 

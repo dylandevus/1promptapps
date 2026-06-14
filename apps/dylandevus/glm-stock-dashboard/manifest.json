@@ -11,6 +11,7 @@
     "model": "GLM-5.1",
     "modelId": "zai-org/GLM-5.1",
     "provider": "DeepInfra",
+    "tool": "OpenCode",
     "builder": "glm",
     "followUpCount": 0,
     "generationDurationSeconds": 38,
@@ -43,7 +44,7 @@
   },
   "author": {
     "name": "Duc Nguyen",
-    "handle": "ducsyn",
+    "handle": "dylandevus",
     "url": null
   },
   "media": {
