@@ -29,9 +29,6 @@ const VALID_CATEGORIES = new Set([
   'ecommerce', 'health-fitness', 'other',
 ])
 
-const VALID_BUILDERS = new Set([
-  'v0', 'lovable', 'bolt', 'replit', 'cursor', 'claude', 'chatgpt', 'windsurf', 'glm', 'other',
-])
 
 const VALID_EDIT_LEVELS = new Set([
   'none-claimed', 'minor', 'moderate', 'significant', 'unknown',
@@ -105,8 +102,7 @@ function validateManifest(appDir: string, r: Result) {
   if (!prompt) { err(r, 'manifest: missing prompt object'); }
   else {
     if (!prompt.text || typeof prompt.text !== 'string') err(r, 'manifest: missing prompt.text')
-    if (!prompt.builder) err(r, 'manifest: missing prompt.builder')
-    else if (!VALID_BUILDERS.has(prompt.builder as string)) err(r, `manifest: unknown builder "${prompt.builder}"`)
+    if (!prompt.builtWith) err(r, 'manifest: missing prompt.builtWith')
     if (typeof prompt.followUpCount !== 'number') err(r, 'manifest: prompt.followUpCount must be a number')
   }
 

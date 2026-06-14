@@ -14,7 +14,7 @@ export const CATEGORY_LABELS: Record<string, string> = {
   other: 'Other',
 }
 
-export const BUILDER_LABELS: Record<string, string> = {
+export const BUILT_WITH_LABELS: Record<string, string> = {
   v0: 'v0',
   lovable: 'Lovable',
   bolt: 'Bolt',

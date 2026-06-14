@@ -1,7 +1,7 @@
 import { Suspense } from 'react'
 import Link from 'next/link'
-import { getApps, getCategories, getBuilders } from '@/lib/registry'
-import { CATEGORY_LABELS, BUILDER_LABELS } from '@/lib/constants'
+import { getApps, getCategories, getBuiltWith } from '@/lib/registry'
+import { CATEGORY_LABELS, BUILT_WITH_LABELS } from '@/lib/constants'
 import { GalleryClient } from './GalleryClient'
 
 export const metadata = {
@@ -12,7 +12,7 @@ export const metadata = {
 export default function HomePage() {
   const apps = getApps()
   const categories = getCategories()
-  const builders = getBuilders()
+  const builtWithOptions = getBuiltWith()
 
   return (
     <div className="min-h-screen" style={{ background: 'var(--bg)' }}>
@@ -50,9 +50,9 @@ export default function HomePage() {
         <GalleryClient
           apps={apps}
           categories={categories}
-          builders={builders}
+          builtWithOptions={builtWithOptions}
           categoryLabels={CATEGORY_LABELS}
-          builderLabels={BUILDER_LABELS}
+          builtWithLabels={BUILT_WITH_LABELS}
         />
       </Suspense>
 

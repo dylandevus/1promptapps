@@ -1,3 +1,5 @@
+.env
+
 # Next.js build output
 .next/
 out/

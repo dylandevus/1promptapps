@@ -35,28 +35,24 @@
     },
     "prompt": {
       "type": "object",
-      "required": ["text", "builder", "followUpCount"],
+      "required": ["text", "builtWith", "followUpCount"],
       "properties": {
         "text": { "type": "string", "minLength": 10, "maxLength": 8000 },
+        "builtWith": {
+          "type": "string",
+          "description": "The tool, agent, or platform used to build the app — e.g. OpenCode, Claude Code, Cursor, v0, Lovable, Bolt, Windsurf. Free-form so new tools don't need a schema update."
+        },
         "model": { "type": "string", "description": "Human-readable model name, e.g. GLM-5.1, Claude Opus 4." },
         "modelId": { "type": "string", "description": "Canonical model ID used by the provider, e.g. zai-org/GLM-5.1, anthropic/claude-opus-4." },
         "provider": {
           "type": "string",
-          "description": "API provider used to access the model (e.g. DeepInfra, OpenRouter, Together AI, Anthropic, OpenAI, Google)."
-        },
-        "tool": {
-          "type": "string",
-          "description": "Coding tool or agent interface used to write and run the prompt (e.g. OpenCode, Claude Code, Cursor, Windsurf, ChatGPT web, API directly)."
-        },
-        "builder": {
-          "type": "string",
-          "enum": ["v0", "lovable", "bolt", "replit", "cursor", "claude", "chatgpt", "windsurf", "glm", "other"]
+          "description": "API provider used to access the model, e.g. DeepInfra, OpenRouter, Together AI, Anthropic, OpenAI, Google."
         },
         "followUpCount": { "type": "integer", "minimum": 0 },
         "generationDurationSeconds": {
           "type": "integer",
           "minimum": 0,
-          "description": "How long the model took to generate the response (inference time), in seconds."
+          "description": "Model inference time in seconds (how long the AI took to generate the response)."
         },
         "toolsUsed": {
           "type": "array",
@@ -65,7 +61,7 @@
             "enum": ["web-search", "code-interpreter", "image-generation", "file-upload", "computer-use", "other"]
           },
           "uniqueItems": true,
-          "description": "AI tools invoked by the model during generation (beyond plain text generation)."
+          "description": "AI tools invoked by the model during generation, beyond plain text generation."
         },
         "transcriptUrl": { "type": "string", "format": "uri" }
       },

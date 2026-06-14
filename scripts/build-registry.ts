@@ -4,7 +4,7 @@
  * Walks apps/** and generates:
  *   generated/apps.json
  *   generated/categories.json
- *   generated/builders.json
+ *   generated/built-with.json
  *   generated/sitemap.json
  * Also copies bundle files to public/_apps/<username>/<slug>/
  *
@@ -27,9 +27,6 @@ const VALID_CATEGORIES = new Set([
   'ecommerce', 'health-fitness', 'other',
 ])
 
-const VALID_BUILDERS = new Set([
-  'v0', 'lovable', 'bolt', 'replit', 'cursor', 'claude', 'chatgpt', 'windsurf', 'glm', 'other',
-])
 
 function findManifests(): string[] {
   const manifests: string[] = []
@@ -91,7 +88,7 @@ function buildEntry(manifestPath: string): AppEntry {
     description: manifest.description ?? '',
     category: manifest.category,
     tags: manifest.tags ?? [],
-    builder: manifest.prompt.builder,
+    builtWith: manifest.prompt.builtWith,
     model: manifest.prompt.model ?? '',
     timeToFirstVersionMinutes: manifest.outcome.timeToFirstVersionMinutes ?? null,
     reproducibility: manifest.outcome.reproducibility,
@@ -151,7 +148,7 @@ function main() {
 
   const entries: AppEntry[] = []
   const categories = new Set<string>()
-  const builders = new Set<string>()
+  const builtWithValues = new Set<string>()
   let errors = 0
 
   for (const mf of manifests) {
@@ -159,7 +156,7 @@ function main() {
       const entry = buildEntry(mf)
       entries.push(entry)
       categories.add(entry.category)
-      builders.add(entry.builder)
+      builtWithValues.add(entry.builtWith)
 
       const username = entry.username
       const slug = entry.slug
@@ -185,7 +182,7 @@ function main() {
 
   fs.writeFileSync(path.join(GEN_DIR, 'apps.json'), JSON.stringify(entries, null, 2))
   fs.writeFileSync(path.join(GEN_DIR, 'categories.json'), JSON.stringify([...categories].sort(), null, 2))
-  fs.writeFileSync(path.join(GEN_DIR, 'builders.json'), JSON.stringify([...builders].sort(), null, 2))
+  fs.writeFileSync(path.join(GEN_DIR, 'built-with.json'), JSON.stringify([...builtWithValues].sort(), null, 2))
 
   // sitemap
   const BASE = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://1promptapps.com'
@@ -195,7 +192,7 @@ function main() {
   ]
   fs.writeFileSync(path.join(GEN_DIR, 'sitemap.json'), JSON.stringify(sitemap, null, 2))
 
-  console.log(`\nBuilt registry: ${entries.length} apps, ${categories.size} categories, ${builders.size} builders`)
+  console.log(`\nBuilt registry: ${entries.length} apps, ${categories.size} categories, ${builtWithValues.size} built-with`)
 }
 
 main()

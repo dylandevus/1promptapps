@@ -4,7 +4,7 @@ import type { AppEntry } from './types'
 
 // Re-export constants so server components only need to import from here
 export {
-  CATEGORY_LABELS, BUILDER_LABELS, EDIT_LEVEL_LABELS,
+  CATEGORY_LABELS, BUILT_WITH_LABELS, EDIT_LEVEL_LABELS,
   EDIT_LEVEL_COLORS, REPRO_COLORS,
 } from './constants'
 
@@ -24,8 +24,8 @@ export function getCategories(): string[] {
   return JSON.parse(fs.readFileSync(file, 'utf8'))
 }
 
-export function getBuilders(): string[] {
-  const file = path.join(process.cwd(), 'generated', 'builders.json')
+export function getBuiltWith(): string[] {
+  const file = path.join(process.cwd(), 'generated', 'built-with.json')
   if (!fs.existsSync(file)) return []
   return JSON.parse(fs.readFileSync(file, 'utf8'))
 }

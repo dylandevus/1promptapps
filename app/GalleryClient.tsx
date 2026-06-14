@@ -9,9 +9,9 @@ import { EDIT_LEVEL_LABELS, EDIT_LEVEL_COLORS } from '@/lib/constants'
 interface Props {
   apps: AppEntry[]
   categories: string[]
-  builders: string[]
+  builtWithOptions: string[]
   categoryLabels: Record<string, string>
-  builderLabels: Record<string, string>
+  builtWithLabels: Record<string, string>
 }
 
 const SORT_OPTIONS = [
@@ -30,10 +30,10 @@ function Badge({ label, color }: { label: string; color?: string }) {
   )
 }
 
-function AppCard({ app, categoryLabels, builderLabels }: {
+function AppCard({ app, categoryLabels, builtWithLabels }: {
   app: AppEntry
   categoryLabels: Record<string, string>
-  builderLabels: Record<string, string>
+  builtWithLabels: Record<string, string>
 }) {
   return (
     <Link
@@ -67,7 +67,7 @@ function AppCard({ app, categoryLabels, builderLabels }: {
             color="bg-indigo-50 text-indigo-700 ring-indigo-600/20"
           />
           <Badge
-            label={builderLabels[app.builder] ?? app.builder}
+            label={builtWithLabels[app.builtWith] ?? app.builtWith}
             color="bg-violet-50 text-violet-700 ring-violet-600/20"
           />
           <Badge
@@ -90,13 +90,13 @@ function AppCard({ app, categoryLabels, builderLabels }: {
   )
 }
 
-export function GalleryClient({ apps, categories, builders, categoryLabels, builderLabels }: Props) {
+export function GalleryClient({ apps, categories, builtWithOptions, categoryLabels, builtWithLabels }: Props) {
   const router = useRouter()
   const pathname = usePathname()
   const searchParams = useSearchParams()
 
   const [category, setCategory] = useState(searchParams.get('category') ?? '')
-  const [builder, setBuilder] = useState(searchParams.get('builder') ?? '')
+  const [builtWith, setBuiltWith] = useState(searchParams.get('builtWith') ?? '')
   const [editLevel, setEditLevel] = useState(searchParams.get('edit') ?? '')
   const [sort, setSort] = useState(searchParams.get('sort') ?? 'newest')
   const [search, setSearch] = useState(searchParams.get('q') ?? '')
@@ -111,7 +111,7 @@ export function GalleryClient({ apps, categories, builders, categoryLabels, buil
   // Filter
   let filtered = apps.filter(app => {
     if (category && app.category !== category) return false
-    if (builder && app.builder !== builder) return false
+    if (builtWith && app.builtWith !== builtWith) return false
     if (editLevel && app.manualEditLevel !== editLevel) return false
     if (search) {
       const q = search.toLowerCase()
@@ -133,7 +133,7 @@ export function GalleryClient({ apps, categories, builders, categoryLabels, buil
     filtered = [...filtered].sort((a, b) => a.name.localeCompare(b.name))
   }
 
-  const hasFilters = !!(category || builder || editLevel || search)
+  const hasFilters = !!(category || builtWith || editLevel || search)
 
   return (
     <div className="max-w-7xl mx-auto px-6 pb-16">
@@ -166,16 +166,16 @@ export function GalleryClient({ apps, categories, builders, categoryLabels, buil
           ))}
         </select>
 
-        {/* Builder */}
+        {/* Built with */}
         <select
-          value={builder}
-          onChange={e => { setBuilder(e.target.value); updateParam('builder', e.target.value) }}
+          value={builtWith}
+          onChange={e => { setBuiltWith(e.target.value); updateParam('builtWith', e.target.value) }}
           className="h-9 px-3 text-sm rounded-lg outline-none"
           style={{ background: 'var(--surface)', border: '1px solid var(--border)', color: 'var(--ink)' }}
         >
-          <option value="">All builders</option>
-          {builders.map(b => (
-            <option key={b} value={b}>{builderLabels[b] ?? b}</option>
+          <option value="">All tools</option>
+          {builtWithOptions.map(b => (
+            <option key={b} value={b}>{builtWithLabels[b] ?? b}</option>
           ))}
         </select>
 
@@ -206,7 +206,7 @@ export function GalleryClient({ apps, categories, builders, categoryLabels, buil
         {hasFilters && (
           <button
             onClick={() => {
-              setCategory(''); setBuilder(''); setEditLevel(''); setSearch(''); setSort('newest')
+              setCategory(''); setBuiltWith(''); setEditLevel(''); setSearch(''); setSort('newest')
               router.replace(pathname, { scroll: false })
             }}
             className="h-9 px-3 text-sm rounded-lg transition-colors"
@@ -227,7 +227,7 @@ export function GalleryClient({ apps, categories, builders, categoryLabels, buil
           <p className="text-lg mb-2">No apps match your filters.</p>
           <button
             onClick={() => {
-              setCategory(''); setBuilder(''); setEditLevel(''); setSearch('')
+              setCategory(''); setBuiltWith(''); setEditLevel(''); setSearch('')
               router.replace(pathname, { scroll: false })
             }}
             className="text-sm underline"
@@ -238,7 +238,7 @@ export function GalleryClient({ apps, categories, builders, categoryLabels, buil
       ) : (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
           {filtered.map(app => (
-            <AppCard key={app.id} app={app} categoryLabels={categoryLabels} builderLabels={builderLabels} />
+            <AppCard key={app.id} app={app} categoryLabels={categoryLabels} builtWithLabels={builtWithLabels} />
           ))}
         </div>
       )}

@@ -2,7 +2,7 @@ import { notFound } from 'next/navigation'
 import Link from 'next/link'
 import type { Metadata } from 'next'
 import { getApps, getApp } from '@/lib/registry'
-import { CATEGORY_LABELS, BUILDER_LABELS, EDIT_LEVEL_LABELS, EDIT_LEVEL_COLORS, REPRO_COLORS } from '@/lib/constants'
+import { CATEGORY_LABELS, BUILT_WITH_LABELS, EDIT_LEVEL_LABELS, EDIT_LEVEL_COLORS, REPRO_COLORS } from '@/lib/constants'
 import { DemoFrame } from './DemoFrame'
 import { CopyButton } from './CopyButton'
 
@@ -18,7 +18,7 @@ export async function generateMetadata({ params }: { params: Promise<Params> }):
   if (!app) return {}
   return {
     title: `${app.name} — Static App Built from One AI Prompt`,
-    description: `${app.tagline} Built with ${BUILDER_LABELS[app.builder] ?? app.builder}. ${app.timeToFirstVersionMinutes != null ? `First version in ${app.timeToFirstVersionMinutes} minutes.` : ''} Original prompt included.`,
+    description: `${app.tagline} Built with ${BUILT_WITH_LABELS[app.builtWith] ?? app.builtWith}. ${app.timeToFirstVersionMinutes != null ? `First version in ${app.timeToFirstVersionMinutes} minutes.` : ''} Original prompt included.`,
     openGraph: { images: [{ url: app.thumbnail }] },
   }
 }
@@ -36,7 +36,7 @@ export default async function AppPage({ params }: { params: Promise<Params> }) {
   const app = getApp(username, slug)
   if (!app) notFound()
 
-  const builderLabel = BUILDER_LABELS[app.builder] ?? app.builder
+  const builtWithLabel = BUILT_WITH_LABELS[app.builtWith] ?? app.builtWith
   const categoryLabel = CATEGORY_LABELS[app.category] ?? app.category
 
   return (
@@ -50,7 +50,7 @@ export default async function AppPage({ params }: { params: Promise<Params> }) {
           <span style={{ color: 'var(--border)' }}>|</span>
           <span className="font-medium truncate shrink-0" style={{ color: 'var(--ink)' }}>{app.name}</span>
           <span className="shrink-0" style={{ color: 'var(--muted)' }}>·</span>
-          <span className="shrink-0" style={{ color: 'var(--muted)' }}>{builderLabel}</span>
+          <span className="shrink-0" style={{ color: 'var(--muted)' }}>{builtWithLabel}</span>
           {app.model && <>
             <span style={{ color: 'var(--muted)' }}>·</span>
             <span className="shrink-0 text-xs font-mono" style={{ color: 'var(--muted)' }}>{app.model}</span>
@@ -103,7 +103,7 @@ export default async function AppPage({ params }: { params: Promise<Params> }) {
           <p className="text-base mb-4" style={{ color: 'var(--muted)' }}>{app.tagline}</p>
           <div className="flex flex-wrap gap-2">
             <Badge label={categoryLabel} color="bg-indigo-50 text-indigo-700 ring-indigo-600/20" />
-            <Badge label={builderLabel} color="bg-violet-50 text-violet-700 ring-violet-600/20" />
+            <Badge label={builtWithLabel} color="bg-violet-50 text-violet-700 ring-violet-600/20" />
             <Badge
               label={EDIT_LEVEL_LABELS[app.manualEditLevel] ?? app.manualEditLevel}
               color={EDIT_LEVEL_COLORS[app.manualEditLevel]}
@@ -161,7 +161,7 @@ export default async function AppPage({ params }: { params: Promise<Params> }) {
             {app.promptText}
           </div>
           <div className="mt-2 text-xs flex gap-3" style={{ color: 'var(--muted)' }}>
-            <span>Builder: {builderLabel}</span>
+            <span>Builder: {builtWithLabel}</span>
             {app.model && <span>Model: {app.model}</span>}
           </div>
         </section>
