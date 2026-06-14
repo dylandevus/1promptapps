@@ -14,7 +14,7 @@
     "effort": "default",
     "builtWith": "OpenCode",
     "followUpCount": 0,
-    "errorFixes": 0,
+    "errorFixes": 1,
     "generationDurationSeconds": 102,
     "toolsUsed": ["web-search"]
   },
