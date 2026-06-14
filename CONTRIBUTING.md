@@ -38,6 +38,10 @@ Open a PR to this repo adding your app folder.
    permissions.rightsAttested: true
 
 5. Add prompt.md — paste your exact original prompt.
+   Recommend lightweight CDN-based libs in your prompt for best results:
+   lit-html (reactive UI), Tailwind CSS, Chart.js, Alpine.js, htmx, Lucide icons.
+   Avoid build-step frameworks (React, Vue, Svelte) — they don't work in a single HTML file.
+
    Append this to the end of your prompt for consistent, comparable outputs:
 
    > Output to a single HTML file with a light theme that works on both desktop
