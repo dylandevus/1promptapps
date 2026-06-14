@@ -105,11 +105,18 @@ export default async function AppPage({ params }: { params: Promise<Params> }) {
           <div className="flex flex-wrap gap-2">
             <Badge label={categoryLabel} color="bg-indigo-50 text-indigo-700 ring-indigo-600/20" />
             <Badge label={builtWithLabel} color="bg-violet-50 text-violet-700 ring-violet-600/20" />
-            <Badge
-              label={EDIT_LEVEL_LABELS[app.manualEditLevel] ?? app.manualEditLevel}
-              color={EDIT_LEVEL_COLORS[app.manualEditLevel]}
-            />
-            {app.tags.map(t => <Badge key={t} label={t} />)}
+            {app.model && (
+              <Badge
+                label={app.effort && app.effort !== 'default' ? `${app.model} ${app.effort}` : app.model}
+                color="bg-stone-50 text-stone-600 ring-stone-500/20"
+              />
+            )}
+            {app.manualEditLevel !== 'none-claimed' && (
+              <Badge
+                label={EDIT_LEVEL_LABELS[app.manualEditLevel] ?? app.manualEditLevel}
+                color={EDIT_LEVEL_COLORS[app.manualEditLevel]}
+              />
+            )}
           </div>
         </div>
 
@@ -128,6 +135,12 @@ export default async function AppPage({ params }: { params: Promise<Params> }) {
             <div className="text-xs font-medium mb-0.5" style={{ color: 'var(--muted)' }}>Follow-up prompts</div>
             <div className="font-semibold" style={{ color: 'var(--ink)' }}>{app.followUpCount}</div>
           </div>
+          {app.errorFixes > 0 && (
+            <div>
+              <div className="text-xs font-medium mb-0.5" style={{ color: 'var(--muted)' }}>Error fixes</div>
+              <div className="font-semibold" style={{ color: 'var(--ink)' }}>{app.errorFixes}</div>
+            </div>
+          )}
           <div>
             <div className="text-xs font-medium mb-0.5" style={{ color: 'var(--muted)' }}>Reproducibility</div>
             <Badge

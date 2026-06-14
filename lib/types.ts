@@ -84,6 +84,7 @@ export interface AppEntry {
   publishedAt: string
   externalApiDomains: string[]
   followUpCount: number
+  errorFixes: number
 }
 
 export interface Registry {

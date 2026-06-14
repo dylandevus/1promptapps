@@ -111,6 +111,7 @@ function buildEntry(manifestPath: string): AppEntry {
     publishedAt: manifest.publishedAt ?? new Date().toISOString().split('T')[0],
     externalApiDomains: manifest.externalApiDomains ?? [],
     followUpCount: manifest.prompt.followUpCount,
+    errorFixes: manifest.prompt.errorFixes ?? 0,
   }
 }
 
