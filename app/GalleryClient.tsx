@@ -76,10 +76,12 @@ function AppCard({ app, categoryLabels, builtWithLabels }: {
               color="bg-stone-50 text-stone-600 ring-stone-500/20"
             />
           )}
-          <Badge
-            label={EDIT_LEVEL_LABELS[app.manualEditLevel] ?? app.manualEditLevel}
-            color={EDIT_LEVEL_COLORS[app.manualEditLevel]}
-          />
+          {app.manualEditLevel !== 'none-claimed' && (
+            <Badge
+              label={EDIT_LEVEL_LABELS[app.manualEditLevel] ?? app.manualEditLevel}
+              color={EDIT_LEVEL_COLORS[app.manualEditLevel]}
+            />
+          )}
         </div>
 
         {/* Metrics row */}
