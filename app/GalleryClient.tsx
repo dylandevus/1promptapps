@@ -73,7 +73,7 @@ function AppCard({ app, categoryLabels, builtWithLabels }: {
           />
           {app.model && (
             <Badge
-              label={app.model}
+              label={app.effort && app.effort !== 'default' ? `${app.model} ${app.effort}` : app.model}
               color="bg-stone-50 text-stone-600 ring-stone-500/20"
             />
           )}

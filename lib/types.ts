@@ -64,6 +64,7 @@ export interface AppEntry {
   builtWith: string
   model: string
   provider: string
+  effort: string
   timeToFirstVersionMinutes: number | null
   generationDurationSeconds: number | null
   reproducibility: string

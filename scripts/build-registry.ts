@@ -91,6 +91,7 @@ function buildEntry(manifestPath: string): AppEntry {
     builtWith: manifest.prompt.builtWith,
     model: manifest.prompt.model ?? '',
     provider: manifest.prompt.provider ?? '',
+    effort: manifest.prompt.effort ?? '',
     timeToFirstVersionMinutes: manifest.outcome.timeToFirstVersionMinutes ?? null,
     generationDurationSeconds: (manifest.prompt as Record<string, unknown>).generationDurationSeconds as number ?? null,
     reproducibility: manifest.outcome.reproducibility,
