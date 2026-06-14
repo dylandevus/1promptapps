@@ -15,7 +15,7 @@ export function DemoFrame({ demoUrl, appName, thumbnail }: Props) {
     <div
       className="relative w-full"
       style={{
-        height: 'min(70vh, 640px)',
+        height: 'calc(100vh - 48px)',
         background: '#000',
         borderBottom: '1px solid var(--border)',
       }}

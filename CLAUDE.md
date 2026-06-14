@@ -1,0 +1,1 @@
+- Keep docs concise: plain text, short prose, ASCII diagrams over verbose explanations.
