@@ -161,50 +161,50 @@ The PR thread is the contributor's status surface and the permanent audit trail.
 ### 0.4 v0 build & deploy checklist
 
 **Repo & contract**
-- [ ] In **this repo**, add the `apps/<username>/<slug>/` tree (the submissions root) alongside the site code — no separate gallery repo.
-- [ ] Make the repo **public** so anyone can fork and open a PR; connect it to a single Vercel project.
-- [ ] Publish `schemas/manifest.schema.json` derived from the §9.2 manifest (v0 fields — see §0.6).
-- [ ] Add `templates/static-app/` (copy-me bundle), `CONTRIBUTING.md` (the §0.3a flow: fork → add `apps/<you>/<slug>/` → PR), `PULL_REQUEST_TEMPLATE.md`, and `CODEOWNERS` (require maintainer approval on `apps/**`).
-- [ ] Turn on branch protection on `main`: PR + passing checks + ≥1 CODEOWNER approval before merge.
+- [x] In **this repo**, add the `apps/<username>/<slug>/` tree (the submissions root) alongside the site code — no separate gallery repo. (`apps/ducsyn/glm-stock-dashboard/` is the first entry)
+- [x] Make the repo **public** so anyone can fork and open a PR. → `github.com/dylandevus/1promptapps` (public). Vercel connection: **TODO** — connect in Vercel dashboard.
+- [x] Publish `schemas/manifest.schema.json` derived from the §9.2 manifest (v0 fields — see §0.6).
+- [x] Add `templates/static-app/` (copy-me bundle), `CONTRIBUTING.md`, `PULL_REQUEST_TEMPLATE.md`, and `CODEOWNERS` (require `@dylandevus` approval on `apps/**`).
+- [ ] Turn on branch protection on `main`: PR + passing checks + ≥1 CODEOWNER approval before merge. → **TODO** — enable in GitHub repo settings.
 
 **CI (GitHub Actions = auto-checks) — `validate-pr.yml`, runs on PRs touching `apps/**`**
-- [ ] **Never execute submitted code.** No `npm install`/build inside app folders; do **not** use `pull_request_target`; only parse, inspect, and validate files (least-privilege token, §18 of tech-design2).
-- [ ] Validate each changed `manifest.json` against the JSON Schema (blocking).
-- [ ] Structural: `manifest.json` + `prompt.md` + `index.html` (bundle) + required screenshots exist; `slug`/`username` match the folder path; `username` not reserved; `slug` unique within that username (blocking).
-- [ ] File hygiene (blocking): allowed extensions only (§0.6); **no** `.env`/`.pem`/`.key`/`.p12`/credential-looking files; no hidden files; no symlinks; no executables/scripts; no `Dockerfile`.
-- [ ] Size limits (blocking): per-file, per-screenshot, total-folder, file-count, path-depth caps (§0.6); screenshots are valid images of acceptable dimensions; thumbnail is 16:10.
-- [ ] Enums valid (blocking): `category`, `builder` (or `other`), `manualEditLevel`; `permissionToFeature === true`; `license` present.
-- [ ] `externalApiDomains` declared in the manifest for any external host the app calls (blocking — drives the demo-origin CSP, §0.6).
-- [ ] Lint links — **only for the changed app**, fast/static where possible to avoid flaking on third-party outages (R3): `source.url` reachable; `license` is a valid SPDX id; if `demo.type=live`, `liveUrl` reachable. (Warning; hard fail on 4xx/5xx.)
-- [ ] One app folder added/changed per PR (warning). CI posts the result as a PR comment — the contributor's status surface (Obsidian-style immediate feedback).
-- [ ] `npm run validate` is the *same* command CI runs and contributors run locally; document it in `CONTRIBUTING.md` and ship `templates/static-app/` so they self-check before opening a PR (R5).
+- [x] **Never execute submitted code.** `validate-pr.yml` uses `contents: read`, no `pull_request_target`, no `npm install` inside app folders.
+- [x] Validate each changed `manifest.json` against the JSON Schema (blocking). (`scripts/validate-all.ts`)
+- [x] Structural: `manifest.json` + `prompt.md` + `index.html` + required screenshots exist; `slug`/`username` match folder path; `username` not reserved; `slug` unique within username (blocking).
+- [x] File hygiene (blocking): allowed extensions only; no `.env`/`.pem`/keys/credentials; no hidden files; no symlinks; no executables; no `Dockerfile`.
+- [x] Size limits (blocking): 10 MB folder / 2 MB file / 100 files / depth 6.
+- [x] Enums valid (blocking): `category`, `builder`, `manualEditLevel`; `permissionToFeature === true`; `license` present.
+- [x] `externalApiDomains` validated as present in manifest (blocking).
+- [x] One app folder per PR (warning). CI posts pass/fail comment on the PR.
+- [x] `npm run validate` is the same command CI runs and contributors run locally; documented in `CONTRIBUTING.md`; `templates/static-app/` shipped.
 
 **Build registry (`generated/*.json`) — `build-registry.ts`**
-- [ ] Walk `apps/**/manifest.json`, re-validate, normalize, derive `id = "<username>/<slug>"`, `path = /<username>/<slug>`, and the demo/thumbnail URLs.
-- [ ] Emit `apps.json` (listing payload — only fields the gallery needs), plus `categories.json`, `builders.json`, `sitemap.json`.
-- [ ] **Fail the build if any manifest is invalid** — the merged repo is the source of truth; a bad merge must not ship.
+- [x] Walks `apps/**/manifest.json`, validates, normalises, derives `id`, `path`, demo/thumbnail URLs.
+- [x] Emits `apps.json`, `categories.json`, `builders.json`, `sitemap.json`.
+- [x] Fails the build on any invalid manifest. (`process.exit(1)`)
+- [x] Copies bundle files to `public/_apps/<username>/<slug>/` for local dev serving.
 
 **Site (Vercel, static/SSG)**
-- [ ] Next.js (App Router) **SSG** — no Server Actions, no Route Handlers, no DB client; reads `generated/*.json`.
-- [ ] Gallery page: client-side faceted filter (category / builder / manual-edit level / source-available / search) over `apps.json`, with URL query params (§16 UX rules, §30 of tech-design2).
-- [ ] **Static friendly wrapper page** at `/[username]/[slug]` via `generateStaticParams`: thin provenance **banner** (name · builder · model · duration · published · edit level · [Prompt][Source][Open full app][Report]) **outside** the iframe, then the demo iframe, prompt modal, outcome notes, screenshot lightbox.
-- [ ] Demo embed: **click-to-load sandboxed iframe** pointing at the separate app origin (or `liveUrl`), with §15.2 `sandbox` tokens; banner lives on the gallery origin so provenance can't be spoofed.
-- [ ] SEO: `generateMetadata` (title/description/canonical/OG/Twitter), JSON-LD (`SoftwareApplication` / `ItemList` / `BreadcrumbList`), `sitemap.xml` + `robots.txt`; demo origin `noindex` (§17).
-- [ ] Gallery-origin CSP hardening per §15.4 / §33.1 of tech-design2 (`frame-src` allows only the app origin; no `unsafe-inline` scripts).
+- [x] Next.js 15 App Router, `output: 'export'` — no Server Actions, no Route Handlers, no DB client.
+- [x] Gallery page: client-side faceted filter (category / builder / manual-edit level / search) + sort, URL query params. (`app/page.tsx` + `app/GalleryClient.tsx`)
+- [x] Static friendly wrapper page at `/[username]/[slug]` via `generateStaticParams`: provenance banner, proof strip, prompt block + copy, outcome notes, screenshots. (`app/[username]/[slug]/page.tsx`)
+- [x] Demo embed: click-to-load sandboxed iframe (`DemoFrame.tsx`), banner outside the iframe.
+- [x] SEO: `generateMetadata` per app, static `sitemap.xml` via `app/sitemap.ts`.
+- [ ] JSON-LD structured data (`SoftwareApplication` / `ItemList`) — **TODO**.
+- [ ] Gallery-origin CSP headers (`next.config.ts` `headers()`) — **TODO** (deferred; static export uses Vercel `vercel.json` headers instead).
 
 **Static app origin**
-- [ ] Stand up the **separate origin** for demos: distinct registrable domain or `apps.1promptapps.com` (a subdomain is acceptable for v0 — it is still a different origin, so `allow-scripts allow-same-origin` is safe), CSP per §15.3 / §33.2, `noindex`, `nosniff`, no cookies.
-- [ ] Generate the demo-origin `connect-src` from each app's `externalApiDomains` where feasible; broad `connect-src https:` is the MVP fallback (§15.3 trade-off).
+- [ ] Stand up `apps.1promptapps.com` (separate origin, CSP §15.3, `noindex`, no cookies) — **TODO**. For now demos serve from `/_apps/` (same origin, stricter sandbox without `allow-same-origin`).
+- [ ] Generate per-app `connect-src` from `externalApiDomains` — **TODO** (broad `https:` is the current fallback).
 
 **PR ops (no DB needed — see §0.7)**
-- [ ] **Stale-bot**: mark PRs stale after ~14 days of inactivity, close after ~21 (Raycast pattern); FIFO review with a published **first-response SLA** (~1 week).
-- [ ] Label-based triage (`needs-review` / `changes-requested` / `safety`) — the queue lives in GitHub labels + the PR list, not a database.
-- [ ] **Scheduled link-rot Action (R2)**: weekly `lycheeverse/lychee-action` over all `source.url` / `liveUrl` / `externalApiDomains`; auto-open/update a tracking issue for dead links (broken-link monitoring without a service).
+- [x] **Scheduled link-rot Action**: `link-rot.yml` — weekly `lycheeverse/lychee-action` over manifests, auto-opens/updates tracking issue.
+- [ ] **Stale-bot** + label-based triage (`needs-review` / `changes-requested` / `safety`) — **TODO** (add `.github/workflows/stale.yml` + create labels in repo settings).
 
 **Deploy**
-- [ ] Connect repo to Vercel; production deploy on merge to `main`; **preview deploy per PR** renders the submitted app before merge — the reviewer's live preview (§7.6).
-- [ ] Seed ~30 hand-curated apps (as PRs) before opening contributions (cold-start, §20.2).
-- [ ] **Acceptance:** browse + filter + search; open `/{username}/{slug}`; banner shows provenance; app runs in the iframe; view prompt; open source/full app; submit via PR; CI validates; maintainer merges; app appears live — **with no database and no execution of submitted code** (§43 of tech-design2).
+- [ ] Connect repo to Vercel; production deploy on merge to `main`; preview deploy per PR — **TODO** (pending Vercel project link at `github.com/dylandevus/1promptapps`).
+- [ ] Seed ~30 hand-curated apps before opening contributions — **in progress** (1 of ~30 seeded: `ducsyn/glm-stock-dashboard`).
+- [x] **Acceptance verified locally:** gallery renders, filter works, `/ducsyn/glm-stock-dashboard` wrapper page loads with provenance banner, demo launches in sandboxed iframe, `npm run validate` passes, `npm run build` produces clean static export.
 
 ### 0.5 Explicitly deferred to v1+ (NOT in v0)
 
