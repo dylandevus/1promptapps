@@ -2,6 +2,7 @@ import { notFound } from 'next/navigation'
 import Link from 'next/link'
 import type { Metadata } from 'next'
 import { getApps, getApp } from '@/lib/registry'
+import { formatDuration } from '@/lib/format'
 import { CATEGORY_LABELS, BUILT_WITH_LABELS, EDIT_LEVEL_LABELS, EDIT_LEVEL_COLORS, REPRO_COLORS } from '@/lib/constants'
 import { DemoFrame } from './DemoFrame'
 import { CopyButton } from './CopyButton'
@@ -55,9 +56,9 @@ export default async function AppPage({ params }: { params: Promise<Params> }) {
             <span style={{ color: 'var(--muted)' }}>·</span>
             <span className="shrink-0 text-xs font-mono" style={{ color: 'var(--muted)' }}>{app.model}</span>
           </>}
-          {app.timeToFirstVersionMinutes != null && <>
+          {formatDuration(app.generationDurationSeconds, app.timeToFirstVersionMinutes) && <>
             <span style={{ color: 'var(--muted)' }}>·</span>
-            <span className="shrink-0" style={{ color: 'var(--muted)' }}>⏱ {app.timeToFirstVersionMinutes}m</span>
+            <span className="shrink-0" style={{ color: 'var(--muted)' }}>⏱ {formatDuration(app.generationDurationSeconds, app.timeToFirstVersionMinutes)}</span>
           </>}
           <span style={{ color: 'var(--muted)' }}>·</span>
           <span className="shrink-0 text-xs" style={{ color: 'var(--muted)' }}>{app.publishedAt}</span>
@@ -117,10 +118,10 @@ export default async function AppPage({ params }: { params: Promise<Params> }) {
           className="rounded-xl p-5 mb-8 grid grid-cols-2 sm:grid-cols-4 gap-4 text-sm"
           style={{ background: 'var(--surface)', border: '1px solid var(--border)' }}
         >
-          {app.timeToFirstVersionMinutes != null && (
+          {formatDuration(app.generationDurationSeconds, app.timeToFirstVersionMinutes) && (
             <div>
               <div className="text-xs font-medium mb-0.5" style={{ color: 'var(--muted)' }}>Time to first version</div>
-              <div className="font-semibold" style={{ color: 'var(--ink)' }}>{app.timeToFirstVersionMinutes} min</div>
+              <div className="font-semibold" style={{ color: 'var(--ink)' }}>{formatDuration(app.generationDurationSeconds, app.timeToFirstVersionMinutes)}</div>
             </div>
           )}
           <div>

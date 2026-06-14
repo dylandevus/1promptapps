@@ -12,6 +12,7 @@ export interface AppManifest {
     model?: string
     provider?: string
     effort?: string
+    generationDurationSeconds?: number
     followUpCount: number
     transcriptUrl?: string
   }
@@ -63,6 +64,7 @@ export interface AppEntry {
   model: string
   provider: string
   timeToFirstVersionMinutes: number | null
+  generationDurationSeconds: number | null
   reproducibility: string
   manualEditLevel: string
   sourceAvailable: boolean

@@ -5,6 +5,7 @@ import { useRouter, useSearchParams, usePathname } from 'next/navigation'
 import Link from 'next/link'
 import type { AppEntry } from '@/lib/types'
 import { EDIT_LEVEL_LABELS, EDIT_LEVEL_COLORS } from '@/lib/constants'
+import { formatDuration } from '@/lib/format'
 
 interface Props {
   apps: AppEntry[]
@@ -86,8 +87,8 @@ function AppCard({ app, categoryLabels, builtWithLabels }: {
 
         {/* Metrics row */}
         <div className="flex items-center gap-3 text-xs" style={{ color: 'var(--muted)' }}>
-          {app.timeToFirstVersionMinutes != null && (
-            <span>⏱ {app.timeToFirstVersionMinutes}m</span>
+          {formatDuration(app.generationDurationSeconds, app.timeToFirstVersionMinutes) && (
+            <span>⏱ {formatDuration(app.generationDurationSeconds, app.timeToFirstVersionMinutes)}</span>
           )}
           {app.provider && <span>{app.provider}</span>}
           {app.sourceAvailable && <span>‹/› source</span>}
