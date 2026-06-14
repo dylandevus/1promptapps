@@ -24,6 +24,12 @@ export function getCategories(): string[] {
   return JSON.parse(fs.readFileSync(file, 'utf8'))
 }
 
+export function getModels(): string[] {
+  const file = path.join(process.cwd(), 'generated', 'models.json')
+  if (!fs.existsSync(file)) return []
+  return JSON.parse(fs.readFileSync(file, 'utf8'))
+}
+
 export function getBuiltWith(): string[] {
   const file = path.join(process.cwd(), 'generated', 'built-with.json')
   if (!fs.existsSync(file)) return []

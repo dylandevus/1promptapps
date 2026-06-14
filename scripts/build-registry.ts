@@ -153,6 +153,7 @@ function main() {
   const entries: AppEntry[] = []
   const categories = new Set<string>()
   const builtWithValues = new Set<string>()
+  const models = new Set<string>()
   let errors = 0
 
   for (const mf of manifests) {
@@ -161,6 +162,7 @@ function main() {
       entries.push(entry)
       categories.add(entry.category)
       builtWithValues.add(entry.builtWith)
+      if (entry.model) models.add(entry.model)
 
       const username = entry.username
       const slug = entry.slug
@@ -187,6 +189,7 @@ function main() {
   fs.writeFileSync(path.join(GEN_DIR, 'apps.json'), JSON.stringify(entries, null, 2))
   fs.writeFileSync(path.join(GEN_DIR, 'categories.json'), JSON.stringify([...categories].sort(), null, 2))
   fs.writeFileSync(path.join(GEN_DIR, 'built-with.json'), JSON.stringify([...builtWithValues].sort(), null, 2))
+  fs.writeFileSync(path.join(GEN_DIR, 'models.json'), JSON.stringify([...models].sort(), null, 2))
 
   // sitemap
   const BASE = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://1promptapps.com'

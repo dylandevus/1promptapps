@@ -11,6 +11,7 @@ interface Props {
   apps: AppEntry[]
   categories: string[]
   builtWithOptions: string[]
+  models: string[]
   categoryLabels: Record<string, string>
   builtWithLabels: Record<string, string>
 }
@@ -98,13 +99,14 @@ function AppCard({ app, categoryLabels, builtWithLabels }: {
   )
 }
 
-export function GalleryClient({ apps, categories, builtWithOptions, categoryLabels, builtWithLabels }: Props) {
+export function GalleryClient({ apps, categories, builtWithOptions, models, categoryLabels, builtWithLabels }: Props) {
   const router = useRouter()
   const pathname = usePathname()
   const searchParams = useSearchParams()
 
   const [category, setCategory] = useState(searchParams.get('category') ?? '')
   const [builtWith, setBuiltWith] = useState(searchParams.get('builtWith') ?? '')
+  const [model, setModel] = useState(searchParams.get('model') ?? '')
   const [editLevel, setEditLevel] = useState(searchParams.get('edit') ?? '')
   const [sort, setSort] = useState(searchParams.get('sort') ?? 'newest')
   const [search, setSearch] = useState(searchParams.get('q') ?? '')
@@ -120,6 +122,7 @@ export function GalleryClient({ apps, categories, builtWithOptions, categoryLabe
   let filtered = apps.filter(app => {
     if (category && app.category !== category) return false
     if (builtWith && app.builtWith !== builtWith) return false
+    if (model && app.model !== model) return false
     if (editLevel && app.manualEditLevel !== editLevel) return false
     if (search) {
       const q = search.toLowerCase()
@@ -141,7 +144,7 @@ export function GalleryClient({ apps, categories, builtWithOptions, categoryLabe
     filtered = [...filtered].sort((a, b) => a.name.localeCompare(b.name))
   }
 
-  const hasFilters = !!(category || builtWith || editLevel || search)
+  const hasFilters = !!(category || builtWith || model || editLevel || search)
 
   return (
     <div className="max-w-7xl mx-auto px-6 pb-16">
@@ -187,6 +190,17 @@ export function GalleryClient({ apps, categories, builtWithOptions, categoryLabe
           ))}
         </select>
 
+        {/* Model */}
+        <select
+          value={model}
+          onChange={e => { setModel(e.target.value); updateParam('model', e.target.value) }}
+          className="h-9 px-3 text-sm rounded-lg outline-none"
+          style={{ background: 'var(--surface)', border: '1px solid var(--border)', color: 'var(--ink)' }}
+        >
+          <option value="">All models</option>
+          {models.map(m => <option key={m} value={m}>{m}</option>)}
+        </select>
+
         {/* Edit level */}
         <select
           value={editLevel}
@@ -214,7 +228,7 @@ export function GalleryClient({ apps, categories, builtWithOptions, categoryLabe
         {hasFilters && (
           <button
             onClick={() => {
-              setCategory(''); setBuiltWith(''); setEditLevel(''); setSearch(''); setSort('newest')
+              setCategory(''); setBuiltWith(''); setModel(''); setEditLevel(''); setSearch(''); setSort('newest')
               router.replace(pathname, { scroll: false })
             }}
             className="h-9 px-3 text-sm rounded-lg transition-colors"
@@ -235,7 +249,7 @@ export function GalleryClient({ apps, categories, builtWithOptions, categoryLabe
           <p className="text-lg mb-2">No apps match your filters.</p>
           <button
             onClick={() => {
-              setCategory(''); setBuiltWith(''); setEditLevel(''); setSearch('')
+              setCategory(''); setBuiltWith(''); setModel(''); setEditLevel(''); setSearch('')
               router.replace(pathname, { scroll: false })
             }}
             className="text-sm underline"
