@@ -1,0 +1,66 @@
+{
+  "manifestVersion": "1.0",
+  "name": "ETF Market Dashboard",
+  "slug": "stock-dashboard-gpt-5.5-high",
+  "tagline": "QQQ, SPY & SCHD with Bollinger Bands, 100d/200d SMA, sector insights, and near-term scenario analysis.",
+  "description": "A light-themed ETF dashboard for QQQ, SPY, and SCHD. Shows 2-year Chart.js price charts with Bollinger Bands, 100d and 200d SMA overlays, per-ETF metric cards with 1M/3M performance, a market Insights section, and a Prediction section for near-term scenarios. Uses lit-html for reactive rendering and Lucide icons. Data is hardcoded — no live API calls required.",
+  "category": "finance",
+  "tags": ["stocks", "charts", "technical-analysis", "etf", "qqq", "spy", "schd", "light-theme"],
+  "prompt": {
+    "text": "Create a stock market dashboard using Lit-HTML, Tailwind, JS libs from CDNs, in a single HTML file. Add 2-year charts for QQQ, SPY, SCHD, do a web search to get latest market prices. Each chart has Bollinger Bands, 100d SMA, 200d SMA lines. Add an Insights section to analyze market, sectors. Add another section for Prediction for next few months.",
+    "model": "GPT-5.5",
+    "modelId": "gpt-5.5",
+    "provider": "OpenAI",
+    "effort": "high",
+    "builtWith": "Codex",
+    "followUpCount": 0,
+    "generationDurationSeconds": 207,
+    "toolsUsed": ["web-search"]
+  },
+  "outcome": {
+    "timeToFirstVersionMinutes": 3,
+    "reproducibility": "full",
+    "worked": [
+      "Light editorial UI with custom Tailwind color tokens",
+      "Three ETF summary cards (QQQ, SPY, SCHD) with 1M/3M performance",
+      "2-year Chart.js price chart with Bollinger Bands, 100d and 200d SMA",
+      "Per-ETF chart switching with reactive lit-html rendering",
+      "Insights section with sector and market context per ETF",
+      "Prediction section with near-term scenario analysis",
+      "Lucide icons integrated from CDN",
+      "Responsive layout"
+    ],
+    "manualEdits": []
+  },
+  "demo": {
+    "type": "bundle",
+    "entry": "index.html"
+  },
+  "source": {
+    "available": false,
+    "url": null,
+    "license": null
+  },
+  "author": {
+    "name": "Duc Nguyen",
+    "handle": "dylandevus",
+    "url": null
+  },
+  "media": {
+    "thumbnail": "screenshots/thumbnail.png",
+    "screenshots": [
+      { "src": "screenshots/desktop.png", "alt": "Full-page ETF Market Dashboard showing QQQ, SPY, SCHD cards, price chart with Bollinger Bands, Insights and Prediction sections" }
+    ]
+  },
+  "permissions": {
+    "permissionToFeature": true,
+    "rightsAttested": true
+  },
+  "manualEditLevel": "none-claimed",
+  "externalApiDomains": [
+    "cdn.tailwindcss.com",
+    "cdn.jsdelivr.net",
+    "unpkg.com"
+  ],
+  "publishedAt": "2026-06-13"
+}

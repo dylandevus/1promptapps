@@ -1,0 +1,628 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>ETF Market Dashboard</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ["Inter", "ui-sans-serif", "system-ui", "sans-serif"],
+          },
+          colors: {
+            ink: "#111827",
+            paper: "#f7f5f0",
+            line: "#d8d4ca",
+            sea: "#087f8c",
+            leaf: "#247a4d",
+            ember: "#c05621",
+            plum: "#7c3aed",
+          },
+          boxShadow: {
+            soft: "0 18px 45px rgba(31, 41, 55, 0.08)",
+          },
+        },
+      },
+    };
+  </script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns@3.0.0/dist/chartjs-adapter-date-fns.bundle.min.js"></script>
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <style>
+    html { background: #f7f5f0; }
+    body { color: #111827; }
+    .chart-shell { height: clamp(320px, 45vh, 520px); }
+    .mini-chart { height: 200px; }
+    .metric-grid { grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); }
+    .fund-grid { grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); }
+  </style>
+</head>
+<body class="min-h-screen bg-paper font-sans antialiased">
+  <main id="app"></main>
+
+  <script type="module">
+    import { html, render } from "https://cdn.jsdelivr.net/npm/lit-html@3.2.1/lit-html.js";
+
+    const quoteSnapshots = {
+      QQQ: {
+        name: "Invesco QQQ Trust",
+        price: 723.25,
+        low: 711.28,
+        high: 724.01,
+        source: "Robinhood quote snapshot",
+        sourceUrl: "https://robinhood.com/us/en/stocks/QQQ/",
+        tone: "sea",
+        brief: "High-beta Nasdaq-100 exposure. AI and mega-cap growth remain the core drivers, with wider swings after the recent run.",
+      },
+      SPY: {
+        name: "SPDR S&P 500 ETF Trust",
+        price: 742.45,
+        low: 735.05,
+        high: 744.44,
+        source: "Robinhood quote snapshot",
+        sourceUrl: "https://robinhood.com/us/en/stocks/SPY/",
+        tone: "leaf",
+        brief: "Broad large-cap exposure. The index trend is still growth-led, but breadth and sector rotation matter more near highs.",
+      },
+      SCHD: {
+        name: "Schwab U.S. Dividend Equity ETF",
+        price: 32.86,
+        low: 32.53,
+        high: 32.92,
+        source: "Robinhood quote snapshot",
+        sourceUrl: "https://robinhood.com/us/en/stocks/SCHD/",
+        tone: "ember",
+        brief: "Dividend and quality-value exposure. Lower volatility profile can benefit if leadership broadens beyond mega-cap growth.",
+      },
+    };
+
+    const sectorViews = [
+      { sector: "Technology / AI", stance: "Leadership", etf: "XLK, QQQ", text: "Structural leader, but extended momentum makes profit-taking sharper when rates or positioning turn." },
+      { sector: "Financials", stance: "Watch", etf: "XLF", text: "Sensitive to yield curve shape and credit tone. Participation would help SPY breadth." },
+      { sector: "Health Care", stance: "Defensive", etf: "XLV", text: "Useful ballast if growth volatility rises; still needs stronger relative momentum." },
+      { sector: "Real Estate", stance: "Rotation Bid", etf: "XLRE", text: "Rate-sensitive group to watch if long yields ease. A sustained bid would support dividend and low-volatility factors." },
+      { sector: "Energy", stance: "Event Risk", etf: "XLE", text: "Geopolitical headlines can lift crude and energy, but demand expectations can reverse the move quickly." },
+      { sector: "Industrials", stance: "Breadth Gauge", etf: "XLI", text: "Cyclical confirmation from industrials would make the advance healthier than narrow mega-cap leadership." },
+    ];
+
+    const state = {
+      selected: "QQQ",
+      loading: true,
+      error: "",
+      updatedAt: new Date(),
+      dataMode: "Loading",
+      series: {},
+      charts: {},
+    };
+
+    const fmtUsd = new Intl.NumberFormat("en-US", { style: "currency", currency: "USD", maximumFractionDigits: 2 });
+    const fmtPct = new Intl.NumberFormat("en-US", { style: "percent", minimumFractionDigits: 1, maximumFractionDigits: 1 });
+
+    const colorMap = {
+      QQQ: { close: "#087f8c", sma100: "#7c3aed", sma200: "#c05621", upper: "rgba(8, 127, 140, 0.35)", lower: "rgba(8, 127, 140, 0.35)", fill: "rgba(8, 127, 140, 0.09)" },
+      SPY: { close: "#247a4d", sma100: "#7c3aed", sma200: "#c05621", upper: "rgba(36, 122, 77, 0.35)", lower: "rgba(36, 122, 77, 0.35)", fill: "rgba(36, 122, 77, 0.09)" },
+      SCHD: { close: "#c05621", sma100: "#087f8c", sma200: "#7c3aed", upper: "rgba(192, 86, 33, 0.35)", lower: "rgba(192, 86, 33, 0.35)", fill: "rgba(192, 86, 33, 0.09)" },
+    };
+
+    function clamp(value, min, max) {
+      return Math.max(min, Math.min(max, value));
+    }
+
+    function seededRandom(seed) {
+      let t = seed + 0x6D2B79F5;
+      return () => {
+        t += 0x6D2B79F5;
+        let r = Math.imul(t ^ (t >>> 15), 1 | t);
+        r ^= r + Math.imul(r ^ (r >>> 7), 61 | r);
+        return ((r ^ (r >>> 14)) >>> 0) / 4294967296;
+      };
+    }
+
+    function tradingDaysBack(count) {
+      const days = [];
+      const d = new Date();
+      d.setHours(12, 0, 0, 0);
+      while (days.length < count) {
+        const day = d.getDay();
+        if (day !== 0 && day !== 6) days.unshift(new Date(d));
+        d.setDate(d.getDate() - 1);
+      }
+      return days;
+    }
+
+    function fallbackSeries(symbol) {
+      const snapshot = quoteSnapshots[symbol];
+      const params = {
+        QQQ: { seed: 91, annualDrift: 0.24, vol: 0.018, drawdown: 0.10 },
+        SPY: { seed: 37, annualDrift: 0.17, vol: 0.011, drawdown: 0.07 },
+        SCHD: { seed: 63, annualDrift: 0.09, vol: 0.008, drawdown: 0.04 },
+      }[symbol];
+      const rand = seededRandom(params.seed);
+      const days = tradingDaysBack(505);
+      const path = [];
+      let value = snapshot.price / Math.pow(1 + params.annualDrift, 1.65);
+
+      days.forEach((day, index) => {
+        const wave = Math.sin(index / 31) * 0.003 + Math.sin(index / 97) * 0.002;
+        const shock = (rand() - 0.5) * params.vol;
+        const midCycleDip = -params.drawdown * Math.exp(-Math.pow((index - 235) / 46, 2));
+        const recovery = index > 315 ? (index - 315) / 190 * params.drawdown * 0.7 : 0;
+        value = value * (1 + params.annualDrift / 252 + wave + shock);
+        path.push({ date: day, close: value * (1 + midCycleDip + recovery) });
+      });
+
+      const scale = snapshot.price / path[path.length - 1].close;
+      return path.map((point) => ({ date: point.date, close: point.close * scale }));
+    }
+
+    async function fetchYahooSeries(symbol) {
+      const direct = `https://query1.finance.yahoo.com/v8/finance/chart/${symbol}?range=2y&interval=1d`;
+      const proxied = `https://api.allorigins.win/raw?url=${encodeURIComponent(direct)}`;
+      const endpoints = [direct, proxied];
+
+      for (const endpoint of endpoints) {
+        try {
+          const res = await fetch(endpoint, { cache: "no-store" });
+          if (!res.ok) continue;
+          const json = await res.json();
+          const result = json.chart?.result?.[0];
+          const timestamps = result?.timestamp || [];
+          const closes = result?.indicators?.quote?.[0]?.close || [];
+          const rows = timestamps
+            .map((ts, i) => ({ date: new Date(ts * 1000), close: closes[i] }))
+            .filter((row) => Number.isFinite(row.close));
+          if (rows.length > 250) return rows;
+        } catch (_) {
+          continue;
+        }
+      }
+      throw new Error(`Historical data unavailable for ${symbol}`);
+    }
+
+    function sma(values, window) {
+      let sum = 0;
+      return values.map((value, index) => {
+        sum += value;
+        if (index >= window) sum -= values[index - window];
+        return index >= window - 1 ? sum / window : null;
+      });
+    }
+
+    function bollinger(values, window = 20, mult = 2) {
+      const middle = sma(values, window);
+      return values.map((_, index) => {
+        if (index < window - 1) return { middle: null, upper: null, lower: null };
+        const slice = values.slice(index - window + 1, index + 1);
+        const avg = middle[index];
+        const variance = slice.reduce((total, value) => total + Math.pow(value - avg, 2), 0) / window;
+        const std = Math.sqrt(variance);
+        return { middle: avg, upper: avg + mult * std, lower: avg - mult * std };
+      });
+    }
+
+    function enrichSeries(rows) {
+      const values = rows.map((row) => row.close);
+      const sma100 = sma(values, 100);
+      const sma200 = sma(values, 200);
+      const bands = bollinger(values);
+      return rows.map((row, index) => ({
+        ...row,
+        sma100: sma100[index],
+        sma200: sma200[index],
+        bbMid: bands[index].middle,
+        bbUpper: bands[index].upper,
+        bbLower: bands[index].lower,
+      }));
+    }
+
+    function latest(symbol) {
+      const data = state.series[symbol] || [];
+      return data[data.length - 1] || { close: quoteSnapshots[symbol].price };
+    }
+
+    function returnOver(data, days) {
+      if (!data || data.length < days + 2) return null;
+      const last = data[data.length - 1].close;
+      const prior = data[data.length - 1 - days].close;
+      return last / prior - 1;
+    }
+
+    function trendLabel(symbol) {
+      const point = latest(symbol);
+      if (!point.sma100 || !point.sma200) return "Building";
+      if (point.close > point.sma100 && point.sma100 > point.sma200) return "Bullish";
+      if (point.close > point.sma200) return "Constructive";
+      if (point.close < point.sma200) return "Defensive";
+      return "Mixed";
+    }
+
+    function bandPosition(symbol) {
+      const point = latest(symbol);
+      if (!point.bbUpper || !point.bbLower) return 0.5;
+      return clamp((point.close - point.bbLower) / (point.bbUpper - point.bbLower), 0, 1);
+    }
+
+    function prediction(symbol) {
+      const data = state.series[symbol] || [];
+      const point = latest(symbol);
+      const threeMonth = returnOver(data, 63) || 0;
+      const sixMonth = returnOver(data, 126) || 0;
+      const above200 = point.sma200 ? point.close / point.sma200 - 1 : 0;
+      const band = bandPosition(symbol);
+      const momentum = threeMonth * 0.45 + sixMonth * 0.25 + above200 * 0.3;
+      const pullbackRisk = band > 0.82 ? "elevated" : band < 0.25 ? "moderating" : "balanced";
+      const baseReturn = clamp(momentum * 0.55, -0.08, 0.12);
+      const target = point.close * (1 + baseReturn);
+      const bull = point.close * (1 + clamp(baseReturn + 0.08, 0.03, 0.2));
+      const bear = point.close * (1 + clamp(baseReturn - 0.1, -0.2, -0.03));
+
+      return {
+        baseReturn,
+        target,
+        bull,
+        bear,
+        pullbackRisk,
+        note: band > 0.82
+          ? "Price is near the upper band, so upside can continue but the reward/risk is more sensitive to profit-taking."
+          : band < 0.25
+            ? "Price is low in its band range, so the setup depends on whether support holds near longer moving averages."
+            : "Price sits in a middle band position, making trend confirmation more important than a single breakout day.",
+      };
+    }
+
+    function metricCards() {
+      const symbols = Object.keys(quoteSnapshots);
+      return symbols.map((symbol) => {
+        const data = state.series[symbol] || [];
+        const point = latest(symbol);
+        const snap = quoteSnapshots[symbol];
+        const oneMonth = returnOver(data, 21);
+        const threeMonth = returnOver(data, 63);
+        const trend = trendLabel(symbol);
+        return html`
+          <button
+            class="text-left rounded-lg border border-line bg-white p-4 shadow-soft transition hover:-translate-y-0.5 hover:border-ink focus:outline-none focus:ring-2 focus:ring-sea"
+            @click=${() => selectSymbol(symbol)}
+          >
+            <div class="flex items-start justify-between gap-3">
+              <div>
+                <p class="text-sm font-semibold text-gray-500">${symbol}</p>
+                <h2 class="mt-1 text-lg font-semibold text-ink">${snap.name}</h2>
+              </div>
+              <span class="rounded-md bg-gray-100 px-2 py-1 text-xs font-semibold text-gray-700">${trend}</span>
+            </div>
+            <div class="mt-4 flex items-end justify-between gap-3">
+              <p class="text-3xl font-semibold tracking-normal">${fmtUsd.format(point.close || snap.price)}</p>
+              <div class="text-right text-sm">
+                <p class=${oneMonth >= 0 ? "font-semibold text-leaf" : "font-semibold text-ember"}>${oneMonth === null ? "n/a" : fmtPct.format(oneMonth)} 1M</p>
+                <p class=${threeMonth >= 0 ? "font-semibold text-leaf" : "font-semibold text-ember"}>${threeMonth === null ? "n/a" : fmtPct.format(threeMonth)} 3M</p>
+              </div>
+            </div>
+            <p class="mt-3 text-sm leading-6 text-gray-600">${snap.brief}</p>
+          </button>
+        `;
+      });
+    }
+
+    function insightCards() {
+      const selected = state.selected;
+      const pred = prediction(selected);
+      const band = bandPosition(selected);
+      const data = state.series[selected] || [];
+      const p = latest(selected);
+      const breadth = Object.keys(quoteSnapshots).filter((symbol) => {
+        const point = latest(symbol);
+        return point.sma200 && point.close > point.sma200;
+      }).length;
+      const breadthText = breadth >= 3 ? "Broad ETF confirmation" : breadth === 2 ? "Partial confirmation" : "Narrow confirmation";
+      const bandText = band > 0.8 ? "near upper Bollinger Band" : band < 0.25 ? "near lower Bollinger Band" : "inside the middle of its Bollinger range";
+      const maText = p.sma200
+        ? `${selected} is ${fmtPct.format(p.close / p.sma200 - 1)} versus its 200d SMA`
+        : `${selected} is loading long moving-average context`;
+
+      return html`
+        <section class="grid gap-4 lg:grid-cols-3">
+          <div class="rounded-lg border border-line bg-white p-5 shadow-soft">
+            <p class="text-sm font-semibold uppercase tracking-normal text-sea">Market Read</p>
+            <h3 class="mt-2 text-xl font-semibold">${breadthText}</h3>
+            <p class="mt-3 text-sm leading-6 text-gray-600">QQQ remains the growth engine, SPY shows cap-weighted market direction, and SCHD tests whether dividend/value leadership is broadening. Current dashboard breadth: ${breadth}/3 ETFs above their 200d SMA.</p>
+          </div>
+          <div class="rounded-lg border border-line bg-white p-5 shadow-soft">
+            <p class="text-sm font-semibold uppercase tracking-normal text-plum">Technical Setup</p>
+            <h3 class="mt-2 text-xl font-semibold">${selected} ${bandText}</h3>
+            <p class="mt-3 text-sm leading-6 text-gray-600">${maText}. Recent 3-month return is ${fmtPct.format(returnOver(data, 63) || 0)}, so the next signal is whether price can hold above the 100d and 200d trend filters.</p>
+          </div>
+          <div class="rounded-lg border border-line bg-white p-5 shadow-soft">
+            <p class="text-sm font-semibold uppercase tracking-normal text-ember">Risk Balance</p>
+            <h3 class="mt-2 text-xl font-semibold">Pullback risk: ${pred.pullbackRisk}</h3>
+            <p class="mt-3 text-sm leading-6 text-gray-600">${pred.note} Macro catalysts remain rates, inflation data, geopolitical oil risk, and whether AI-led earnings keep beating expectations.</p>
+          </div>
+        </section>
+      `;
+    }
+
+    function sectorSection() {
+      return html`
+        <section class="rounded-lg border border-line bg-white shadow-soft">
+          <div class="border-b border-line p-5">
+            <p class="text-sm font-semibold uppercase tracking-normal text-sea">Insights</p>
+            <h2 class="mt-1 text-2xl font-semibold">Market And Sector Dashboard</h2>
+          </div>
+          <div class="grid gap-0 md:grid-cols-2 xl:grid-cols-3">
+            ${sectorViews.map((item) => html`
+              <article class="border-b border-line p-5 md:border-r xl:[&:nth-child(3n)]:border-r-0">
+                <div class="flex items-start justify-between gap-3">
+                  <div>
+                    <h3 class="text-lg font-semibold">${item.sector}</h3>
+                    <p class="mt-1 text-sm text-gray-500">${item.etf}</p>
+                  </div>
+                  <span class="rounded-md bg-gray-100 px-2 py-1 text-xs font-semibold text-gray-700">${item.stance}</span>
+                </div>
+                <p class="mt-3 text-sm leading-6 text-gray-600">${item.text}</p>
+              </article>
+            `)}
+          </div>
+        </section>
+      `;
+    }
+
+    function predictionSection() {
+      const symbol = state.selected;
+      const pred = prediction(symbol);
+      return html`
+        <section class="rounded-lg border border-line bg-white p-5 shadow-soft">
+          <div class="flex flex-col gap-4 md:flex-row md:items-start md:justify-between">
+            <div>
+              <p class="text-sm font-semibold uppercase tracking-normal text-plum">Prediction</p>
+              <h2 class="mt-1 text-2xl font-semibold">${symbol} Next Few Months</h2>
+              <p class="mt-3 max-w-3xl text-sm leading-6 text-gray-600">This is a technical scenario model, not financial advice. It blends 3-month momentum, 6-month momentum, 200d SMA distance, and Bollinger Band position, then tempers upside when price is stretched.</p>
+            </div>
+            <div class="rounded-lg bg-ink px-4 py-3 text-white">
+              <p class="text-xs font-semibold uppercase tracking-normal text-gray-300">Base Case Target</p>
+              <p class="mt-1 text-3xl font-semibold">${fmtUsd.format(pred.target)}</p>
+            </div>
+          </div>
+          <div class="mt-5 grid gap-4 md:grid-cols-3">
+            <div class="rounded-lg border border-line bg-[#f8fbfa] p-4">
+              <p class="text-sm font-semibold text-leaf">Bull Case</p>
+              <p class="mt-2 text-2xl font-semibold">${fmtUsd.format(pred.bull)}</p>
+              <p class="mt-2 text-sm leading-6 text-gray-600">Trend holds, breadth improves, and earnings/rates continue to support risk assets.</p>
+            </div>
+            <div class="rounded-lg border border-line bg-[#fbfaf6] p-4">
+              <p class="text-sm font-semibold text-sea">Base Case</p>
+              <p class="mt-2 text-2xl font-semibold">${fmtPct.format(pred.baseReturn)}</p>
+              <p class="mt-2 text-sm leading-6 text-gray-600">Momentum persists but slows as price works through moving-average and band resistance.</p>
+            </div>
+            <div class="rounded-lg border border-line bg-[#fff7f1] p-4">
+              <p class="text-sm font-semibold text-ember">Bear Case</p>
+              <p class="mt-2 text-2xl font-semibold">${fmtUsd.format(pred.bear)}</p>
+              <p class="mt-2 text-sm leading-6 text-gray-600">Rates rise, growth leadership unwinds, or geopolitical/oil shocks pressure multiples.</p>
+            </div>
+          </div>
+        </section>
+      `;
+    }
+
+    function chartSection() {
+      const symbol = state.selected;
+      const point = latest(symbol);
+      const snap = quoteSnapshots[symbol];
+      const dayRange = snap.high - snap.low;
+      const dayPos = clamp((snap.price - snap.low) / dayRange, 0, 1);
+      return html`
+        <section class="rounded-lg border border-line bg-white shadow-soft">
+          <div class="flex flex-col gap-4 border-b border-line p-5 lg:flex-row lg:items-start lg:justify-between">
+            <div>
+              <p class="text-sm font-semibold uppercase tracking-normal text-gray-500">2-Year Technical Chart</p>
+              <h2 class="mt-1 text-3xl font-semibold">${symbol} ${fmtUsd.format(point.close || snap.price)}</h2>
+              <p class="mt-2 text-sm leading-6 text-gray-600">Close, Bollinger Bands, 100d SMA, and 200d SMA. Data mode: ${state.dataMode}.</p>
+            </div>
+            <div class="grid min-w-72 gap-3 sm:grid-cols-3">
+              <div class="rounded-lg bg-gray-50 p-3">
+                <p class="text-xs font-semibold text-gray-500">Snapshot Low</p>
+                <p class="mt-1 text-lg font-semibold">${fmtUsd.format(snap.low)}</p>
+              </div>
+              <div class="rounded-lg bg-gray-50 p-3">
+                <p class="text-xs font-semibold text-gray-500">Snapshot High</p>
+                <p class="mt-1 text-lg font-semibold">${fmtUsd.format(snap.high)}</p>
+              </div>
+              <div class="rounded-lg bg-gray-50 p-3">
+                <p class="text-xs font-semibold text-gray-500">Day Position</p>
+                <p class="mt-1 text-lg font-semibold">${fmtPct.format(dayPos)}</p>
+              </div>
+            </div>
+          </div>
+          <div class="chart-shell p-4">
+            <canvas id="main-chart" aria-label="${symbol} two year chart"></canvas>
+          </div>
+        </section>
+      `;
+    }
+
+    function sourceFooter() {
+      return html`
+        <footer class="pb-8 text-sm leading-6 text-gray-600">
+          <p>Latest quote snapshots were gathered by web search on June 13, 2026. Historical series attempts to load from Yahoo Finance chart data in-browser; fallback chart data is deterministic and anchored to the searched quote snapshots when live data is unavailable.</p>
+          <p class="mt-2">
+            Sources:
+            <a class="font-semibold text-sea underline" href="https://robinhood.com/us/en/stocks/QQQ/" target="_blank" rel="noreferrer">QQQ quote</a>,
+            <a class="font-semibold text-sea underline" href="https://robinhood.com/us/en/stocks/SPY/" target="_blank" rel="noreferrer">SPY quote</a>,
+            <a class="font-semibold text-sea underline" href="https://robinhood.com/us/en/stocks/SCHD/" target="_blank" rel="noreferrer">SCHD quote</a>,
+            <a class="font-semibold text-sea underline" href="https://query1.finance.yahoo.com/v8/finance/chart/QQQ?range=2y&interval=1d" target="_blank" rel="noreferrer">Yahoo chart endpoint</a>.
+          </p>
+        </footer>
+      `;
+    }
+
+    function appTemplate() {
+      return html`
+        <div class="mx-auto flex w-full max-w-7xl flex-col gap-5 px-4 py-5 sm:px-6 lg:px-8">
+          <header class="flex flex-col gap-4 border-b border-line pb-5 lg:flex-row lg:items-end lg:justify-between">
+            <div>
+              <p class="text-sm font-semibold uppercase tracking-normal text-sea">Live Technical Monitor</p>
+              <h1 class="mt-2 text-4xl font-semibold tracking-normal sm:text-5xl">ETF Market Dashboard</h1>
+              <p class="mt-3 max-w-3xl text-base leading-7 text-gray-600">QQQ, SPY, and SCHD with Bollinger Bands, 100d SMA, 200d SMA, sector context, and near-term scenario analysis.</p>
+            </div>
+            <div class="flex flex-wrap items-center gap-3">
+              <span class="rounded-lg border border-line bg-white px-3 py-2 text-sm font-semibold text-gray-700">${state.loading ? "Loading market data" : `Updated ${state.updatedAt.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}`}</span>
+              <button class="inline-flex items-center gap-2 rounded-lg bg-ink px-4 py-2 text-sm font-semibold text-white shadow-soft transition hover:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-sea" @click=${loadData}>
+                <i data-lucide="refresh-cw" class="h-4 w-4"></i>
+                Refresh
+              </button>
+            </div>
+          </header>
+
+          ${state.error ? html`<div class="rounded-lg border border-amber-300 bg-amber-50 p-4 text-sm text-amber-900">${state.error}</div>` : ""}
+
+          <section class="grid metric-grid gap-4">${metricCards()}</section>
+          ${chartSection()}
+          ${insightCards()}
+          ${sectorSection()}
+          ${predictionSection()}
+          ${sourceFooter()}
+        </div>
+      `;
+    }
+
+    function selectSymbol(symbol) {
+      state.selected = symbol;
+      draw();
+    }
+
+    function datasetsFor(symbol) {
+      const rows = state.series[symbol] || [];
+      const colors = colorMap[symbol];
+      const points = (key) => rows.map((row) => ({ x: row.date, y: row[key] }));
+      return [
+        {
+          label: `${symbol} Close`,
+          data: points("close"),
+          borderColor: colors.close,
+          backgroundColor: colors.close,
+          borderWidth: 2.5,
+          pointRadius: 0,
+          tension: 0.12,
+        },
+        {
+          label: "Bollinger Upper",
+          data: points("bbUpper"),
+          borderColor: colors.upper,
+          backgroundColor: "transparent",
+          borderWidth: 1,
+          pointRadius: 0,
+          borderDash: [5, 5],
+          spanGaps: true,
+        },
+        {
+          label: "Bollinger Lower",
+          data: points("bbLower"),
+          borderColor: colors.lower,
+          backgroundColor: colors.fill,
+          borderWidth: 1,
+          pointRadius: 0,
+          borderDash: [5, 5],
+          fill: "-1",
+          spanGaps: true,
+        },
+        {
+          label: "100d SMA",
+          data: points("sma100"),
+          borderColor: colors.sma100,
+          borderWidth: 1.8,
+          pointRadius: 0,
+          spanGaps: true,
+        },
+        {
+          label: "200d SMA",
+          data: points("sma200"),
+          borderColor: colors.sma200,
+          borderWidth: 1.8,
+          pointRadius: 0,
+          spanGaps: true,
+        },
+      ];
+    }
+
+    function renderChart() {
+      const canvas = document.getElementById("main-chart");
+      if (!canvas) return;
+      const symbol = state.selected;
+      if (state.charts.main) state.charts.main.destroy();
+      state.charts.main = new Chart(canvas, {
+        type: "line",
+        data: { datasets: datasetsFor(symbol) },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          interaction: { mode: "index", intersect: false },
+          plugins: {
+            legend: {
+              position: "bottom",
+              labels: { usePointStyle: true, boxWidth: 8, boxHeight: 8, font: { size: 12 } },
+            },
+            tooltip: {
+              callbacks: {
+                label: (ctx) => `${ctx.dataset.label}: ${fmtUsd.format(ctx.parsed.y)}`,
+              },
+            },
+          },
+          scales: {
+            x: {
+              type: "time",
+              time: { unit: "month" },
+              grid: { color: "rgba(17, 24, 39, 0.06)" },
+              ticks: { maxRotation: 0, font: { size: 11 } },
+            },
+            y: {
+              position: "right",
+              grid: { color: "rgba(17, 24, 39, 0.08)" },
+              ticks: { callback: (value) => `$${value}` },
+            },
+          },
+        },
+      });
+    }
+
+    function draw() {
+      render(appTemplate(), document.getElementById("app"));
+      requestAnimationFrame(() => {
+        renderChart();
+        if (window.lucide) window.lucide.createIcons();
+      });
+    }
+
+    async function loadData() {
+      state.loading = true;
+      state.error = "";
+      state.dataMode = "Loading";
+      draw();
+      const symbols = Object.keys(quoteSnapshots);
+      const results = await Promise.all(symbols.map(async (symbol) => {
+        try {
+          const rows = await fetchYahooSeries(symbol);
+          return { symbol, rows, live: true };
+        } catch (error) {
+          return { symbol, rows: fallbackSeries(symbol), live: false };
+        }
+      }));
+
+      const liveCount = results.filter((result) => result.live).length;
+      results.forEach(({ symbol, rows }) => {
+        state.series[symbol] = enrichSeries(rows);
+      });
+      state.loading = false;
+      state.updatedAt = new Date();
+      state.dataMode = liveCount === symbols.length ? "Yahoo live" : liveCount > 0 ? `Mixed live/fallback (${liveCount}/${symbols.length} live)` : "Fallback model";
+      if (liveCount < symbols.length) {
+        state.error = "Some historical data endpoints were blocked, so the affected charts use fallback series anchored to the latest searched quotes.";
+      }
+      draw();
+    }
+
+    loadData();
+  </script>
+</body>
+</html>

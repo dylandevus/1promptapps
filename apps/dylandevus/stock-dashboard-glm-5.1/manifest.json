@@ -1,7 +1,7 @@
 {
   "manifestVersion": "1.0",
   "name": "Stock Market Dashboard",
-  "slug": "glm-stock-dashboard",
+  "slug": "stock-dashboard-glm-5.1",
   "tagline": "Interactive QQQ & SPY dashboard with technical indicators — Bollinger Bands, RSI, and SMA — built in one prompt.",
   "description": "A dark-themed stock market dashboard for QQQ and SPY ETFs. Includes interactive Chart.js price charts with SMA (20/100/200-day), Bollinger Bands, and RSI indicators. Shows metric cards for current price, day/week/month/YTD performance, 52-week high/low, and annualised volatility. Tab-based navigation between ETFs, time-range filtering (3M/6M/1Y/ALL), and a glass-morphism UI. Data is hardcoded — no live API calls required.",
   "category": "finance",

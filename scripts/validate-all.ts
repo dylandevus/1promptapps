@@ -92,7 +92,7 @@ function validateManifest(appDir: string, r: Result) {
   // Identity
   if (RESERVED_USERNAMES.has(username)) err(r, `username "${username}" is reserved`)
   if (!/^[a-z0-9][a-z0-9_-]{2,31}$/.test(username)) warn(r, `username "${username}" should be 3–32 lowercase chars`)
-  if (!/^[a-z0-9][a-z0-9-]{2,79}$/.test(slug)) err(r, `slug "${slug}" must be 3–80 lowercase chars/hyphens`)
+  if (!/^[a-z0-9][a-z0-9.\-]{2,79}$/.test(slug)) err(r, `slug "${slug}" must be 3–80 lowercase chars, hyphens, or dots`)
 
   // Category / builder
   if (!m.category) err(r, 'manifest: missing category')
