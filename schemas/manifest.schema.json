@@ -44,6 +44,20 @@
           "enum": ["v0", "lovable", "bolt", "replit", "cursor", "claude", "chatgpt", "windsurf", "glm", "other"]
         },
         "followUpCount": { "type": "integer", "minimum": 0 },
+        "generationDurationSeconds": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "How long the model took to generate the response (inference time), in seconds."
+        },
+        "toolsUsed": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "enum": ["web-search", "code-interpreter", "image-generation", "file-upload", "computer-use", "other"]
+          },
+          "uniqueItems": true,
+          "description": "AI tools invoked by the model during generation (beyond plain text generation)."
+        },
         "transcriptUrl": { "type": "string", "format": "uri" }
       },
       "additionalProperties": false
