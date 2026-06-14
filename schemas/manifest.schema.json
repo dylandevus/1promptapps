@@ -39,6 +39,10 @@
       "properties": {
         "text": { "type": "string", "minLength": 10, "maxLength": 8000 },
         "model": { "type": "string" },
+        "provider": {
+          "type": "string",
+          "description": "API provider used to access the model (e.g. DeepInfra, OpenRouter, Together AI, Anthropic, OpenAI, Google)."
+        },
         "builder": {
           "type": "string",
           "enum": ["v0", "lovable", "bolt", "replit", "cursor", "claude", "chatgpt", "windsurf", "glm", "other"]
