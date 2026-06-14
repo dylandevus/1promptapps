@@ -23,7 +23,7 @@ export default function HomePage() {
             1PromptApps
           </Link>
           <a
-            href="https://github.com/dylandevus/1promptapps/blob/main/CONTRIBUTING.md"
+            href="https://github.com/ducsyn/1promptapps/blob/main/CONTRIBUTING.md"
             target="_blank"
             rel="noopener noreferrer"
             className="text-sm px-3 py-1.5 rounded-md font-medium transition-colors"
@@ -63,7 +63,7 @@ export default function HomePage() {
           <div className="flex gap-4 text-sm" style={{ color: 'var(--muted)' }}>
             <a href="/about" className="hover:underline">About</a>
             <a
-              href="https://github.com/dylandevus/1promptapps"
+              href="https://github.com/ducsyn/1promptapps"
               target="_blank"
               rel="noopener noreferrer"
               className="hover:underline"
@@ -71,7 +71,7 @@ export default function HomePage() {
               GitHub
             </a>
             <a
-              href="https://github.com/dylandevus/1promptapps/blob/main/CONTRIBUTING.md"
+              href="https://github.com/ducsyn/1promptapps/blob/main/CONTRIBUTING.md"
               target="_blank"
               rel="noopener noreferrer"
               className="hover:underline"
