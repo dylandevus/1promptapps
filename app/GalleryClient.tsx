@@ -16,11 +16,6 @@ interface Props {
   builtWithLabels: Record<string, string>
 }
 
-const SORT_OPTIONS = [
-  { value: 'newest', label: 'Newest' },
-  { value: 'fastest', label: 'Fastest build' },
-  { value: 'az', label: 'A → Z' },
-]
 
 function Badge({ label, color }: { label: string; color?: string }) {
   return (
@@ -107,8 +102,6 @@ export function GalleryClient({ apps, categories, builtWithOptions, models, cate
   const [category, setCategory] = useState(searchParams.get('category') ?? '')
   const [builtWith, setBuiltWith] = useState(searchParams.get('builtWith') ?? '')
   const [model, setModel] = useState(searchParams.get('model') ?? '')
-  const [editLevel, setEditLevel] = useState(searchParams.get('edit') ?? '')
-  const [sort, setSort] = useState(searchParams.get('sort') ?? 'newest')
   const [search, setSearch] = useState(searchParams.get('q') ?? '')
 
   const updateParam = useCallback((key: string, value: string) => {
@@ -123,7 +116,6 @@ export function GalleryClient({ apps, categories, builtWithOptions, models, cate
     if (category && app.category !== category) return false
     if (builtWith && app.builtWith !== builtWith) return false
     if (model && app.model !== model) return false
-    if (editLevel && app.manualEditLevel !== editLevel) return false
     if (search) {
       const q = search.toLowerCase()
       return (
@@ -138,16 +130,7 @@ export function GalleryClient({ apps, categories, builtWithOptions, models, cate
     return true
   })
 
-  // Sort
-  if (sort === 'fastest') {
-    filtered = [...filtered].sort((a, b) =>
-      (a.timeToFirstVersionMinutes ?? 9999) - (b.timeToFirstVersionMinutes ?? 9999)
-    )
-  } else if (sort === 'az') {
-    filtered = [...filtered].sort((a, b) => a.name.localeCompare(b.name))
-  }
-
-  const hasFilters = !!(category || builtWith || model || editLevel || search)
+  const hasFilters = !!(category || builtWith || model || search)
 
   return (
     <div className="max-w-7xl mx-auto px-6 pb-16">
@@ -204,34 +187,11 @@ export function GalleryClient({ apps, categories, builtWithOptions, models, cate
           {models.map(m => <option key={m} value={m}>{m}</option>)}
         </select>
 
-        {/* Edit level */}
-        <select
-          value={editLevel}
-          onChange={e => { setEditLevel(e.target.value); updateParam('edit', e.target.value) }}
-          className="h-9 px-3 text-sm rounded-lg outline-none"
-          style={{ background: 'var(--surface)', border: '1px solid var(--border)', color: 'var(--ink)' }}
-        >
-          <option value="">Any edit level</option>
-          <option value="none-claimed">No edits claimed</option>
-          <option value="minor">Minor edits</option>
-          <option value="moderate">Moderate edits</option>
-          <option value="significant">Significant edits</option>
-        </select>
-
-        {/* Sort */}
-        <select
-          value={sort}
-          onChange={e => { setSort(e.target.value); updateParam('sort', e.target.value) }}
-          className="h-9 px-3 text-sm rounded-lg outline-none"
-          style={{ background: 'var(--surface)', border: '1px solid var(--border)', color: 'var(--ink)' }}
-        >
-          {SORT_OPTIONS.map(o => <option key={o.value} value={o.value}>{o.label}</option>)}
-        </select>
 
         {hasFilters && (
           <button
             onClick={() => {
-              setCategory(''); setBuiltWith(''); setModel(''); setEditLevel(''); setSearch(''); setSort('newest')
+              setCategory(''); setBuiltWith(''); setModel(''); setSearch('')
               router.replace(pathname, { scroll: false })
             }}
             className="h-9 px-3 text-sm rounded-lg transition-colors"
@@ -252,7 +212,7 @@ export function GalleryClient({ apps, categories, builtWithOptions, models, cate
           <p className="text-lg mb-2">No apps match your filters.</p>
           <button
             onClick={() => {
-              setCategory(''); setBuiltWith(''); setModel(''); setEditLevel(''); setSearch('')
+              setCategory(''); setBuiltWith(''); setModel(''); setSearch('')
               router.replace(pathname, { scroll: false })
             }}
             className="text-sm underline"
