@@ -37,7 +37,12 @@ Open a PR to this repo adding your app folder.
    permissions.permissionToFeature: true
    permissions.rightsAttested: true
 
-5. Add prompt.md — paste your exact original prompt
+5. Add prompt.md — paste your exact original prompt.
+   Append this to the end of your prompt for consistent, comparable outputs:
+
+   > Output to a single HTML file with a light theme that works on both desktop
+   > and mobile screens (responsive). Measure the total time it takes you to
+   > complete this app.
 
 6. Add screenshots/:
    thumbnail.png   1280×800 (16:10), ≤ 2 MB
