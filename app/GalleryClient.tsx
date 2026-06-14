@@ -70,6 +70,12 @@ function AppCard({ app, categoryLabels, builtWithLabels }: {
             label={builtWithLabels[app.builtWith] ?? app.builtWith}
             color="bg-violet-50 text-violet-700 ring-violet-600/20"
           />
+          {app.model && (
+            <Badge
+              label={app.model}
+              color="bg-stone-50 text-stone-600 ring-stone-500/20"
+            />
+          )}
           <Badge
             label={EDIT_LEVEL_LABELS[app.manualEditLevel] ?? app.manualEditLevel}
             color={EDIT_LEVEL_COLORS[app.manualEditLevel]}
@@ -81,8 +87,7 @@ function AppCard({ app, categoryLabels, builtWithLabels }: {
           {app.timeToFirstVersionMinutes != null && (
             <span>⏱ {app.timeToFirstVersionMinutes}m</span>
           )}
-          {app.followUpCount === 0 && <span>1 prompt</span>}
-          {app.followUpCount > 0 && <span>+{app.followUpCount} follow-ups</span>}
+          {app.provider && <span>{app.provider}</span>}
           {app.sourceAvailable && <span>‹/› source</span>}
         </div>
       </div>

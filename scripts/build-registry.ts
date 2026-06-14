@@ -90,6 +90,7 @@ function buildEntry(manifestPath: string): AppEntry {
     tags: manifest.tags ?? [],
     builtWith: manifest.prompt.builtWith,
     model: manifest.prompt.model ?? '',
+    provider: manifest.prompt.provider ?? '',
     timeToFirstVersionMinutes: manifest.outcome.timeToFirstVersionMinutes ?? null,
     reproducibility: manifest.outcome.reproducibility,
     manualEditLevel: manifest.manualEditLevel,

@@ -8,8 +8,9 @@ export interface AppManifest {
   tags?: string[]
   prompt: {
     text: string
-    model?: string
     builtWith: string
+    model?: string
+    provider?: string
     followUpCount: number
     transcriptUrl?: string
   }
@@ -59,6 +60,7 @@ export interface AppEntry {
   tags: string[]
   builtWith: string
   model: string
+  provider: string
   timeToFirstVersionMinutes: number | null
   reproducibility: string
   manualEditLevel: string
