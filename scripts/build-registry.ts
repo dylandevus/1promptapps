@@ -108,7 +108,7 @@ function buildEntry(manifestPath: string): AppEntry {
     manualEdits: manifest.outcome.manualEdits ?? [],
     authorName: manifest.author.name,
     authorHandle: manifest.author.handle,
-    publishedAt: manifest.publishedAt ?? new Date().toISOString().split('T')[0],
+    publishedAt: manifest.publishedAt ?? new Date().toISOString(),
     externalApiDomains: manifest.externalApiDomains ?? [],
     followUpCount: manifest.prompt.followUpCount,
     followUpPrompts: manifest.prompt.followUpPrompts ?? [],
@@ -184,7 +184,7 @@ function main() {
     process.exit(1)
   }
 
-  // Sort by publishedAt desc
+  // Sort newest-first by publishedAt (ISO timestamp)
   entries.sort((a, b) => b.publishedAt.localeCompare(a.publishedAt))
 
   fs.writeFileSync(path.join(GEN_DIR, 'apps.json'), JSON.stringify(entries, null, 2))
