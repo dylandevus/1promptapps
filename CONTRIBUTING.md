@@ -7,6 +7,11 @@ Open a PR to this repo adding your app folder.
 - Static HTML/CSS/JS — runs in the browser, no server.
 - Built from one AI prompt. Follow-up feature prompts are fine for fixing bugs — disclose them.
 - Use CDN-based libs: lit-html, Tailwind, Chart.js, Alpine.js, htmx, Lucide, etc. Avoid build-step frameworks (React, Vue, Svelte) — they don't work in a single HTML file.
+- Run in **yolo mode** so generation time is uninterrupted by approval prompts — the `generationDurationSeconds` you record should reflect pure model time:
+  ```
+  claude --dangerously-skip-permissions   # Claude Code
+  opencode --yolo                         # OpenCode
+  ```
 - You have the right to share it and grant permission to feature it.
 
 ## Steps
