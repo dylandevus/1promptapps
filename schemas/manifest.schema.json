@@ -68,6 +68,11 @@
           "minimum": 0,
           "description": "Model inference time in seconds (how long the AI took to generate the response)."
         },
+        "estimatedCostUSD": {
+          "type": ["number", "null"],
+          "minimum": 0,
+          "description": "Estimated API cost in USD for the generation run. null = unknown."
+        },
         "toolsUsed": {
           "type": "array",
           "items": {

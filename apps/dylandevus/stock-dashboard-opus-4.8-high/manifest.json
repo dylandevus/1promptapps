@@ -16,6 +16,7 @@
     "followUpCount": 0,
     "followUpPrompts": [],
     "errorFixes": 0,
+    "estimatedCostUSD": null,
     "generationDurationSeconds": 410,
     "toolsUsed": ["web-search"]
   },

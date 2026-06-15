@@ -10,7 +10,7 @@ Open a PR to this repo adding your app folder.
 - Run in **yolo mode** so generation time is uninterrupted by approval prompts — the `generationDurationSeconds` you record should reflect pure model time:
   ```
   claude --dangerously-skip-permissions   # Claude Code
-  opencode --yolo                         # OpenCode
+  codex --yolo                            # Codex
   ```
 - You have the right to share it and grant permission to feature it.
 
@@ -46,7 +46,7 @@ Open a PR to this repo adding your app folder.
 5. Add prompt.md — paste your exact original prompt.
    Append this to the end of your prompt for consistent, comparable outputs:
 
-   > Output to a single HTML file with a light theme that works on both desktop and mobile screens (responsive). Measure the total time it takes you to complete this app.
+   > Output with a light theme that works on both desktop and mobile screens (responsive). Measure the total time it takes you to generate this app completely end-to-end.
 
 6. Add screenshots/:
    thumbnail.png   1280×800 (16:10), ≤ 2 MB

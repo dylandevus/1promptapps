@@ -13,6 +13,7 @@ export interface AppManifest {
     provider?: string
     effort?: string
     generationDurationSeconds?: number
+    estimatedCostUSD?: number | null
     followUpCount: number
     followUpPrompts?: string[]
     errorFixes?: number

@@ -1,6 +1,6 @@
 {
   "manifestVersion": "1.0",
-  "name": "ETF Market Dashboard",
+  "name": "Stock Market Dashboard",
   "slug": "stock-dashboard-gpt-5.5-high",
   "tagline": "QQQ, SPY & SCHD with Bollinger Bands, 100d/200d SMA, sector insights, and near-term scenario analysis.",
   "description": "A light-themed ETF dashboard for QQQ, SPY, and SCHD. Shows 2-year Chart.js price charts with Bollinger Bands, 100d and 200d SMA overlays, per-ETF metric cards with 1M/3M performance, a market Insights section, and a Prediction section for near-term scenarios. Uses lit-html for reactive rendering and Lucide icons. Data is hardcoded — no live API calls required.",
@@ -15,6 +15,7 @@
     "builtWith": "Codex",
     "followUpCount": 0,
     "errorFixes": 0,
+    "estimatedCostUSD": null,
     "generationDurationSeconds": 207,
     "toolsUsed": ["web-search"]
   },

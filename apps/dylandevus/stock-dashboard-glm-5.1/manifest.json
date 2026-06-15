@@ -15,6 +15,7 @@
     "builtWith": "OpenCode",
     "followUpCount": 0,
     "errorFixes": 1,
+    "estimatedCostUSD": null,
     "generationDurationSeconds": 102,
     "toolsUsed": ["web-search"]
   },
