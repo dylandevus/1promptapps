@@ -3,9 +3,12 @@ import Link from 'next/link'
 import type { Metadata } from 'next'
 import { getApps, getApp } from '@/lib/registry'
 import { formatDuration } from '@/lib/format'
-import { CATEGORY_LABELS, BUILT_WITH_LABELS, EDIT_LEVEL_LABELS, EDIT_LEVEL_COLORS, REPRO_COLORS } from '@/lib/constants'
+import { CATEGORY_LABELS, BUILT_WITH_LABELS, EDIT_LEVEL_LABELS, EDIT_LEVEL_COLORS, REPRO_COLORS, ISSUE_LABELS, ISSUE_COLORS, USABLE_COLOR } from '@/lib/constants'
 import { DemoFrame } from './DemoFrame'
 import { CopyButton } from './CopyButton'
+import { Comments } from './Comments'
+
+const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://1promptapps.com'
 
 interface Params { username: string; slug: string }
 
@@ -65,6 +68,13 @@ export default async function AppPage({ params }: { params: Promise<Params> }) {
 
           {/* Actions */}
           <div className="ml-auto flex shrink-0 gap-2">
+            <a
+              href="#comments"
+              className="h-7 px-3 text-xs rounded-md font-medium flex items-center"
+              style={{ border: '1px solid var(--border)', color: 'var(--ink)', background: 'var(--surface)' }}
+            >
+              💬 Comments
+            </a>
             <a
               href={app.demoUrl}
               target="_blank"
@@ -147,6 +157,18 @@ export default async function AppPage({ params }: { params: Promise<Params> }) {
               label={app.reproducibility}
               color={REPRO_COLORS[app.reproducibility]}
             />
+          </div>
+          <div>
+            <div className="text-xs font-medium mb-0.5" style={{ color: 'var(--muted)' }}>Usability</div>
+            <div className="flex flex-wrap gap-1">
+              {app.issues.length === 0 ? (
+                <Badge label="Usable" color={USABLE_COLOR} />
+              ) : (
+                app.issues.map(issue => (
+                  <Badge key={issue} label={ISSUE_LABELS[issue] ?? issue} color={ISSUE_COLORS[issue]} />
+                ))
+              )}
+            </div>
           </div>
           <div>
             <div className="text-xs font-medium mb-0.5" style={{ color: 'var(--muted)' }}>Source</div>
@@ -249,6 +271,19 @@ export default async function AppPage({ params }: { params: Promise<Params> }) {
             </div>
           </section>
         )}
+
+        {/* Comments */}
+        <section id="comments" className="mb-8 scroll-mt-16">
+          <h2 className="text-sm font-semibold uppercase tracking-wide mb-3" style={{ color: 'var(--muted)' }}>
+            💬 Comments
+          </h2>
+          <div
+            className="rounded-xl p-5"
+            style={{ background: 'var(--surface)', border: '1px solid var(--border)' }}
+          >
+            <Comments threadUrl={`${SITE_URL}/${app.username}/${app.slug}`} />
+          </div>
+        </section>
 
         {/* Back */}
         <div className="pt-4" style={{ borderTop: '1px solid var(--border)' }}>

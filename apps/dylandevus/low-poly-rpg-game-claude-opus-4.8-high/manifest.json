@@ -1,0 +1,90 @@
+{
+  "manifestVersion": "1.0",
+  "name": "Low Poly Village RPG Game",
+  "slug": "low-poly-rpg-game-claude-opus-4.8-high",
+  "tagline": "Isometric 2.5D pixel RPG: a Three.js world textured with Kenney CC0 sprites — fight monsters, collect gold & loot.",
+  "description": "A self-contained isometric 2.5D action-RPG in a single HTML file. A Three.js orthographic 3D world is textured with Kenney CC0 pixel art (Tiny Town + Tiny Dungeon sheets): ground and buildings as hand-painted textures, with billboarded sprites for the hero, villagers, monsters, trees, and props. Explore the village of Willowmere with a main character that has HP/MP bars and gold, manage a 6-slot inventory, talk to NPC villagers, and battle monsters (slimes, spiders, goblins, orcs, imps, ghosts) with melee and magic — including damage numbers and loot drops. Walk/run/jump with W/A/S/D + Shift + Space, attack with click or J, cast magic with K, interact with E, zoom with the wheel. Light theme, responsive. Runs offline; the only external dependency is Three.js from a CDN.",
+  "category": "games",
+  "theme": "light",
+  "tags": [
+    "rpg",
+    "game",
+    "threejs",
+    "webgl",
+    "isometric",
+    "pixel-art",
+    "kenney",
+    "sprites",
+    "single-file",
+    "light-theme"
+  ],
+  "prompt": {
+    "text": "Stylized low-poly isometric strategy / farming / village-builder map with a large explorable world, toy-like geometry, soft lighting, vibrant colors, and cozy casual strategy/RPG aesthetic, mobile game style. Colorful hand-painted textures, stylized medieval buildings, tiled grass terrain, cliffs and waterfall, barrels, gardens, stone bridges, pine trees, rocks, soft ambient lighting. Add small NPC villagers scattered around the map, doing daily activities. Search web for matching free assets, download and use them. Add a controllable main character with visible HP and MP bars. The character can walk, run, jump, attack monsters with melee or ranged attacks, cast magic spells using MP, collect gold, loot items, open chests, interact with NPC villagers, and explore the large isometric world. Include simple combat feedback, damage numbers, item pickups, enemy AI, and inventory-style rewards. Use W/A/S/D for movement, Space to jump, mouse click or J to attack monsters, and K to cast magic. Search and use recent best practices, tech stacks.\n\nOutput to local runnable HTML with a light theme that works on both desktop and mobile screens (responsive). Measure the total time it takes you to generate this app completely end-to-end.",
+    "model": "Claude Opus 4.8",
+    "modelId": "claude-opus-4-8",
+    "provider": "Anthropic",
+    "effort": "high",
+    "builtWith": "Claude Code",
+    "followUpCount": 2,
+    "followUpPrompts": [
+      "fix graphics quality",
+      "you changed it to top-down sprites and broke the isometric requirement, fix it"
+    ],
+    "errorFixes": 0,
+    "estimatedCostUSD": null,
+    "generationDurationSeconds": 1691,
+    "toolsUsed": [
+      "web-search"
+    ]
+  },
+  "outcome": {
+    "timeToFirstVersionMinutes": 15,
+    "reproducibility": "full",
+    "worked": [
+      "Isometric 2.5D world: Three.js orthographic camera with soft ambient lighting and shadows",
+      "Kenney CC0 pixel art (Tiny Town + Tiny Dungeon) as ground/building textures and billboarded sprites",
+      "Explorable village of Willowmere",
+      "Controllable character with HP and MP bars and a gold counter",
+      "Walk / run / jump movement (W/A/S/D + Shift + Space)",
+      "Melee and magic combat with damage numbers (click or J to attack, K to cast)",
+      "Multiple monster types (slimes, spiders, goblins, orcs, imps, ghosts)",
+      "NPC villagers to interact with (E)",
+      "6-slot inventory and loot pickups",
+      "Light theme, responsive for desktop and mobile"
+    ],
+    "manualEdits": [],
+    "issues": []
+  },
+  "demo": {
+    "type": "bundle",
+    "entry": "index.html"
+  },
+  "source": {
+    "available": false,
+    "url": null,
+    "license": null
+  },
+  "author": {
+    "name": "Duc Nguyen",
+    "handle": "dylandevus",
+    "url": null
+  },
+  "media": {
+    "thumbnail": "screenshots/thumbnail.png",
+    "screenshots": [
+      {
+        "src": "screenshots/desktop.png",
+        "alt": "3D low-poly isometric village of Willowmere with HP/MP and gold HUD, rendered with Three.js"
+      }
+    ]
+  },
+  "permissions": {
+    "permissionToFeature": true,
+    "rightsAttested": true
+  },
+  "manualEditLevel": "none-claimed",
+  "externalApiDomains": [
+    "cdn.jsdelivr.net"
+  ],
+  "publishedAt": "2026-06-14T21:00:00-08:00"
+}

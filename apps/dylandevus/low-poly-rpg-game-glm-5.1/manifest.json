@@ -1,0 +1,85 @@
+{
+  "manifestVersion": "1.0",
+  "name": "Low Poly Village RPG Game",
+  "slug": "low-poly-rpg-game-glm-5.1",
+  "tagline": "A self-contained isometric canvas RPG in one HTML file — explore a village, fight monsters, cast magic, collect gold.",
+  "description": "A self-contained isometric action-RPG rendered on HTML Canvas with vanilla JavaScript in a single file — all graphics drawn procedurally (no images or external assets). Explore a tiled village with buildings, water and a bridge; control a character with HP/MP bars and gold, manage an inventory, talk to NPC villagers, and battle monsters with melee or magic. Includes a minimap, damage feedback, and item pickups. Walk/run/jump with W/A/S/D + Space, attack with click or J, cast magic with K. Light theme, responsive, runs entirely offline with no CDN dependencies.",
+  "category": "games",
+  "theme": "light",
+  "tags": [
+    "rpg",
+    "game",
+    "canvas",
+    "isometric",
+    "low-poly",
+    "vanilla-js",
+    "single-file",
+    "procedural",
+    "light-theme"
+  ],
+  "prompt": {
+    "text": "Stylized low-poly isometric strategy / farming / village-builder map with a large explorable world, toy-like geometry, soft lighting, vibrant colors, and cozy casual strategy/RPG aesthetic, mobile game style. Colorful hand-painted textures, stylized medieval buildings, tiled grass terrain, cliffs and waterfall, barrels, gardens, stone bridges, pine trees, rocks, soft ambient lighting. Add small NPC villagers scattered around the map, doing daily activities. Search web for matching free assets, download and use them. Add a controllable main character with visible HP and MP bars. The character can walk, run, jump, attack monsters with melee or ranged attacks, cast magic spells using MP, collect gold, loot items, open chests, interact with NPC villagers, and explore the large isometric world. Include simple combat feedback, damage numbers, item pickups, enemy AI, and inventory-style rewards. Use W/A/S/D for movement, Space to jump, mouse click or J to attack monsters, and K to cast magic. Search and use recent best practices, tech stacks.\n\nOutput to local runnable HTML with a light theme that works on both desktop and mobile screens (responsive). Measure the total time it takes you to generate this app completely end-to-end.",
+    "model": "GLM-5.1",
+    "modelId": "zai-org/GLM-5.1",
+    "provider": "DeepInfra",
+    "effort": "default",
+    "builtWith": "OpenCode",
+    "followUpCount": 1,
+    "followUpPrompts": [
+      "Fix the map"
+    ],
+    "errorFixes": 0,
+    "estimatedCostUSD": 1.7,
+    "generationDurationSeconds": 600,
+    "toolsUsed": []
+  },
+  "outcome": {
+    "timeToFirstVersionMinutes": 10,
+    "reproducibility": "full",
+    "worked": [
+      "Isometric village world rendered on HTML Canvas with vanilla JS",
+      "All graphics drawn procedurally — no images or external assets",
+      "Tiled terrain with buildings, water and a bridge",
+      "Controllable character with HP and MP bars and a gold counter",
+      "Walk / run / jump (W/A/S/D + Space)",
+      "Melee (click or J) and magic (K) combat with damage feedback",
+      "NPC villagers and monsters with simple enemy AI",
+      "Inventory, item pickups and a minimap",
+      "Light theme, responsive, fully offline (no CDNs)"
+    ],
+    "manualEdits": [],
+    "issues": [
+      "visual-glitches"
+    ]
+  },
+  "demo": {
+    "type": "bundle",
+    "entry": "index.html"
+  },
+  "source": {
+    "available": false,
+    "url": null,
+    "license": null
+  },
+  "author": {
+    "name": "Duc Nguyen",
+    "handle": "dylandevus",
+    "url": null
+  },
+  "media": {
+    "thumbnail": "screenshots/thumbnail.png",
+    "screenshots": [
+      {
+        "src": "screenshots/desktop.png",
+        "alt": "Isometric canvas village RPG with HP/MP HUD, inventory, minimap and procedurally drawn buildings"
+      }
+    ]
+  },
+  "permissions": {
+    "permissionToFeature": true,
+    "rightsAttested": true
+  },
+  "manualEditLevel": "none-claimed",
+  "externalApiDomains": [],
+  "publishedAt": "2026-06-16T21:00:00-08:00"
+}

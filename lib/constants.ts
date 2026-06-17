@@ -48,3 +48,27 @@ export const REPRO_COLORS: Record<string, string> = {
   partial: 'bg-amber-50 text-amber-700 ring-amber-600/20',
   none: 'bg-stone-50 text-stone-600 ring-stone-500/20',
 }
+
+// Lingering problems with a generated app. Empty issues = usable.
+export const ISSUE_LABELS: Record<string, string> = {
+  'failed-to-start': 'Failed to start',
+  crashes: 'Crashes',
+  'broken-controls': 'Broken controls',
+  'visual-glitches': 'Visual glitches',
+  'missing-features': 'Missing features',
+  'poor-performance': 'Poor performance',
+  'mobile-broken': 'Broken on mobile',
+}
+
+// "failed-to-start" is a terminal failure (red); the rest are non-fatal (amber).
+export const ISSUE_COLORS: Record<string, string> = {
+  'failed-to-start': 'bg-red-50 text-red-700 ring-red-600/20',
+  crashes: 'bg-red-50 text-red-700 ring-red-600/20',
+  'broken-controls': 'bg-amber-50 text-amber-700 ring-amber-600/20',
+  'visual-glitches': 'bg-amber-50 text-amber-700 ring-amber-600/20',
+  'missing-features': 'bg-amber-50 text-amber-700 ring-amber-600/20',
+  'poor-performance': 'bg-amber-50 text-amber-700 ring-amber-600/20',
+  'mobile-broken': 'bg-amber-50 text-amber-700 ring-amber-600/20',
+}
+
+export const USABLE_COLOR = 'bg-stone-50 text-stone-500 ring-stone-400/20'

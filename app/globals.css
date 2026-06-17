@@ -23,3 +23,11 @@ body {
   font-size: 0.875rem;
   line-height: 1.6;
 }
+
+/* CommentBox sizes its iframe via postMessage; before that lands, the sign-in
+   panel (~650px tall) is clipped to the iframe's short resting height. A
+   min-height keeps the whole sign-in form usable regardless of resize timing,
+   and CommentBox still grows the iframe taller as comments load. */
+.commentbox iframe {
+  min-height: 480px;
+}

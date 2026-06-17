@@ -5,7 +5,16 @@
   "tagline": "QQQ, SPY & SCHD with Bollinger Bands, 100d/200d SMA, sector insights, and near-term scenario analysis.",
   "description": "A light-themed ETF dashboard for QQQ, SPY, and SCHD. Shows 2-year Chart.js price charts with Bollinger Bands, 100d and 200d SMA overlays, per-ETF metric cards with 1M/3M performance, a market Insights section, and a Prediction section for near-term scenarios. Uses lit-html for reactive rendering and Lucide icons. Data is hardcoded — no live API calls required.",
   "category": "finance",
-  "tags": ["stocks", "charts", "technical-analysis", "etf", "qqq", "spy", "schd", "light-theme"],
+  "tags": [
+    "stocks",
+    "charts",
+    "technical-analysis",
+    "etf",
+    "qqq",
+    "spy",
+    "schd",
+    "light-theme"
+  ],
   "prompt": {
     "text": "Create a stock market dashboard using Lit-HTML, Tailwind, JS libs from CDNs, in a single HTML file. Add 2-year charts for QQQ, SPY, SCHD, do a web search to get latest market prices. Each chart has Bollinger Bands, 100d SMA, 200d SMA lines. Add an Insights section to analyze market, sectors. Add another section for Prediction for next few months.",
     "model": "GPT-5.5",
@@ -17,7 +26,9 @@
     "errorFixes": 0,
     "estimatedCostUSD": null,
     "generationDurationSeconds": 207,
-    "toolsUsed": ["web-search"]
+    "toolsUsed": [
+      "web-search"
+    ]
   },
   "outcome": {
     "timeToFirstVersionMinutes": 3,
@@ -32,7 +43,8 @@
       "Lucide icons integrated from CDN",
       "Responsive layout"
     ],
-    "manualEdits": []
+    "manualEdits": [],
+    "issues": []
   },
   "demo": {
     "type": "bundle",
@@ -51,7 +63,10 @@
   "media": {
     "thumbnail": "screenshots/thumbnail.png",
     "screenshots": [
-      { "src": "screenshots/desktop.png", "alt": "Full-page ETF Market Dashboard showing QQQ, SPY, SCHD cards, price chart with Bollinger Bands, Insights and Prediction sections" }
+      {
+        "src": "screenshots/desktop.png",
+        "alt": "Full-page ETF Market Dashboard showing QQQ, SPY, SCHD cards, price chart with Bollinger Bands, Insights and Prediction sections"
+      }
     ]
   },
   "permissions": {
@@ -64,5 +79,5 @@
     "cdn.jsdelivr.net",
     "unpkg.com"
   ],
-  "publishedAt": "2026-06-13T17:11:06-07:00"
+  "publishedAt": "2026-06-13T21:00:00-08:00"
 }

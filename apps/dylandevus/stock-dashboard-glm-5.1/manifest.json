@@ -5,7 +5,17 @@
   "tagline": "QQQ, SPY & SCHD with live indices bar, sector allocations, fundamental metrics, Bollinger Bands, and scenario analysis.",
   "description": "A light-themed ETF dashboard for QQQ, SPY, and SCHD. Includes a live market indices bar (S&P 500, Nasdaq, Russell 2000, VIX, Gold, Crude Oil), per-ETF cards with 52-week range, P/E, YTD, Beta, Expense Ratio, Volume, and sector allocations, 2-year Chart.js price charts with Bollinger Bands, 100d and 200d SMA, after-hours pricing, and an Insights section. Data is hardcoded — no live API calls required.",
   "category": "finance",
-  "tags": ["stocks", "charts", "technical-analysis", "etf", "qqq", "spy", "schd", "light-theme", "fundamentals"],
+  "tags": [
+    "stocks",
+    "charts",
+    "technical-analysis",
+    "etf",
+    "qqq",
+    "spy",
+    "schd",
+    "light-theme",
+    "fundamentals"
+  ],
   "prompt": {
     "text": "Create a stock market dashboard using Lit-HTML, Tailwind, JS libs from CDNs, in a single HTML file. Add 2-year charts for QQQ, SPY, SCHD, do a web search to get latest market prices. Each chart has Bollinger Bands, 100d SMA, 200d SMA lines. Add an Insights section to analyze market, sectors. Add another section for Prediction for next few months.",
     "model": "GLM-5.1",
@@ -17,7 +27,9 @@
     "errorFixes": 1,
     "estimatedCostUSD": null,
     "generationDurationSeconds": 102,
-    "toolsUsed": ["web-search"]
+    "toolsUsed": [
+      "web-search"
+    ]
   },
   "outcome": {
     "timeToFirstVersionMinutes": 1,
@@ -31,7 +43,8 @@
       "Insights section with per-ETF market analysis",
       "Light editorial theme with Inter font"
     ],
-    "manualEdits": []
+    "manualEdits": [],
+    "issues": []
   },
   "demo": {
     "type": "bundle",
@@ -50,7 +63,10 @@
   "media": {
     "thumbnail": "screenshots/thumbnail.png",
     "screenshots": [
-      { "src": "screenshots/desktop.png", "alt": "Full-page Stock Market Dashboard with indices bar, QQQ/SPY/SCHD metric cards with sector allocations, and 2-year price chart" }
+      {
+        "src": "screenshots/desktop.png",
+        "alt": "Full-page Stock Market Dashboard with indices bar, QQQ/SPY/SCHD metric cards with sector allocations, and 2-year price chart"
+      }
     ]
   },
   "permissions": {
@@ -64,5 +80,5 @@
     "fonts.googleapis.com",
     "fonts.gstatic.com"
   ],
-  "publishedAt": "2026-06-13T17:11:06-07:00"
+  "publishedAt": "2026-06-13T21:00:00-08:00"
 }

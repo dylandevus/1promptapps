@@ -5,7 +5,10 @@
   "tagline": "A one-sentence description of what this app does.",
   "description": "Optional longer description (max 2000 chars). Supports plain text.",
   "category": "productivity",
-  "tags": ["tag1", "tag2"],
+  "tags": [
+    "tag1",
+    "tag2"
+  ],
   "prompt": {
     "text": "Paste your exact original prompt here. Be as accurate as possible.",
     "model": "claude-opus-4-8",
@@ -23,7 +26,8 @@
     "manualEdits": [
       "Describe what you had to fix manually",
       "Be honest — it builds trust"
-    ]
+    ],
+    "issues": []
   },
   "demo": {
     "type": "bundle",
@@ -42,7 +46,10 @@
   "media": {
     "thumbnail": "screenshots/thumbnail.png",
     "screenshots": [
-      { "src": "screenshots/desktop.png", "alt": "Describe what's shown" }
+      {
+        "src": "screenshots/desktop.png",
+        "alt": "Describe what's shown"
+      }
     ]
   },
   "permissions": {

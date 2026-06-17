@@ -4,8 +4,8 @@ import { useState, useCallback, useEffect } from 'react'
 import { useRouter, useSearchParams, usePathname } from 'next/navigation'
 import Link from 'next/link'
 import type { AppEntry } from '@/lib/types'
-import { EDIT_LEVEL_LABELS, EDIT_LEVEL_COLORS } from '@/lib/constants'
-import { formatDuration } from '@/lib/format'
+import { EDIT_LEVEL_LABELS, EDIT_LEVEL_COLORS, ISSUE_LABELS, ISSUE_COLORS, USABLE_COLOR } from '@/lib/constants'
+import { formatDuration, formatRelativeDate } from '@/lib/format'
 
 interface Props {
   apps: AppEntry[]
@@ -57,20 +57,16 @@ function AppCard({ app, categoryLabels, builtWithLabels }: {
           {app.tagline}
         </p>
 
-        {/* Chips */}
-        <div className="flex flex-wrap gap-1.5 mb-3">
+        {/* Identity pills: category + model (purple) + usability */}
+        <div className="flex flex-wrap gap-1.5 mb-2">
           <Badge
             label={categoryLabels[app.category] ?? app.category}
             color="bg-indigo-50 text-indigo-700 ring-indigo-600/20"
           />
-          <Badge
-            label={builtWithLabels[app.builtWith] ?? app.builtWith}
-            color="bg-violet-50 text-violet-700 ring-violet-600/20"
-          />
           {app.model && (
             <Badge
               label={app.effort && app.effort !== 'default' ? `${app.model} ${app.effort}` : app.model}
-              color="bg-stone-50 text-stone-600 ring-stone-500/20"
+              color="bg-violet-50 text-violet-700 ring-violet-600/20"
             />
           )}
           {app.manualEditLevel !== 'none-claimed' && (
@@ -79,6 +75,19 @@ function AppCard({ app, categoryLabels, builtWithLabels }: {
               color={EDIT_LEVEL_COLORS[app.manualEditLevel]}
             />
           )}
+          {app.issues.length === 0 ? (
+            <Badge label="Usable" color={USABLE_COLOR} />
+          ) : (
+            app.issues.map(issue => (
+              <Badge key={issue} label={ISSUE_LABELS[issue] ?? issue} color={ISSUE_COLORS[issue]} />
+            ))
+          )}
+        </div>
+
+        {/* Tool · provider */}
+        <div className="text-xs mb-3" style={{ color: 'var(--muted)' }}>
+          {builtWithLabels[app.builtWith] ?? app.builtWith}
+          {app.provider && <span> · {app.provider}</span>}
         </div>
 
         {/* Metrics row */}
@@ -86,8 +95,13 @@ function AppCard({ app, categoryLabels, builtWithLabels }: {
           {formatDuration(app.generationDurationSeconds, app.timeToFirstVersionMinutes) && (
             <span>⏱ {formatDuration(app.generationDurationSeconds, app.timeToFirstVersionMinutes)}</span>
           )}
-          {app.provider && <span>{app.provider}</span>}
+          <span>↻ {app.followUpCount + 1} prompt{app.followUpCount + 1 !== 1 ? 's' : ''}</span>
           {app.sourceAvailable && <span>‹/› source</span>}
+          {formatRelativeDate(app.publishedAt) && (
+            <span className="ml-auto" suppressHydrationWarning title={app.publishedAt}>
+              {formatRelativeDate(app.publishedAt)}
+            </span>
+          )}
         </div>
       </div>
     </Link>

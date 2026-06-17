@@ -24,6 +24,7 @@ export interface AppManifest {
     reproducibility: 'full' | 'partial' | 'none'
     worked?: string[]
     manualEdits?: string[]
+    issues?: string[]
   }
   demo: {
     type: 'bundle' | 'live'
@@ -81,6 +82,7 @@ export interface AppEntry {
   promptText: string
   worked: string[]
   manualEdits: string[]
+  issues: string[]
   authorName: string
   authorHandle: string
   publishedAt: string

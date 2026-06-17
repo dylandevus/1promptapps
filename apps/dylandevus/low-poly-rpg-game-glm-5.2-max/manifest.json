@@ -1,0 +1,89 @@
+{
+  "manifestVersion": "1.0",
+  "name": "Low Poly Village RPG Game",
+  "slug": "low-poly-rpg-game-glm-5.2-max",
+  "tagline": "A Three.js isometric RPG in one HTML file with a downloaded glTF character, real textures, monsters and magic.",
+  "description": "A self-contained isometric 3D action-RPG built with Three.js in a single HTML file. Per the prompt, art was not generated — instead a free glTF character model (the rigged Soldier.glb with Idle/Walk/Run animations) and CC0 grass/wood textures are downloaded and used. Explore an isometric village with buildings, water and a bridge; control a character with HP/MP bars, walk/run/jump (W/A/S/D + Space), attack monsters with melee or J and cast magic with K. Enemies are animated clones of the character with simple AI. Loads Three.js and its GLTFLoader from a CDN.",
+  "category": "games",
+  "theme": "light",
+  "tags": [
+    "rpg",
+    "game",
+    "threejs",
+    "webgl",
+    "3d",
+    "isometric",
+    "gltf",
+    "single-file",
+    "light-theme"
+  ],
+  "prompt": {
+    "text": "Stylized low-poly isometric strategy / farming / village-builder map with a large explorable world, toy-like geometry, soft lighting, vibrant colors, and cozy casual strategy/RPG aesthetic, mobile game style. Colorful hand-painted textures, stylized medieval buildings, tiled grass terrain, cliffs and waterfall, barrels, gardens, stone bridges, pine trees, rocks, soft ambient lighting. Add small NPC villagers scattered around the map, doing daily activities. DO NOT generate game assets, search web for matching free isometric assets, download and use them. Add a controllable main character with visible HP and MP bars. The character can walk, run, jump, attack monsters with melee or ranged attacks, cast magic spells using MP, collect gold, loot items, open chests, interact with NPC villagers, and explore the large isometric world. Include simple combat feedback, damage numbers, item pickups, enemy AI, and inventory-style rewards. Use W/A/S/D for movement, Space to jump, mouse click or J to attack monsters, and K to cast magic. Search and use recent best practices, tech stacks.\n\nOutput to local runnable HTML with a light theme that works on both desktop and mobile screens (responsive). Measure the total time it takes you to generate this app completely end-to-end.",
+    "model": "GLM-5.2",
+    "modelId": "zai-org/GLM-5.2",
+    "provider": "DeepInfra",
+    "effort": "max",
+    "builtWith": "OpenCode",
+    "followUpCount": 4,
+    "followUpPrompts": [
+      "fix the map",
+      "fix character animation",
+      "fix jumping animation",
+      "fix: show monsters"
+    ],
+    "errorFixes": 0,
+    "estimatedCostUSD": null,
+    "generationDurationSeconds": 300,
+    "toolsUsed": [
+      "web-search"
+    ]
+  },
+  "outcome": {
+    "timeToFirstVersionMinutes": 5,
+    "reproducibility": "full",
+    "worked": [
+      "Isometric 3D world rendered with Three.js",
+      "Downloaded free glTF character (Soldier.glb) with Idle / Walk / Run animations",
+      "Downloaded CC0 grass and wood textures",
+      "Village with buildings, water area, waterfall and a bridge",
+      "Controllable character with HP and MP bars",
+      "Walk / run / jump (W/A/S/D + Space)",
+      "Melee (click or J) and magic (K) combat",
+      "Monsters as animated clones of the character with simple enemy AI"
+    ],
+    "manualEdits": [],
+    "issues": []
+  },
+  "demo": {
+    "type": "bundle",
+    "entry": "index.html"
+  },
+  "source": {
+    "available": false,
+    "url": null,
+    "license": null
+  },
+  "author": {
+    "name": "Duc Nguyen",
+    "handle": "dylandevus",
+    "url": null
+  },
+  "media": {
+    "thumbnail": "screenshots/thumbnail.png",
+    "screenshots": [
+      {
+        "src": "screenshots/desktop.png",
+        "alt": "Isometric 3D village RPG built with Three.js, showing the character, buildings and HP/MP HUD"
+      }
+    ]
+  },
+  "permissions": {
+    "permissionToFeature": true,
+    "rightsAttested": true
+  },
+  "manualEditLevel": "none-claimed",
+  "externalApiDomains": [
+    "unpkg.com"
+  ],
+  "publishedAt": "2026-06-16T21:00:00-08:00"
+}

@@ -36,6 +36,11 @@ const VALID_EDIT_LEVELS = new Set([
 
 const VALID_REPRODUCIBILITY = new Set(['full', 'partial', 'none'])
 
+const VALID_ISSUES = new Set([
+  'failed-to-start', 'crashes', 'broken-controls', 'visual-glitches',
+  'missing-features', 'poor-performance', 'mobile-broken',
+])
+
 const ALLOWED_EXTENSIONS = new Set([
   '.html', '.css', '.js', '.mjs', '.cjs', '.json', '.md', '.txt',
   '.png', '.jpg', '.jpeg', '.webp', '.gif', '.woff', '.woff2', '.ico',
@@ -112,6 +117,13 @@ function validateManifest(appDir: string, r: Result) {
     if (!outcome.reproducibility) err(r, 'manifest: missing outcome.reproducibility')
     else if (!VALID_REPRODUCIBILITY.has(outcome.reproducibility as string))
       err(r, `manifest: unknown reproducibility "${outcome.reproducibility}"`)
+
+    if (outcome.issues !== undefined) {
+      if (!Array.isArray(outcome.issues)) err(r, 'manifest: outcome.issues must be an array')
+      else for (const issue of outcome.issues) {
+        if (!VALID_ISSUES.has(issue as string)) err(r, `manifest: unknown issue "${issue}"`)
+      }
+    }
   }
 
   // manualEditLevel

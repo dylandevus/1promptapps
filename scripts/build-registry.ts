@@ -106,6 +106,7 @@ function buildEntry(manifestPath: string): AppEntry {
     promptText: manifest.prompt.text,
     worked: manifest.outcome.worked ?? [],
     manualEdits: manifest.outcome.manualEdits ?? [],
+    issues: manifest.outcome.issues ?? [],
     authorName: manifest.author.name,
     authorHandle: manifest.author.handle,
     publishedAt: manifest.publishedAt ?? new Date().toISOString(),

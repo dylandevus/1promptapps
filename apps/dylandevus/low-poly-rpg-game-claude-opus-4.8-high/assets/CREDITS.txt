@@ -1,0 +1,4 @@
+Sprite assets used in Willowmere:
+- Kenney "Tiny Town"  (CC0 1.0 Universal) — https://kenney.nl/assets/tiny-town
+- Kenney "Tiny Dungeon" (CC0 1.0 Universal) — https://kenney.nl/assets/tiny-dungeon
+CC0: free for any use, attribution appreciated but not required.
