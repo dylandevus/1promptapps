@@ -17,6 +17,10 @@
       "pattern": "^[a-z0-9][a-z0-9.\\-]{2,79}$",
       "description": "URL-safe slug, must match the folder name"
     },
+    "collectionId": {
+      "type": "string",
+      "description": "Optional ID grouping related submissions (e.g. the same app prompt built across models). Apps sharing a collectionId are clustered together in the gallery. Convention: <date>-<username>-<concept>, e.g. 2026-06-13-dylandevus-stock-dashboard."
+    },
     "tagline": { "type": "string", "minLength": 10, "maxLength": 120 },
     "description": { "type": "string", "maxLength": 2000 },
     "category": {
@@ -32,6 +36,13 @@
       "items": { "type": "string" },
       "maxItems": 8,
       "uniqueItems": true
+    },
+    "techStack": {
+      "type": "array",
+      "items": { "type": "string", "pattern": "^[a-z0-9][a-z0-9.+-]*$" },
+      "maxItems": 12,
+      "uniqueItems": true,
+      "description": "Languages and libraries the app uses, as lowercase slugs — e.g. typescript, tailwind, chartjs, threejs, d3, lit-html, alpine, react. Free-form (no schema bump for new libs); see docs for suggested values. Powers the gallery Tech filter."
     },
     "prompt": {
       "type": "object",
@@ -77,7 +88,7 @@
           "type": "array",
           "items": {
             "type": "string",
-            "enum": ["web-search", "code-interpreter", "image-generation", "file-upload", "computer-use", "other"]
+            "enum": ["web-search", "external-api", "image-generation", "other"]
           },
           "uniqueItems": true,
           "description": "AI tools invoked by the model during generation, beyond plain text generation."

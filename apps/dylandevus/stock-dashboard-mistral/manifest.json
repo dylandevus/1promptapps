@@ -2,10 +2,12 @@
   "manifestVersion": "1.0",
   "name": "Stock Market Dashboard",
   "slug": "stock-dashboard-mistral",
+  "collectionId": "2026-06-13-dylandevus-stock-dashboard",
   "tagline": "QQQ, SPY & SCHD with clean price charts, fundamental cards, and plain-English market commentary.",
   "description": "A dark-themed ETF dashboard for QQQ, SPY, and SCHD. Shows 2-year Chart.js price charts with Bollinger Bands, 100d and 200d SMA overlays, per-ETF fundamental metrics cards (P/E, YTD, 52-wk range, volume), a market heatmap bar for direction signals (VIX, Yield, US Dollar), and a plain-English Insights section. Uses vanilla JS with a pragmatic, uncluttered layout. Data is hardcoded — no live API calls required.",
   "category": "finance",
   "tags": ["stocks", "charts", "technical-analysis", "etf", "qqq", "spy", "schd", "dark-theme", "open-model", "mistral"],
+  "techStack": ["javascript", "tailwind", "chartjs", "lit-html"],
   "prompt": {
     "text": "Create a stock market dashboard using Lit-HTML, Tailwind, JS libs from CDNs, in a single HTML file. Add 2-year charts for QQQ, SPY, SCHD, do a web search to get latest market prices. Each chart has Bollinger Bands, 100d SMA, 200d SMA lines. Add an Insights section to analyze market, sectors. Add another section for Prediction for next few months.",
     "model": "Mistral-Max",
@@ -14,6 +16,10 @@
     "effort": "default",
     "builtWith": "Le Chat",
     "followUpCount": 2,
+    "followUpPrompts": [
+      "Fix chart legend rendering order on first load",
+      "Add responsive breakpoint for mobile view"
+    ],
     "errorFixes": 2,
     "estimatedCostUSD": null,
     "generationDurationSeconds": 89,
@@ -60,12 +66,12 @@
     "permissionToFeature": true,
     "rightsAttested": true
   },
-  "manualEditLevel": "minor-edits",
+  "manualEditLevel": "minor",
   "externalApiDomains": [
     "cdn.tailwindcss.com",
     "cdn.jsdelivr.net",
     "fonts.googleapis.com",
     "fonts.gstatic.com"
   ],
-  "publishedAt": "2026-06-16T18:03:00-07:00"
+  "publishedAt": "2026-06-16T21:00:00-08:00"
 }

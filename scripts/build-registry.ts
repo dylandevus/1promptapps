@@ -82,12 +82,14 @@ function buildEntry(manifestPath: string): AppEntry {
     id: `${username}/${slug}`,
     username,
     slug,
+    collectionId: manifest.collectionId ?? '',
     path: `/${username}/${slug}`,
     name: manifest.name,
     tagline: manifest.tagline ?? '',
     description: manifest.description ?? '',
     category: manifest.category,
     tags: manifest.tags ?? [],
+    techStack: manifest.techStack ?? [],
     builtWith: manifest.prompt.builtWith,
     model: manifest.prompt.model ?? '',
     provider: manifest.prompt.provider ?? '',
@@ -156,6 +158,7 @@ function main() {
   const categories = new Set<string>()
   const builtWithValues = new Set<string>()
   const models = new Set<string>()
+  const techStack = new Set<string>()
   let errors = 0
 
   for (const mf of manifests) {
@@ -165,6 +168,7 @@ function main() {
       categories.add(entry.category)
       builtWithValues.add(entry.builtWith)
       if (entry.model) models.add(entry.model)
+      entry.techStack.forEach(t => techStack.add(t))
 
       const username = entry.username
       const slug = entry.slug
@@ -185,13 +189,30 @@ function main() {
     process.exit(1)
   }
 
-  // Sort newest-first by publishedAt (ISO timestamp)
-  entries.sort((a, b) => b.publishedAt.localeCompare(a.publishedAt))
+  // Sort newest-first, but keep collections together: order each group by its
+  // newest app, then order apps within a collection newest-first. Apps without a
+  // collectionId form their own singleton group (keyed by id).
+  const groupKey = (e: AppEntry) => e.collectionId || e.id
+  const groupNewest = new Map<string, string>()
+  for (const e of entries) {
+    const k = groupKey(e)
+    const cur = groupNewest.get(k)
+    if (!cur || e.publishedAt.localeCompare(cur) > 0) groupNewest.set(k, e.publishedAt)
+  }
+  entries.sort((a, b) => {
+    const ka = groupKey(a), kb = groupKey(b)
+    if (ka !== kb) {
+      const cmp = groupNewest.get(kb)!.localeCompare(groupNewest.get(ka)!)
+      return cmp !== 0 ? cmp : kb.localeCompare(ka) // tie: newer (date-prefixed) collectionId first
+    }
+    return b.publishedAt.localeCompare(a.publishedAt)
+  })
 
   fs.writeFileSync(path.join(GEN_DIR, 'apps.json'), JSON.stringify(entries, null, 2))
   fs.writeFileSync(path.join(GEN_DIR, 'categories.json'), JSON.stringify([...categories].sort(), null, 2))
   fs.writeFileSync(path.join(GEN_DIR, 'built-with.json'), JSON.stringify([...builtWithValues].sort(), null, 2))
   fs.writeFileSync(path.join(GEN_DIR, 'models.json'), JSON.stringify([...models].sort(), null, 2))
+  fs.writeFileSync(path.join(GEN_DIR, 'tech-stack.json'), JSON.stringify([...techStack].sort(), null, 2))
 
   // sitemap
   const BASE = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://1promptapps.com'

@@ -1,6 +1,6 @@
 import { Suspense } from 'react'
 import Link from 'next/link'
-import { getApps, getCategories, getBuiltWith, getModels } from '@/lib/registry'
+import { getApps, getCategories, getBuiltWith, getModels, getTechStack } from '@/lib/registry'
 import { CATEGORY_LABELS, BUILT_WITH_LABELS } from '@/lib/constants'
 import { GalleryClient } from './GalleryClient'
 
@@ -14,6 +14,7 @@ export default function HomePage() {
   const categories = getCategories()
   const builtWithOptions = getBuiltWith()
   const models = getModels()
+  const techStack = getTechStack()
 
   return (
     <div className="min-h-screen" style={{ background: 'var(--bg)' }}>
@@ -63,6 +64,7 @@ export default function HomePage() {
             categories={categories}
             builtWithOptions={builtWithOptions}
             models={models}
+            techStack={techStack}
             categoryLabels={CATEGORY_LABELS}
             builtWithLabels={BUILT_WITH_LABELS}
           />

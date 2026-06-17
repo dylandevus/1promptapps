@@ -7,7 +7,6 @@
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js"></script>
   <link href="https://fonts.googleapis.com/css2?family=Inter:opsz@14..32&display=swap" rel="stylesheet" />
-  <script src="https://cdn.jsdelivr.net/npm/lit-html@3.2.1/lit-html.min.js"></script>
   <style>
     body { font-family: 'Inter', system-ui, sans-serif; }
     .card-glow { box-shadow: 0 0 0 1px rgba(255,255,255,0.05), 0 4px 24px rgba(0,0,0,0.4); }
@@ -84,7 +83,9 @@
     </footer>
   </div>
 
-  <script>
+  <script type="module">
+    import { html, render } from 'https://cdn.jsdelivr.net/npm/lit-html@3.2.1/+esm';
+
     /* ── Data ── */
     const ETFs = {
       QQQ:  { name:'QQQ', full:'Invesco QQQ Trust', price:412.34, change:'+2.18', changePct:'+0.53%', ytd:'+8.2%', pe:'31.5', wkRange:'$312 – $438', vol:'24.5M', sector:'Technology' },
@@ -114,7 +115,6 @@
     };
 
     /* ── Lit-Html templates ── */
-    const { html, render } = litHtml;
 
     function cardTemplate(key, e) {
       return html`

@@ -66,52 +66,57 @@ export default async function AppPage({ params }: { params: Promise<Params> }) {
       </a>
       {/* Provenance banner — OUTSIDE the iframe, on gallery origin */}
       <header style={{ background: 'var(--surface)', borderBottom: '1px solid var(--border)', position: 'sticky', top: 0, zIndex: 40 }}>
-        <div className="max-w-7xl mx-auto px-4 h-12 flex items-center gap-3 text-sm overflow-x-auto">
-          <Link href="/" className="shrink-0 font-semibold text-xs" style={{ color: 'var(--accent)' }}>
-            ← 1PromptApps
-          </Link>
-          <span style={{ color: 'var(--border)' }}>|</span>
-          <span className="font-medium truncate shrink-0" style={{ color: 'var(--ink)' }}>{app.name}</span>
-          <span className="shrink-0" style={{ color: 'var(--muted)' }}>·</span>
-          <span className="shrink-0" style={{ color: 'var(--muted)' }}>{builtWithLabel}</span>
-          {app.model && <>
-            <span style={{ color: 'var(--muted)' }}>·</span>
-            <span className="shrink-0 text-xs font-mono" style={{ color: 'var(--muted)' }}>{app.model}</span>
-          </>}
-          {formatDuration(app.generationDurationSeconds, app.timeToFirstVersionMinutes) && <>
-            <span style={{ color: 'var(--muted)' }}>·</span>
-            <span className="shrink-0" style={{ color: 'var(--muted)' }}>⏱ {formatDuration(app.generationDurationSeconds, app.timeToFirstVersionMinutes)}</span>
-          </>}
-          <span style={{ color: 'var(--muted)' }}>·</span>
-          <span className="shrink-0 text-xs" style={{ color: 'var(--muted)' }}>{app.publishedAt}</span>
+        <div className="max-w-7xl mx-auto px-4 h-12 flex items-center gap-2 sm:gap-3 text-sm">
+          {/* Identity — scrolls horizontally if needed; verbose meta hidden on mobile */}
+          <div className="flex items-center gap-2 sm:gap-3 min-w-0 flex-1 overflow-x-auto">
+            <Link href="/" className="shrink-0 font-semibold text-xs" style={{ color: 'var(--accent)' }}>
+              ← 1PromptApps
+            </Link>
+            <span className="shrink-0" style={{ color: 'var(--border)' }}>|</span>
+            <span className="font-medium truncate" style={{ color: 'var(--ink)' }}>{app.name}</span>
+            <span className="hidden sm:inline shrink-0" style={{ color: 'var(--muted)' }}>·</span>
+            <span className="hidden sm:inline shrink-0" style={{ color: 'var(--muted)' }}>{builtWithLabel}</span>
+            {app.model && <>
+              <span className="hidden sm:inline shrink-0" style={{ color: 'var(--muted)' }}>·</span>
+              <span className="hidden sm:inline shrink-0 text-xs font-mono" style={{ color: 'var(--muted)' }}>{app.model}</span>
+            </>}
+            {formatDuration(app.generationDurationSeconds, app.timeToFirstVersionMinutes) && <>
+              <span className="hidden sm:inline shrink-0" style={{ color: 'var(--muted)' }}>·</span>
+              <span className="hidden sm:inline shrink-0" style={{ color: 'var(--muted)' }}>⏱ {formatDuration(app.generationDurationSeconds, app.timeToFirstVersionMinutes)}</span>
+            </>}
+            <span className="hidden sm:inline shrink-0" style={{ color: 'var(--muted)' }}>·</span>
+            <span className="hidden sm:inline shrink-0 text-xs" style={{ color: 'var(--muted)' }}>{app.publishedAt}</span>
+          </div>
 
-          {/* Actions */}
-          <div className="ml-auto flex shrink-0 gap-2">
+          {/* Actions — always visible */}
+          <div className="flex shrink-0 gap-1.5 sm:gap-2">
             <a
               href="#comments"
-              className="h-7 px-3 text-xs rounded-md font-medium flex items-center"
+              aria-label="Jump to comments"
+              className="h-7 px-2 sm:px-3 text-xs rounded-md font-medium flex items-center"
               style={{ border: '1px solid var(--border)', color: 'var(--ink)', background: 'var(--surface)' }}
             >
-              💬 Comments
+              💬<span className="hidden sm:inline">&nbsp;Comments</span>
             </a>
             <a
               href={app.demoUrl}
               target="_blank"
               rel="noopener noreferrer"
-              className="h-7 px-3 text-xs rounded-md font-medium flex items-center"
+              className="h-7 px-2 sm:px-3 text-xs rounded-md font-medium flex items-center"
               style={{ background: 'var(--accent)', color: '#fff' }}
             >
-              Open full app ↗
+              Open<span className="hidden sm:inline">&nbsp;full app</span> ↗
             </a>
             {app.sourceUrl && (
               <a
                 href={app.sourceUrl}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="h-7 px-3 text-xs rounded-md font-medium flex items-center"
+                aria-label="View source"
+                className="h-7 px-2 sm:px-3 text-xs rounded-md font-medium flex items-center"
                 style={{ border: '1px solid var(--border)', color: 'var(--ink)', background: 'var(--surface)' }}
               >
-                ‹/› Source
+                ‹/›<span className="hidden sm:inline">&nbsp;Source</span>
               </a>
             )}
           </div>
@@ -215,9 +220,10 @@ export default async function AppPage({ params }: { params: Promise<Params> }) {
           >
             {app.promptText}
           </div>
-          <div className="mt-2 text-xs flex gap-3" style={{ color: 'var(--muted)' }}>
+          <div className="mt-2 text-xs flex flex-wrap gap-x-3 gap-y-1" style={{ color: 'var(--muted)' }}>
             <span>Builder: {builtWithLabel}</span>
             {app.model && <span>Model: {app.model}</span>}
+            {app.techStack.length > 0 && <span>Tech: {app.techStack.join(', ')}</span>}
           </div>
         </section>
 

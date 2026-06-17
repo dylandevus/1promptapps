@@ -2,6 +2,7 @@
   "manifestVersion": "1.0",
   "name": "Stock Market Dashboard",
   "slug": "stock-dashboard-opus-4.8-high",
+  "collectionId": "2026-06-13-dylandevus-stock-dashboard",
   "tagline": "QQQ, SPY & SCHD with Bollinger Bands, 100d/200d SMA, market insights, and near-term predictions.",
   "description": "A light-themed ETF dashboard for QQQ, SPY, and SCHD. Shows 2-year Chart.js price charts with Bollinger Bands, 100d and 200d SMA overlays, tab-based ETF switching, an Insights section, and a Prediction section. Uses Tailwind CSS and is fully responsive.",
   "category": "finance",
@@ -15,6 +16,7 @@
     "schd",
     "light-theme"
   ],
+  "techStack": ["javascript", "tailwind", "chartjs", "lit-html"],
   "prompt": {
     "text": "Create a stock market dashboard using Lit-HTML, Tailwind, JS libs from CDNs, in a single HTML file. Add 2-year charts for QQQ, SPY, SCHD, do a web search to get latest market prices. Each chart has Bollinger Bands, 100d SMA, 200d SMA lines. Add an Insights section to analyze market, sectors. Add another section for Prediction for next few months.\n\nOutput to a single HTML file with a light theme that works on both desktop and mobile screens (responsive). Measure the total time it takes you to complete this app.",
     "model": "Claude Opus 4.8",

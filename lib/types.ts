@@ -2,10 +2,12 @@ export interface AppManifest {
   manifestVersion: string
   name: string
   slug: string
+  collectionId?: string
   tagline: string
   description?: string
   category: string
   tags?: string[]
+  techStack?: string[]
   prompt: {
     text: string
     builtWith: string
@@ -58,12 +60,14 @@ export interface AppEntry {
   id: string
   username: string
   slug: string
+  collectionId: string
   path: string
   name: string
   tagline: string
   description: string
   category: string
   tags: string[]
+  techStack: string[]
   builtWith: string
   model: string
   provider: string

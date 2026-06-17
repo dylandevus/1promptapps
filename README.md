@@ -6,7 +6,7 @@ A curated gallery of static webapps built from a single AI prompt — original p
 
 ## Submit an app
 
-Open a PR adding your app folder. See [How submissions work](docs/how-submissions-work.md) (3-step guide with example PR) or the condensed [CONTRIBUTING.md](CONTRIBUTING.md).
+Open a PR adding your app folder. See [How submissions work](docs/how-submissions-work.md) (3-step guide with example PR).
 
 ```
 apps/<username>/<slug>/
@@ -22,20 +22,7 @@ Run `npm run validate` locally — CI runs the same check.
 
 ## Manifest fields
 
-| Field | Description |
-|---|---|
-| `prompt.text` | The exact original prompt |
-| `prompt.builtWith` | Tool — OpenCode, Claude Code, Cursor, v0, Lovable… |
-| `prompt.model` / `modelId` | Model name + canonical provider ID |
-| `prompt.provider` | API provider — DeepInfra, OpenRouter, Anthropic… |
-| `prompt.effort` | Reasoning effort — `low` / `medium` / `high` / `default` |
-| `prompt.toolsUsed` | AI tools invoked — `web-search`, `code-interpreter`… |
-| `prompt.generationDurationSeconds` | Model inference time |
-| `prompt.followUpCount` | Follow-up feature prompts (0 = truly one prompt) |
-| `prompt.followUpPrompts` | The actual follow-up prompts, in order |
-| `prompt.errorFixes` | Fix prompts sent after an error (0 = ran clean) |
-| `manualEditLevel` | `none-claimed` / `minor` / `moderate` / `significant` |
-| `outcome.reproducibility` | `full` / `partial` / `none` |
+Full field reference: [How submissions work → manifest.json](docs/how-submissions-work.md#manifestjson-full-field-reference). The enforced source of truth is [`schemas/manifest.schema.json`](schemas/manifest.schema.json) (`npm run validate`).
 
 ## Dev
 

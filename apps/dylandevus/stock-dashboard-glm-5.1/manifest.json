@@ -2,6 +2,7 @@
   "manifestVersion": "1.0",
   "name": "Stock Market Dashboard",
   "slug": "stock-dashboard-glm-5.1",
+  "collectionId": "2026-06-13-dylandevus-stock-dashboard",
   "tagline": "QQQ, SPY & SCHD with live indices bar, sector allocations, fundamental metrics, Bollinger Bands, and scenario analysis.",
   "description": "A light-themed ETF dashboard for QQQ, SPY, and SCHD. Includes a live market indices bar (S&P 500, Nasdaq, Russell 2000, VIX, Gold, Crude Oil), per-ETF cards with 52-week range, P/E, YTD, Beta, Expense Ratio, Volume, and sector allocations, 2-year Chart.js price charts with Bollinger Bands, 100d and 200d SMA, after-hours pricing, and an Insights section. Data is hardcoded — no live API calls required.",
   "category": "finance",
@@ -16,6 +17,7 @@
     "light-theme",
     "fundamentals"
   ],
+  "techStack": ["javascript", "tailwind", "chartjs", "lit-html"],
   "prompt": {
     "text": "Create a stock market dashboard using Lit-HTML, Tailwind, JS libs from CDNs, in a single HTML file. Add 2-year charts for QQQ, SPY, SCHD, do a web search to get latest market prices. Each chart has Bollinger Bands, 100d SMA, 200d SMA lines. Add an Insights section to analyze market, sectors. Add another section for Prediction for next few months.",
     "model": "GLM-5.1",

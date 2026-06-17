@@ -12,6 +12,7 @@ interface Props {
   categories: string[]
   builtWithOptions: string[]
   models: string[]
+  techStack: string[]
   categoryLabels: Record<string, string>
   builtWithLabels: Record<string, string>
 }
@@ -108,7 +109,7 @@ function AppCard({ app, categoryLabels, builtWithLabels }: {
   )
 }
 
-export function GalleryClient({ apps, categories, builtWithOptions, models, categoryLabels, builtWithLabels }: Props) {
+export function GalleryClient({ apps, categories, builtWithOptions, models, techStack, categoryLabels, builtWithLabels }: Props) {
   const router = useRouter()
   const pathname = usePathname()
   const searchParams = useSearchParams()
@@ -116,6 +117,7 @@ export function GalleryClient({ apps, categories, builtWithOptions, models, cate
   const [category, setCategory] = useState(searchParams.get('category') ?? '')
   const [builtWith, setBuiltWith] = useState(searchParams.get('builtWith') ?? '')
   const [model, setModel] = useState(searchParams.get('model') ?? '')
+  const [tech, setTech] = useState(searchParams.get('tech') ?? '')
   const [search, setSearch] = useState(searchParams.get('q') ?? '')
 
   const updateParam = useCallback((key: string, value: string) => {
@@ -130,6 +132,7 @@ export function GalleryClient({ apps, categories, builtWithOptions, models, cate
     if (category && app.category !== category) return false
     if (builtWith && app.builtWith !== builtWith) return false
     if (model && app.model !== model) return false
+    if (tech && !app.techStack.includes(tech)) return false
     if (search) {
       const q = search.toLowerCase()
       return (
@@ -138,13 +141,14 @@ export function GalleryClient({ apps, categories, builtWithOptions, models, cate
         app.tagline.toLowerCase().includes(q) ||
         app.model.toLowerCase().includes(q) ||
         app.builtWith.toLowerCase().includes(q) ||
-        app.tags.some(t => t.toLowerCase().includes(q))
+        app.tags.some(t => t.toLowerCase().includes(q)) ||
+        app.techStack.some(t => t.toLowerCase().includes(q))
       )
     }
     return true
   })
 
-  const hasFilters = !!(category || builtWith || model || search)
+  const hasFilters = !!(category || builtWith || model || tech || search)
 
   return (
     <div className="max-w-7xl mx-auto px-6 pb-16">
@@ -157,7 +161,7 @@ export function GalleryClient({ apps, categories, builtWithOptions, models, cate
           value={search}
           onChange={e => { setSearch(e.target.value); updateParam('q', e.target.value) }}
           aria-label="Search apps by name, tag, model, or builder"
-          className="flex-1 min-w-[200px] max-w-xs h-9 px-3 text-sm rounded-lg outline-none focus:ring-2"
+          className="w-full sm:w-auto sm:flex-1 min-w-0 sm:min-w-[200px] sm:max-w-xs h-9 px-3 text-sm rounded-lg outline-none focus:ring-2"
           style={{
             background: 'var(--surface)',
             border: '1px solid var(--border)',
@@ -205,11 +209,24 @@ export function GalleryClient({ apps, categories, builtWithOptions, models, cate
           {models.map(m => <option key={m} value={m}>{m}</option>)}
         </select>
 
+        {/* Tech */}
+        {techStack.length > 0 && (
+          <select
+            value={tech}
+            onChange={e => { setTech(e.target.value); updateParam('tech', e.target.value) }}
+            aria-label="Filter by tech stack"
+            className="h-9 px-3 text-sm rounded-lg outline-none"
+            style={{ background: 'var(--surface)', border: '1px solid var(--border)', color: 'var(--ink)' }}
+          >
+            <option value="">All tech</option>
+            {techStack.map(t => <option key={t} value={t}>{t}</option>)}
+          </select>
+        )}
 
         {hasFilters && (
           <button
             onClick={() => {
-              setCategory(''); setBuiltWith(''); setModel(''); setSearch('')
+              setCategory(''); setBuiltWith(''); setModel(''); setTech(''); setSearch('')
               router.replace(pathname, { scroll: false })
             }}
             className="h-9 px-3 text-sm rounded-lg transition-colors"
@@ -230,7 +247,7 @@ export function GalleryClient({ apps, categories, builtWithOptions, models, cate
           <p className="text-lg mb-2">No apps match your filters.</p>
           <button
             onClick={() => {
-              setCategory(''); setBuiltWith(''); setModel(''); setSearch('')
+              setCategory(''); setBuiltWith(''); setModel(''); setTech(''); setSearch('')
               router.replace(pathname, { scroll: false })
             }}
             className="text-sm underline"

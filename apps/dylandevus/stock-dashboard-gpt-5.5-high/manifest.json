@@ -2,6 +2,7 @@
   "manifestVersion": "1.0",
   "name": "Stock Market Dashboard",
   "slug": "stock-dashboard-gpt-5.5-high",
+  "collectionId": "2026-06-13-dylandevus-stock-dashboard",
   "tagline": "QQQ, SPY & SCHD with Bollinger Bands, 100d/200d SMA, sector insights, and near-term scenario analysis.",
   "description": "A light-themed ETF dashboard for QQQ, SPY, and SCHD. Shows 2-year Chart.js price charts with Bollinger Bands, 100d and 200d SMA overlays, per-ETF metric cards with 1M/3M performance, a market Insights section, and a Prediction section for near-term scenarios. Uses lit-html for reactive rendering and Lucide icons. Data is hardcoded — no live API calls required.",
   "category": "finance",
@@ -15,6 +16,7 @@
     "schd",
     "light-theme"
   ],
+  "techStack": ["javascript", "tailwind", "chartjs", "lit-html", "lucide"],
   "prompt": {
     "text": "Create a stock market dashboard using Lit-HTML, Tailwind, JS libs from CDNs, in a single HTML file. Add 2-year charts for QQQ, SPY, SCHD, do a web search to get latest market prices. Each chart has Bollinger Bands, 100d SMA, 200d SMA lines. Add an Insights section to analyze market, sectors. Add another section for Prediction for next few months.",
     "model": "GPT-5.5",

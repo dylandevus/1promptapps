@@ -2,6 +2,24 @@
 
 A 3-step guide to submitting your prompt-built app to the gallery.
 
+### Shortcut: let an LLM do it
+
+Point a coding agent (Claude Code, OpenCode, Codex, Cursor, etc.) at your generated app and paste:
+
+```
+Submit this app to 1PromptApps (github.com/dylandevus/1promptapps).
+Fork + clone the repo, then create apps/<my-username>/<slug>/ with:
+- index.html  — this app
+- prompt.md   — my exact original prompt: "<paste prompt>"
+- manifest.json — fill EVERY field from schemas/manifest.schema.json honestly
+  (builtWith, model, provider, followUpCount, errorFixes, manualEditLevel, etc.)
+Generate screenshots with `npm run screenshot <my-username>/<slug>`,
+run `npm run validate` until it passes, then open a PR.
+Follow docs/how-submissions-work.md.
+```
+
+Then review what it produced before opening the PR. Or do it by hand:
+
 ---
 
 ## Step 1 — Fork + clone
@@ -30,32 +48,77 @@ apps/<your-username>/<your-app-slug>/
     └── desktop.png      # full-page screenshot
 ```
 
-### manifest.json (required fields)
+### manifest.json (full field reference)
 
-Copy from `templates/static-app/manifest.json`. These are the key fields:
+Copy from `templates/static-app/manifest.json`. `schemas/manifest.schema.json` is the
+enforced source of truth — `npm run validate` checks against it. **• = required.**
 
-| Field | Example |
+**Top level**
+
+| Field | Notes |
 |---|---|
-| `prompt.text` | `"Build a habit tracker with a heatmap"` |
-| `prompt.builtWith` | `"Claude Code"`, `"OpenCode"`, `"Cursor"`, `"v0"` |
-| `prompt.model` | `"GPT-5.5"`, `"Claude Opus 4.8"`, `"GLM-5.1"` |
-| `prompt.modelId` | `"openai/gpt-5.5"`, `"anthropic/claude-opus-4.8"` |
-| `prompt.provider` | `"OpenAI"`, `"Anthropic"`, `"DeepInfra"` |
-| `prompt.effort` | `"low"`, `"medium"`, `"high"`, `"default"` |
-| `prompt.generationDurationSeconds` | Actual model inference time |
-| `prompt.followUpCount` | `0` = truly one shot |
-| `prompt.followUpPrompts` | Array of follow-up prompts if any |
-| `prompt.errorFixes` | Number of fix prompts after errors (0 = ran clean) |
-| `prompt.toolsUsed` | `["web-search", "code-interpreter"]` |
-| `manualEditLevel` | `"none-claimed"`, `"minor"`, `"moderate"`, `"significant"` |
-| `permissions.permissionToFeature` | `true` |
-| `permissions.rightsAttested` | `true` |
+| • `manifestVersion` | `"1.0"` |
+| • `name` | Display name, 3–60 chars |
+| • `slug` | URL-safe, must match the folder name (lowercase, `.` and `-` allowed) |
+| `collectionId` | Groups related submissions (e.g. same app across models); clustered together in the gallery. Convention: `<date>-<username>-<concept>`, e.g. `2026-06-13-dylandevus-stock-dashboard` |
+| • `tagline` | One-liner, 10–120 chars |
+| `description` | Longer summary, ≤ 2000 chars |
+| • `category` | One of: `productivity`, `developer-tools`, `design-tools`, `education`, `finance`, `data-visualization`, `internal-tools`, `games`, `writing`, `personal-utilities`, `ecommerce`, `health-fitness`, `other` |
+| `tags` | ≤ 8 unique topical strings (e.g. `finance`, `charts`) |
+| `techStack` | Languages + libraries used, lowercase slugs (≤ 12). Powers the gallery **Tech** filter. Suggested: `javascript`, `typescript`, `tailwind`, `chartjs`, `threejs`, `d3`, `lit-html`, `alpine`, `react`, `canvas`, `webgl`, `lucide`, `gsap`. Free-form — new libs don't need a schema change. |
+| • `manualEditLevel` | `none-claimed` / `minor` / `moderate` / `significant` / `unknown` |
+| `externalApiDomains` | Allowed CDN/API hosts the app calls |
+| `publishedAt` | ISO 8601 datetime, e.g. `2026-06-13T17:11:06-07:00` |
+
+**`prompt`**
+
+| Field | Notes |
+|---|---|
+| • `text` | Exact original prompt, 10–8000 chars |
+| • `builtWith` | Tool/agent — Claude Code, OpenCode, Cursor, v0, Lovable, Bolt, Windsurf… (free-form) |
+| `model` | Human-readable name — `GPT-5.5`, `Claude Opus 4.8`, `GLM-5.1` |
+| `modelId` | Canonical provider ID — `openai/gpt-5.5`, `anthropic/claude-opus-4.8` |
+| `provider` | API provider — OpenAI, Anthropic, DeepInfra, OpenRouter… |
+| `effort` | Reasoning effort — `low` / `medium` / `high` / `default` |
+| • `followUpCount` | Integer ≥ 0 (`0` = truly one shot) |
+| `followUpPrompts` | The actual follow-up prompts, in order |
+| `errorFixes` | Fix prompts sent after an error (`0` = ran clean) |
+| `generationDurationSeconds` | Model inference time, seconds |
+| `estimatedCostUSD` | Estimated API cost; `null` = unknown |
+| `toolsUsed` | Tools the model used while generating — subset of `web-search`, `external-api`, `code-interpreter`, `image-generation`, `file-upload`, `computer-use`, `other` |
+| `transcriptUrl` | URL to the full chat transcript |
+
+**`outcome`**
+
+| Field | Notes |
+|---|---|
+| • `reproducibility` | `full` / `partial` / `none` |
+| `timeToFirstVersionMinutes` | Integer ≥ 0 |
+| `worked` | Strings — what came out right |
+| `manualEdits` | Strings — edits you made by hand |
+| `issues` | Subset of `failed-to-start`, `crashes`, `broken-controls`, `visual-glitches`, `missing-features`, `poor-performance`, `mobile-broken` (empty = usable) |
+
+**`demo` / `source` / `author` / `media` / `permissions`**
+
+| Field | Notes |
+|---|---|
+| • `demo.type` | `bundle` or `live` |
+| `demo.entry` | Entry file for `bundle` (e.g. `index.html`) |
+| `demo.liveUrl` | URL for `live` demos |
+| • `source.available` | Boolean — is source published |
+| `source.url` / `source.license` | Repo URL and license, if available |
+| • `author.name` / • `author.handle` | Name + username |
+| `author.url` / `author.contactEmail` | Optional contact |
+| • `media.thumbnail` | Path to 1280×800 thumbnail |
+| • `media.screenshots` | ≥ 1 item, each `{ src, alt }` (`alt` ≥ 5 chars) |
+| • `permissions.permissionToFeature` | Must be `true` |
+| • `permissions.rightsAttested` | Must be `true` |
 
 ### prompt.md
 
 Paste your **exact original prompt**. If you want comparable outputs, append this:
 ```
-Output with a light theme that works on both desktop and mobile screens (responsive). Measure the total time it takes you to generate this app completely end-to-end.
+Output to a HTML file with a light theme that works on both desktop and mobile screens (responsive). Measure the total time it takes you to generate this app completely end-to-end.
 ```
 
 ### Screenshots

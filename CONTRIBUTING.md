@@ -27,7 +27,7 @@ Open a PR to this repo adding your app folder.
    index.html          required — demo entry point
    assets/             optional — local JS/CSS/images (relative paths)
 
-4. Fill manifest.json — key fields:
+4. Fill manifest.json — key fields below; full reference in docs/how-submissions-work.md:
    prompt.text                 exact original prompt
    prompt.builtWith            tool: OpenCode, Cursor, v0, Claude Code…
    prompt.model / modelId      e.g. "GLM-5.1" / "zai-org/GLM-5.1"
@@ -46,7 +46,7 @@ Open a PR to this repo adding your app folder.
 5. Add prompt.md — paste your exact original prompt.
    Append this to the end of your prompt for consistent, comparable outputs:
 
-   > Output with a light theme that works on both desktop and mobile screens (responsive). Measure the total time it takes you to generate this app completely end-to-end.
+   > Output to a HTML file with a light theme that works on both desktop and mobile screens (responsive). Measure the total time it takes you to generate this app completely end-to-end.
 
 6. Add screenshots/:
    thumbnail.png   1280×800 (16:10), ≤ 2 MB

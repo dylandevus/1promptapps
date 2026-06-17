@@ -2,6 +2,7 @@
   "manifestVersion": "1.0",
   "name": "Low Poly Village RPG Game",
   "slug": "low-poly-rpg-game-glm-5.1",
+  "collectionId": "2026-06-16-dylandevus-low-poly-rpg-game",
   "tagline": "A self-contained isometric canvas RPG in one HTML file — explore a village, fight monsters, cast magic, collect gold.",
   "description": "A self-contained isometric action-RPG rendered on HTML Canvas with vanilla JavaScript in a single file — all graphics drawn procedurally (no images or external assets). Explore a tiled village with buildings, water and a bridge; control a character with HP/MP bars and gold, manage an inventory, talk to NPC villagers, and battle monsters with melee or magic. Includes a minimap, damage feedback, and item pickups. Walk/run/jump with W/A/S/D + Space, attack with click or J, cast magic with K. Light theme, responsive, runs entirely offline with no CDN dependencies.",
   "category": "games",
@@ -17,6 +18,7 @@
     "procedural",
     "light-theme"
   ],
+  "techStack": ["javascript", "canvas"],
   "prompt": {
     "text": "Stylized low-poly isometric strategy / farming / village-builder map with a large explorable world, toy-like geometry, soft lighting, vibrant colors, and cozy casual strategy/RPG aesthetic, mobile game style. Colorful hand-painted textures, stylized medieval buildings, tiled grass terrain, cliffs and waterfall, barrels, gardens, stone bridges, pine trees, rocks, soft ambient lighting. Add small NPC villagers scattered around the map, doing daily activities. Search web for matching free assets, download and use them. Add a controllable main character with visible HP and MP bars. The character can walk, run, jump, attack monsters with melee or ranged attacks, cast magic spells using MP, collect gold, loot items, open chests, interact with NPC villagers, and explore the large isometric world. Include simple combat feedback, damage numbers, item pickups, enemy AI, and inventory-style rewards. Use W/A/S/D for movement, Space to jump, mouse click or J to attack monsters, and K to cast magic. Search and use recent best practices, tech stacks.\n\nOutput to local runnable HTML with a light theme that works on both desktop and mobile screens (responsive). Measure the total time it takes you to generate this app completely end-to-end.",
     "model": "GLM-5.1",

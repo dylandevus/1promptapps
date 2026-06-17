@@ -35,3 +35,9 @@ export function getBuiltWith(): string[] {
   if (!fs.existsSync(file)) return []
   return JSON.parse(fs.readFileSync(file, 'utf8'))
 }
+
+export function getTechStack(): string[] {
+  const file = path.join(process.cwd(), 'generated', 'tech-stack.json')
+  if (!fs.existsSync(file)) return []
+  return JSON.parse(fs.readFileSync(file, 'utf8'))
+}

@@ -2,6 +2,7 @@
   "manifestVersion": "1.0",
   "name": "Low Poly Village RPG Game",
   "slug": "low-poly-rpg-game-gpt-5.5-high",
+  "collectionId": "2026-06-16-dylandevus-low-poly-rpg-game",
   "tagline": "Isometric low-poly RPG in one HTML file: explore a village, fight with sword, bow and magic, grab loot.",
   "description": "A self-contained isometric action-RPG rendered on Canvas with vanilla JavaScript in a single HTML file. Roam a low-poly medieval village drawn from real Kenney isometric sprite packs (landscape tiles, buildings, and unit/environment sprites), track HP/MP and gold, manage an inventory filled by a randomized loot table, and battle enemies with melee, ranged (bow), and magic attacks. Includes on-screen touch controls (virtual joystick plus ATK/BOW/MAG/USE/JMP/RUN buttons) for mobile play. All art is local CC0 (Kenney + Quaternius packs) — no external CDNs or API calls required.",
   "category": "games",
@@ -18,6 +19,7 @@
     "sprites",
     "light-theme"
   ],
+  "techStack": ["javascript", "canvas"],
   "prompt": {
     "text": "Stylized low-poly isometric strategy / farming / village-builder map with a large explorable world, toy-like geometry, soft lighting, vibrant colors, and cozy casual strategy/RPG aesthetic, mobile game style. Colorful hand-painted textures, stylized medieval buildings, tiled grass terrain, cliffs and waterfall, barrels, gardens, stone bridges, pine trees, rocks, soft ambient lighting. Add small NPC villagers scattered around the map, doing daily activities. Search web for matching free assets, download and use them. Add a controllable main character with visible HP and MP bars. The character can walk, run, jump, attack monsters with melee or ranged attacks, cast magic spells using MP, collect gold, loot items, open chests, interact with NPC villagers, and explore the large isometric world. Include simple combat feedback, damage numbers, item pickups, enemy AI, and inventory-style rewards. Use W/A/S/D for movement, Space to jump, mouse click or J to attack monsters, and K to cast magic. Search and use recent best practices, tech stacks.\n\nOutput to local runnable HTML with a light theme that works on both desktop and mobile screens (responsive). Measure the total time it takes you to generate this app completely end-to-end.",
     "model": "GPT-5.5",
