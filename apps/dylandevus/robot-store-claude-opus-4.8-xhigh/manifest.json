@@ -1,0 +1,98 @@
+{
+  "manifestVersion": "1.0",
+  "name": "Robot Store Landing Page",
+  "slug": "robot-store-claude-opus-4.8-xhigh",
+  "collectionId": "2026-06-16-dylandevus-robot-store",
+  "tagline": "A premium landing page for warm, family-friendly humanoid home assistants.",
+  "description": "A light-themed fictional consumer robotics landing page for Aria, a gentle humanoid assistant for homes and families. Built as a single self-contained HTML file, it features a glassmorphism hero with an original hand-built animated SVG robot (blinking eyes, floating motion, pulsing heart), soft pastel gradients and subtle neon accents, animated stat counters, six benefit-focused feature cards, a bento-style 'Home & Family' use-case grid with Unsplash photography, a 'day with Aria' timeline, safety/privacy/reliability pillars, testimonials, two-tier preorder pricing with a working reserve form, a FAQ accordion, and a footer with navigation, legal links, and asset attribution. Typography uses Sora and Plus Jakarta Sans (Google Fonts); icons via Lucide; smooth scroll and reveal animations via GSAP ScrollTrigger and Lenis, all gated behind prefers-reduced-motion. Fully responsive with a glass mobile menu.",
+  "category": "landing-page",
+  "tags": [
+    "robotics",
+    "landing-page",
+    "humanoid",
+    "family",
+    "ai",
+    "preorder",
+    "light-theme",
+    "consumer-tech"
+  ],
+  "techStack": [
+    "html",
+    "css",
+    "javascript",
+    "tailwind",
+    "gsap",
+    "lucide",
+    "lenis"
+  ],
+  "prompt": {
+    "text": "Create a futuristic, premium landing page for a fictional company selling humanoid robot assistants for homes and families.\n\nUse web search to find suitable free-to-use assets, illustrations, icons, images, fonts, and animation inspiration. Prefer reputable sources with clear licenses such as Unsplash, Pexels, SVG Repo, Iconoir, Lucide, Google Fonts, LottieFiles, unDraw, Storyset, or similar. Only use assets that are free for commercial/demo use, and include attribution notes when required.\n\nBuild it using recent best-practice frontend tools and libraries, such as Next.js, React, TypeScript, Tailwind CSS, Framer Motion, GSAP, Three.js, React Three Fiber, shadcn/ui, or equivalent modern options where appropriate.\n\nDesign requirements:\n- Creative, Futuristic but warm, trustworthy, and family-friendly\n- Responsive modern layout\n- Premium typography\n- Glassmorphism, soft gradients, subtle neon accents\n- Smooth scroll animations and micro-interactions\n- Hero section with strong tagline\n- Product illustration or robot assistant visual\n- Marketing snippets and benefit-focused copy\n- Feature cards\n- Home and family use cases\n- Safety, privacy, and reliability messaging\n- Testimonials\n- Pricing or preorder CTA\n- Footer with navigation and legal links\n\nAvoid making the brand feel cold, dystopian, militarized, or unsafe. The final result should feel like an aspirational consumer robotics brand for everyday families.\n\nOutput to a HTML file with a light theme that works on both desktop and mobile screens (responsive). Measure the total time it takes you to generate this app completely end-to-end.",
+    "builtWith": "Claude Code",
+    "model": "Claude Opus 4.8",
+    "modelId": "anthropic/claude-opus-4.8",
+    "provider": "Anthropic",
+    "effort": "xhigh",
+    "followUpCount": 0,
+    "followUpPrompts": [],
+    "errorFixes": 0,
+    "generationDurationSeconds": 895,
+    "estimatedCostUSD": null,
+    "toolsUsed": [
+      "web-search"
+    ]
+  },
+  "outcome": {
+    "timeToFirstVersionMinutes": 15,
+    "reproducibility": "full",
+    "worked": [
+      "Responsive single-file landing page with a premium warm light visual system",
+      "Original hand-built animated SVG robot (blinking, floating, pulsing heart) as the hero centerpiece",
+      "Hero, animated stats, feature cards, bento home/family use cases, day timeline, safety/privacy/reliability, testimonials, preorder pricing, FAQ, and footer",
+      "Unsplash imagery, Google Fonts (Sora + Plus Jakarta Sans), Lucide icons, GSAP + Lenis animations from CDNs",
+      "Glassmorphism, soft gradients, subtle neon accents, and micro-interactions throughout",
+      "Working mobile glass menu, FAQ accordion, and preorder form with validation; prefers-reduced-motion respected",
+      "Asset attribution and license notes included in the footer",
+      "Desktop and mobile rendering verified in a headless browser"
+    ],
+    "manualEdits": [],
+    "issues": []
+  },
+  "demo": {
+    "type": "bundle",
+    "entry": "index.html"
+  },
+  "source": {
+    "available": false,
+    "url": null,
+    "license": null
+  },
+  "author": {
+    "name": "Duc Nguyen",
+    "handle": "dylandevus",
+    "url": null
+  },
+  "media": {
+    "thumbnail": "screenshots/thumbnail.png",
+    "screenshots": [
+      {
+        "src": "screenshots/desktop.jpg",
+        "alt": "Full-page Aria landing page with animated robot hero, feature cards, home and family use cases, safety messaging, testimonials, and preorder CTA"
+      }
+    ]
+  },
+  "permissions": {
+    "permissionToFeature": true,
+    "rightsAttested": true
+  },
+  "manualEditLevel": "none-claimed",
+  "externalApiDomains": [
+    "fonts.googleapis.com",
+    "fonts.gstatic.com",
+    "cdn.tailwindcss.com",
+    "images.unsplash.com",
+    "randomuser.me",
+    "unpkg.com",
+    "cdnjs.cloudflare.com"
+  ],
+  "publishedAt": "2026-06-17T00:19:10-07:00"
+}

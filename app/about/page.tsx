@@ -28,9 +28,11 @@ export default function AboutPage() {
       <main className="max-w-3xl mx-auto px-6 py-14">
         <h1 className="text-3xl font-bold mb-4" style={{ color: 'var(--ink)' }}>About</h1>
         <p className="text-base mb-10" style={{ color: 'var(--muted)' }}>
-          1PromptApps is a curated gallery of static webapps built from a single AI prompt.
-          Each entry shows the original prompt, a live demo, screenshots, the model and tool used,
-          generation time, and honest notes on what worked and what needed editing.
+          1PromptApps is a place to share an app you generated from a single AI prompt — and to
+          compare how different AI models tackle the same prompt. Each entry shows the original
+          prompt, a live demo, screenshots, the model and tool used, generation time, and honest
+          notes on what worked and what needed editing — so we can all see the real results and
+          differences.
         </p>
 
         <h2 className="text-lg font-semibold mb-3" style={{ color: 'var(--ink)' }}>What counts as one prompt?</h2>

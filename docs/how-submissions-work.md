@@ -63,7 +63,7 @@ enforced source of truth — `npm run validate` checks against it. **• = requi
 | `collectionId` | Groups related submissions (e.g. same app across models); clustered together in the gallery. Convention: `<date>-<username>-<concept>`, e.g. `2026-06-13-dylandevus-stock-dashboard` |
 | • `tagline` | One-liner, 10–120 chars |
 | `description` | Longer summary, ≤ 2000 chars |
-| • `category` | One of: `productivity`, `developer-tools`, `design-tools`, `education`, `finance`, `data-visualization`, `internal-tools`, `games`, `writing`, `personal-utilities`, `ecommerce`, `health-fitness`, `other` |
+| • `category` | One of: `productivity`, `developer-tools`, `design-tools`, `education`, `finance`, `data-visualization`, `internal-tools`, `games`, `writing`, `personal-utilities`, `ecommerce`, `landing-page`, `health-fitness`, `other` |
 | `tags` | ≤ 8 unique topical strings (e.g. `finance`, `charts`) |
 | `techStack` | Languages + libraries used, lowercase slugs (≤ 12). Powers the gallery **Tech** filter. Suggested: `javascript`, `typescript`, `tailwind`, `chartjs`, `threejs`, `d3`, `lit-html`, `alpine`, `react`, `canvas`, `webgl`, `lucide`, `gsap`. Free-form — new libs don't need a schema change. |
 | • `manualEditLevel` | `none-claimed` / `minor` / `moderate` / `significant` / `unknown` |

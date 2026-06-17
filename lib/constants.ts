@@ -10,6 +10,7 @@ export const CATEGORY_LABELS: Record<string, string> = {
   writing: 'Writing',
   'personal-utilities': 'Personal Utilities',
   ecommerce: 'E-commerce',
+  'landing-page': 'Landing Page',
   'health-fitness': 'Health & Fitness',
   other: 'Other',
 }

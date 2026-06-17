@@ -28,7 +28,7 @@
       "enum": [
         "productivity", "developer-tools", "design-tools", "education", "finance",
         "data-visualization", "internal-tools", "games", "writing",
-        "personal-utilities", "ecommerce", "health-fitness", "other"
+        "personal-utilities", "ecommerce", "landing-page", "health-fitness", "other"
       ]
     },
     "tags": {

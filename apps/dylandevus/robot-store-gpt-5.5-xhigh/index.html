@@ -1,0 +1,1551 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta
+      name="description"
+      content="LumaOne Halo is a fictional premium humanoid assistant for warm, trusted family robotics."
+    />
+    <title>LumaOne Halo | Family Humanoid Robot Assistant</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&amp;family=Space+Grotesk:wght@500;600;700&amp;display=swap"
+      rel="stylesheet"
+    />
+    <script>
+      document.documentElement.classList.add("js");
+    </script>
+    <style>
+      :root {
+        color-scheme: light;
+        --ink: #102024;
+        --muted: #607075;
+        --line: rgba(16, 32, 36, 0.12);
+        --panel: rgba(255, 255, 255, 0.72);
+        --white: #ffffff;
+        --paper: #fbfaf6;
+        --mist: #eef8f5;
+        --sage: #65a88f;
+        --teal: #1aa7a1;
+        --blue: #4a7dff;
+        --coral: #ff896a;
+        --amber: #f5bd4f;
+        --shadow: 0 24px 80px rgba(24, 48, 52, 0.14);
+        --radius: 8px;
+        --max: 1180px;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      html {
+        scroll-behavior: smooth;
+      }
+
+      body {
+        margin: 0;
+        background:
+          linear-gradient(180deg, rgba(238, 248, 245, 0.8), rgba(255, 255, 255, 0) 32rem),
+          var(--paper);
+        color: var(--ink);
+        font-family: Inter, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+        letter-spacing: 0;
+      }
+
+      img,
+      svg {
+        display: block;
+        max-width: 100%;
+      }
+
+      a {
+        color: inherit;
+        text-decoration: none;
+      }
+
+      button,
+      input {
+        font: inherit;
+      }
+
+      .shell {
+        width: min(var(--max), calc(100% - 40px));
+        margin: 0 auto;
+      }
+
+      .site-header {
+        position: fixed;
+        inset: 14px 0 auto;
+        z-index: 30;
+        pointer-events: none;
+      }
+
+      .nav {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 18px;
+        min-height: 62px;
+        border: 1px solid rgba(255, 255, 255, 0.72);
+        border-radius: var(--radius);
+        background: rgba(255, 255, 255, 0.68);
+        box-shadow: 0 18px 60px rgba(22, 45, 49, 0.12);
+        backdrop-filter: blur(22px);
+        pointer-events: auto;
+        padding: 10px 12px 10px 16px;
+      }
+
+      .brand {
+        display: inline-flex;
+        align-items: center;
+        gap: 10px;
+        min-width: max-content;
+        font-family: "Space Grotesk", Inter, sans-serif;
+        font-weight: 700;
+        letter-spacing: 0;
+      }
+
+      .brand-mark {
+        display: grid;
+        width: 34px;
+        height: 34px;
+        place-items: center;
+        border-radius: 8px;
+        background:
+          linear-gradient(135deg, rgba(26, 167, 161, 0.95), rgba(74, 125, 255, 0.88)),
+          #1aa7a1;
+        color: white;
+        box-shadow: 0 12px 30px rgba(26, 167, 161, 0.24);
+      }
+
+      .nav-links {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 4px;
+      }
+
+      .nav-links a,
+      .legal a {
+        border-radius: 999px;
+        color: rgba(16, 32, 36, 0.72);
+        font-size: 0.9rem;
+        font-weight: 700;
+        padding: 9px 12px;
+        transition:
+          background 180ms ease,
+          color 180ms ease,
+          transform 180ms ease;
+      }
+
+      .nav-links a:hover,
+      .legal a:hover {
+        background: rgba(26, 167, 161, 0.09);
+        color: var(--ink);
+      }
+
+      .nav-cta,
+      .btn {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 9px;
+        min-height: 44px;
+        border: 0;
+        border-radius: 8px;
+        cursor: pointer;
+        font-weight: 800;
+        line-height: 1;
+        transition:
+          transform 180ms ease,
+          box-shadow 180ms ease,
+          background 180ms ease;
+        white-space: nowrap;
+      }
+
+      .nav-cta {
+        background: var(--ink);
+        color: white;
+        padding: 0 16px;
+        box-shadow: 0 16px 34px rgba(16, 32, 36, 0.18);
+      }
+
+      .btn {
+        padding: 0 20px;
+      }
+
+      .btn:hover,
+      .nav-cta:hover {
+        transform: translateY(-2px);
+      }
+
+      .btn-primary {
+        background: linear-gradient(135deg, var(--ink), #21484e);
+        color: white;
+        box-shadow: 0 18px 44px rgba(16, 32, 36, 0.22);
+      }
+
+      .btn-secondary {
+        border: 1px solid rgba(16, 32, 36, 0.13);
+        background: rgba(255, 255, 255, 0.74);
+        color: var(--ink);
+        backdrop-filter: blur(14px);
+      }
+
+      .hero {
+        position: relative;
+        display: grid;
+        min-height: 78svh;
+        overflow: clip;
+        padding: 120px 0 36px;
+        background:
+          linear-gradient(115deg, rgba(251, 250, 246, 0.98) 0%, rgba(242, 249, 246, 0.94) 34%, rgba(238, 247, 255, 0.86) 66%, rgba(255, 246, 235, 0.9) 100%),
+          linear-gradient(180deg, #ffffff, #edf9f6);
+      }
+
+      .hero::before {
+        position: absolute;
+        inset: 0;
+        content: "";
+        background-image:
+          linear-gradient(90deg, rgba(16, 32, 36, 0.055) 1px, transparent 1px),
+          linear-gradient(180deg, rgba(16, 32, 36, 0.045) 1px, transparent 1px);
+        background-size: 72px 72px;
+        mask-image: linear-gradient(90deg, rgba(0, 0, 0, 0.26), rgba(0, 0, 0, 0.06) 62%, transparent);
+      }
+
+      .hero::after {
+        position: absolute;
+        right: 0;
+        bottom: 0;
+        left: 0;
+        height: 180px;
+        content: "";
+        background: linear-gradient(180deg, transparent, rgba(251, 250, 246, 0.95));
+        pointer-events: none;
+      }
+
+      .hero-media {
+        position: absolute;
+        inset: 78px 0 0 auto;
+        width: min(50vw, 720px);
+        opacity: 0.9;
+        pointer-events: none;
+      }
+
+      .hero-media img {
+        width: 100%;
+        height: min(72svh, 720px);
+        object-fit: cover;
+        object-position: 60% center;
+        filter: saturate(1.04) contrast(0.98) brightness(1.08);
+        mask-image: linear-gradient(90deg, transparent 0%, transparent 26%, rgba(0, 0, 0, 0.5) 46%, black 64%);
+      }
+
+      .hero-copy {
+        position: relative;
+        z-index: 2;
+        align-self: center;
+        width: min(680px, 100%);
+      }
+
+      .eyebrow {
+        display: inline-flex;
+        align-items: center;
+        gap: 9px;
+        width: fit-content;
+        border: 1px solid rgba(26, 167, 161, 0.2);
+        border-radius: 999px;
+        background: rgba(255, 255, 255, 0.58);
+        color: #23645c;
+        font-size: 0.82rem;
+        font-weight: 800;
+        padding: 8px 12px;
+        box-shadow: 0 12px 36px rgba(26, 167, 161, 0.11);
+        backdrop-filter: blur(18px);
+      }
+
+      .pulse-dot {
+        width: 8px;
+        height: 8px;
+        border-radius: 999px;
+        background: var(--teal);
+        box-shadow: 0 0 0 7px rgba(26, 167, 161, 0.13);
+      }
+
+      h1,
+      h2,
+      h3,
+      .display {
+        margin: 0;
+        font-family: "Space Grotesk", Inter, sans-serif;
+        letter-spacing: 0;
+      }
+
+      h1 {
+        max-width: 710px;
+        margin-top: 18px;
+        font-size: clamp(3.6rem, 7.2vw, 6.9rem);
+        line-height: 0.9;
+      }
+
+      .tagline {
+        max-width: 650px;
+        margin: 20px 0 0;
+        color: rgba(16, 32, 36, 0.76);
+        font-size: clamp(1.16rem, 2.1vw, 1.55rem);
+        font-weight: 600;
+        line-height: 1.45;
+      }
+
+      .hero-actions {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 12px;
+        margin-top: 30px;
+      }
+
+      .hero-proof {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 14px;
+        margin-top: 34px;
+      }
+
+      .proof-item {
+        min-width: 150px;
+        border-left: 2px solid rgba(26, 167, 161, 0.35);
+        padding-left: 13px;
+      }
+
+      .proof-item strong {
+        display: block;
+        font-family: "Space Grotesk", Inter, sans-serif;
+        font-size: 1.25rem;
+      }
+
+      .proof-item span {
+        color: var(--muted);
+        font-size: 0.87rem;
+        font-weight: 700;
+      }
+
+      .home-dock {
+        position: relative;
+        right: auto;
+        bottom: auto;
+        z-index: 3;
+        display: grid;
+        width: min(340px, 100%);
+        gap: 10px;
+        margin-top: 28px;
+        border: 1px solid rgba(255, 255, 255, 0.72);
+        border-radius: var(--radius);
+        background: rgba(255, 255, 255, 0.66);
+        box-shadow: var(--shadow);
+        padding: 14px;
+        backdrop-filter: blur(18px);
+      }
+
+      .dock-row {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+        color: rgba(16, 32, 36, 0.78);
+        font-size: 0.88rem;
+        font-weight: 800;
+      }
+
+      .dock-meter {
+        height: 8px;
+        overflow: hidden;
+        border-radius: 999px;
+        background: rgba(16, 32, 36, 0.08);
+      }
+
+      .dock-meter span {
+        display: block;
+        width: 86%;
+        height: 100%;
+        border-radius: inherit;
+        background: linear-gradient(90deg, var(--teal), var(--amber), var(--coral));
+      }
+
+      .section {
+        scroll-margin-top: 112px;
+        padding: 86px 0;
+      }
+
+      .section-tight {
+        padding: 54px 0;
+      }
+
+      .section-head {
+        display: grid;
+        grid-template-columns: minmax(0, 0.92fr) minmax(260px, 0.58fr);
+        gap: 28px;
+        align-items: end;
+        margin-bottom: 34px;
+      }
+
+      .kicker {
+        margin: 0 0 12px;
+        color: #286e66;
+        font-size: 0.78rem;
+        font-weight: 900;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+      }
+
+      h2 {
+        max-width: 780px;
+        font-size: clamp(2.15rem, 5vw, 4.6rem);
+        line-height: 0.98;
+      }
+
+      .section-lede {
+        margin: 0;
+        color: var(--muted);
+        font-size: 1.04rem;
+        font-weight: 600;
+        line-height: 1.65;
+      }
+
+      .trust-band {
+        position: relative;
+        z-index: 4;
+        margin-top: -24px;
+      }
+
+      .trust-grid {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 1px;
+        overflow: hidden;
+        border: 1px solid rgba(16, 32, 36, 0.08);
+        border-radius: var(--radius);
+        background: rgba(16, 32, 36, 0.08);
+        box-shadow: 0 18px 48px rgba(20, 48, 50, 0.1);
+      }
+
+      .trust-item {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        min-height: 96px;
+        background: rgba(255, 255, 255, 0.72);
+        padding: 20px;
+        backdrop-filter: blur(18px);
+      }
+
+      .icon-box {
+        display: grid;
+        flex: 0 0 auto;
+        width: 42px;
+        height: 42px;
+        place-items: center;
+        border-radius: 8px;
+        background: linear-gradient(135deg, rgba(26, 167, 161, 0.14), rgba(74, 125, 255, 0.12));
+        color: #176d67;
+      }
+
+      .trust-item strong {
+        display: block;
+        font-size: 0.96rem;
+      }
+
+      .trust-item span {
+        display: block;
+        margin-top: 3px;
+        color: var(--muted);
+        font-size: 0.83rem;
+        font-weight: 600;
+      }
+
+      .showcase {
+        display: grid;
+        grid-template-columns: minmax(0, 1.04fr) minmax(320px, 0.72fr);
+        gap: 34px;
+        align-items: center;
+      }
+
+      .photo-panel {
+        position: relative;
+        min-height: 520px;
+        overflow: hidden;
+        border: 1px solid rgba(255, 255, 255, 0.78);
+        border-radius: var(--radius);
+        box-shadow: var(--shadow);
+      }
+
+      .photo-panel img {
+        position: absolute;
+        inset: 0;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+      }
+
+      .photo-caption {
+        position: absolute;
+        right: 18px;
+        bottom: 18px;
+        left: 18px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 18px;
+        border: 1px solid rgba(255, 255, 255, 0.76);
+        border-radius: var(--radius);
+        background: rgba(255, 255, 255, 0.7);
+        padding: 14px;
+        backdrop-filter: blur(18px);
+      }
+
+      .photo-caption strong {
+        display: block;
+      }
+
+      .photo-caption span {
+        color: var(--muted);
+        font-size: 0.88rem;
+        font-weight: 700;
+      }
+
+      .status-pill {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        border-radius: 999px;
+        background: rgba(101, 168, 143, 0.13);
+        color: #256f62;
+        font-size: 0.78rem;
+        font-weight: 900;
+        padding: 7px 10px;
+        white-space: nowrap;
+      }
+
+      .spec-list {
+        display: grid;
+        gap: 14px;
+      }
+
+      .spec {
+        display: grid;
+        grid-template-columns: 42px 1fr;
+        gap: 14px;
+        align-items: start;
+        border: 1px solid rgba(16, 32, 36, 0.09);
+        border-radius: var(--radius);
+        background: rgba(255, 255, 255, 0.6);
+        padding: 17px;
+        box-shadow: 0 16px 40px rgba(16, 32, 36, 0.06);
+      }
+
+      .spec h3,
+      .feature-card h3,
+      .usecase h3,
+      .safety-card h3,
+      .price-card h3 {
+        font-size: 1.12rem;
+        line-height: 1.2;
+      }
+
+      .spec p,
+      .feature-card p,
+      .usecase p,
+      .safety-card p,
+      .testimonial p,
+      .price-card p {
+        margin: 8px 0 0;
+        color: var(--muted);
+        line-height: 1.6;
+      }
+
+      .feature-grid {
+        display: grid;
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+        gap: 16px;
+      }
+
+      .feature-card,
+      .usecase,
+      .safety-card,
+      .testimonial,
+      .price-card {
+        border: 1px solid rgba(16, 32, 36, 0.09);
+        border-radius: var(--radius);
+        background: rgba(255, 255, 255, 0.62);
+        box-shadow: 0 18px 44px rgba(16, 32, 36, 0.07);
+        backdrop-filter: blur(18px);
+      }
+
+      .feature-card {
+        min-height: 270px;
+        padding: 20px;
+      }
+
+      .feature-card .icon-box,
+      .usecase .icon-box,
+      .safety-card .icon-box {
+        margin-bottom: 28px;
+      }
+
+      .feature-tag {
+        display: inline-flex;
+        margin-top: 22px;
+        border-radius: 999px;
+        background: rgba(255, 137, 106, 0.12);
+        color: #9b4532;
+        font-size: 0.76rem;
+        font-weight: 900;
+        padding: 6px 9px;
+      }
+
+      .usecases {
+        background:
+          linear-gradient(120deg, rgba(238, 248, 245, 0.72), rgba(255, 247, 236, 0.78)),
+          #ffffff;
+      }
+
+      .usecase-grid {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 16px;
+      }
+
+      .usecase {
+        display: grid;
+        grid-template-columns: 84px 1fr;
+        gap: 18px;
+        padding: 20px;
+      }
+
+      .usecase .icon-box {
+        width: 64px;
+        height: 64px;
+        margin-bottom: 0;
+        color: #315fbd;
+        background: linear-gradient(135deg, rgba(74, 125, 255, 0.13), rgba(245, 189, 79, 0.14));
+      }
+
+      .safety {
+        position: relative;
+        overflow: hidden;
+        background:
+          linear-gradient(135deg, rgba(16, 32, 36, 0.92), rgba(23, 71, 73, 0.9)),
+          #102024;
+        color: white;
+      }
+
+      .safety::before {
+        position: absolute;
+        inset: 0;
+        content: "";
+        background-image:
+          linear-gradient(120deg, rgba(26, 167, 161, 0.18), transparent 38%),
+          linear-gradient(260deg, rgba(255, 137, 106, 0.16), transparent 42%);
+      }
+
+      .safety .shell {
+        position: relative;
+      }
+
+      .safety .kicker {
+        color: #9fe4d9;
+      }
+
+      .safety h2,
+      .safety .section-lede {
+        color: white;
+      }
+
+      .safety .section-lede {
+        opacity: 0.78;
+      }
+
+      .safety-grid {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 16px;
+      }
+
+      .safety-card {
+        border-color: rgba(255, 255, 255, 0.16);
+        background: rgba(255, 255, 255, 0.08);
+        box-shadow: none;
+        padding: 22px;
+      }
+
+      .safety-card p {
+        color: rgba(255, 255, 255, 0.74);
+      }
+
+      .safety-card .icon-box {
+        background: rgba(255, 255, 255, 0.13);
+        color: #a9f1e4;
+      }
+
+      .testimonial-grid {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 16px;
+      }
+
+      .testimonial {
+        padding: 22px;
+      }
+
+      .stars {
+        display: flex;
+        gap: 4px;
+        margin-bottom: 18px;
+        color: #e8a73d;
+      }
+
+      .person {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        margin-top: 22px;
+      }
+
+      .avatar {
+        display: grid;
+        width: 42px;
+        height: 42px;
+        place-items: center;
+        border-radius: 8px;
+        background: linear-gradient(135deg, rgba(26, 167, 161, 0.16), rgba(255, 137, 106, 0.18));
+        color: var(--ink);
+        font-weight: 900;
+      }
+
+      .person strong {
+        display: block;
+      }
+
+      .person span {
+        color: var(--muted);
+        font-size: 0.86rem;
+        font-weight: 700;
+      }
+
+      .pricing {
+        position: relative;
+        overflow: hidden;
+      }
+
+      .price-grid {
+        display: grid;
+        grid-template-columns: minmax(0, 0.85fr) minmax(320px, 0.52fr);
+        gap: 16px;
+        align-items: stretch;
+      }
+
+      .price-card {
+        padding: 26px;
+      }
+
+      .price-card.featured {
+        background:
+          linear-gradient(135deg, rgba(255, 255, 255, 0.84), rgba(238, 248, 245, 0.72)),
+          white;
+      }
+
+      .reserve-title {
+        margin-top: 22px;
+      }
+
+      .price {
+        display: flex;
+        align-items: end;
+        gap: 9px;
+        margin: 24px 0 10px;
+        font-family: "Space Grotesk", Inter, sans-serif;
+        font-size: clamp(2.4rem, 6vw, 5rem);
+        font-weight: 700;
+        line-height: 0.86;
+      }
+
+      .price small {
+        color: var(--muted);
+        font-family: Inter, sans-serif;
+        font-size: 0.95rem;
+        font-weight: 800;
+      }
+
+      .checks {
+        display: grid;
+        gap: 12px;
+        margin: 24px 0 28px;
+        padding: 0;
+        list-style: none;
+      }
+
+      .checks li {
+        display: flex;
+        gap: 10px;
+        align-items: start;
+        color: rgba(16, 32, 36, 0.75);
+        font-weight: 700;
+        line-height: 1.45;
+      }
+
+      .checks i {
+        flex: 0 0 auto;
+        margin-top: 2px;
+        color: #16867f;
+      }
+
+      .mini-form {
+        display: flex;
+        gap: 10px;
+        margin-top: 28px;
+      }
+
+      .mini-form input {
+        width: 100%;
+        min-height: 48px;
+        border: 1px solid rgba(16, 32, 36, 0.12);
+        border-radius: 8px;
+        background: rgba(255, 255, 255, 0.8);
+        color: var(--ink);
+        outline: none;
+        padding: 0 14px;
+      }
+
+      .mini-form input:focus {
+        border-color: rgba(26, 167, 161, 0.6);
+        box-shadow: 0 0 0 4px rgba(26, 167, 161, 0.12);
+      }
+
+      .site-footer {
+        border-top: 1px solid rgba(16, 32, 36, 0.1);
+        background: #ffffff;
+        padding: 42px 0;
+      }
+
+      .footer-grid {
+        display: grid;
+        grid-template-columns: 1fr auto;
+        gap: 24px;
+        align-items: start;
+      }
+
+      .footer-copy {
+        max-width: 740px;
+        color: var(--muted);
+        font-size: 0.9rem;
+        font-weight: 600;
+        line-height: 1.7;
+      }
+
+      .legal {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: flex-end;
+        gap: 2px;
+      }
+
+      .asset-note {
+        margin-top: 18px;
+        color: #6c797d;
+        font-size: 0.78rem;
+        line-height: 1.55;
+      }
+
+      .asset-note a {
+        color: #245f9f;
+        font-weight: 800;
+        text-decoration: underline;
+        text-decoration-thickness: 1px;
+        text-underline-offset: 3px;
+      }
+
+      .js .reveal {
+        opacity: 0;
+        transform: translateY(26px);
+      }
+
+      @media (hover: hover) {
+        .feature-card:hover,
+        .usecase:hover,
+        .testimonial:hover,
+        .price-card:hover,
+        .spec:hover {
+          transform: translateY(-3px);
+          transition:
+            transform 180ms ease,
+            box-shadow 180ms ease;
+          box-shadow: 0 22px 60px rgba(16, 32, 36, 0.1);
+        }
+      }
+
+      @media (max-width: 980px) {
+        .shell {
+          width: min(100% - 28px, var(--max));
+        }
+
+        .nav-links {
+          display: none;
+        }
+
+        .hero {
+          min-height: auto;
+          padding: 116px 0 70px;
+        }
+
+        .hero-media {
+          inset: 80px -30vw 0 auto;
+          width: 100vw;
+          opacity: 0.2;
+        }
+
+        .hero-media img {
+          height: 100%;
+          min-height: 720px;
+          mask-image: linear-gradient(90deg, transparent, black 30%);
+        }
+
+        .home-dock {
+          width: min(100%, 390px);
+          margin-top: 28px;
+        }
+
+        .section-head,
+        .showcase,
+        .price-grid {
+          grid-template-columns: 1fr;
+        }
+
+        .trust-grid,
+        .feature-grid,
+        .safety-grid,
+        .testimonial-grid {
+          grid-template-columns: repeat(2, minmax(0, 1fr));
+        }
+
+        .photo-panel {
+          min-height: 430px;
+        }
+      }
+
+      @media (max-width: 680px) {
+        .site-header {
+          top: 10px;
+        }
+
+        .nav {
+          min-height: 58px;
+          padding-left: 12px;
+        }
+
+        .brand span:last-child {
+          max-width: 134px;
+          overflow: hidden;
+          text-overflow: ellipsis;
+          white-space: nowrap;
+        }
+
+        .nav-cta {
+          min-height: 40px;
+          padding: 0 12px;
+          font-size: 0.86rem;
+        }
+
+        h1 {
+          font-size: clamp(3.05rem, 15.5vw, 4.35rem);
+        }
+
+        .tagline {
+          font-size: 1.05rem;
+        }
+
+        .hero-actions,
+        .mini-form {
+          flex-direction: column;
+        }
+
+        .btn,
+        .mini-form input {
+          width: 100%;
+        }
+
+        .proof-item {
+          min-width: calc(50% - 14px);
+        }
+
+        .trust-grid,
+        .feature-grid,
+        .usecase-grid,
+        .safety-grid,
+        .testimonial-grid {
+          grid-template-columns: 1fr;
+        }
+
+        .trust-item {
+          min-height: 82px;
+        }
+
+        .section {
+          padding: 68px 0;
+        }
+
+        .section-tight {
+          padding: 44px 0;
+        }
+
+        .photo-panel {
+          min-height: 360px;
+        }
+
+        .photo-caption {
+          align-items: flex-start;
+          flex-direction: column;
+        }
+
+        .usecase {
+          grid-template-columns: 1fr;
+        }
+
+        .usecase .icon-box {
+          width: 54px;
+          height: 54px;
+        }
+
+        .footer-grid {
+          grid-template-columns: 1fr;
+        }
+
+        .legal {
+          justify-content: flex-start;
+        }
+      }
+
+      @media (prefers-reduced-motion: reduce) {
+        *,
+        *::before,
+        *::after {
+          animation-duration: 0.01ms !important;
+          animation-iteration-count: 1 !important;
+          scroll-behavior: auto !important;
+          transition-duration: 0.01ms !important;
+        }
+
+        .js .reveal {
+          opacity: 1;
+          transform: none;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <header class="site-header" aria-label="Primary navigation">
+      <nav class="nav shell">
+        <a class="brand" href="#top" aria-label="LumaOne Halo home">
+          <span class="brand-mark"><i data-lucide="bot"></i></span>
+          <span>LumaOne Halo</span>
+        </a>
+        <div class="nav-links" aria-label="Section links">
+          <a href="#features">Features</a>
+          <a href="#home">Home Life</a>
+          <a href="#safety">Safety</a>
+          <a href="#pricing">Preorder</a>
+        </div>
+        <a class="nav-cta" href="#pricing">
+          <i data-lucide="sparkles"></i>
+          Reserve
+        </a>
+      </nav>
+    </header>
+
+    <main id="top">
+      <section class="hero" aria-labelledby="hero-title">
+        <div class="hero-media" aria-hidden="true">
+          <img
+            src="https://images.pexels.com/photos/8294622/pexels-photo-8294622.jpeg?auto=compress&amp;cs=tinysrgb&amp;w=1600"
+            alt=""
+          />
+        </div>
+        <div class="shell hero-copy">
+          <div class="eyebrow"><span class="pulse-dot"></span> Consumer robotics for calmer homes</div>
+          <h1 id="hero-title">LumaOne Halo</h1>
+          <p class="tagline">
+            The humanoid assistant made for everyday family life: helpful with routines, gentle around kids,
+            private by design, and ready when your home gets busy.
+          </p>
+          <div class="hero-actions">
+            <a class="btn btn-primary" href="#pricing">
+              <i data-lucide="calendar-check"></i>
+              Reserve Halo
+            </a>
+            <a class="btn btn-secondary" href="#home">
+              <i data-lucide="play-circle"></i>
+              See Home Moments
+            </a>
+          </div>
+          <div class="hero-proof" aria-label="Product highlights">
+            <div class="proof-item">
+              <strong>42 lb</strong>
+              <span>soft-touch assist lift</span>
+            </div>
+            <div class="proof-item">
+              <strong>18 hr</strong>
+              <span>typical home standby</span>
+            </div>
+            <div class="proof-item">
+              <strong>0 cloud</strong>
+              <span>default private mode</span>
+            </div>
+          </div>
+          <div class="home-dock" aria-label="Halo readiness status">
+            <div class="dock-row">
+              <span>Family profile active</span>
+              <i data-lucide="shield-check"></i>
+            </div>
+            <div class="dock-meter" aria-hidden="true"><span></span></div>
+            <div class="dock-row">
+              <span>Quiet assist mode</span>
+              <span>86%</span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="trust-band section-tight" aria-label="Trust highlights">
+        <div class="shell trust-grid reveal">
+          <div class="trust-item">
+            <span class="icon-box"><i data-lucide="heart-handshake"></i></span>
+            <div>
+              <strong>Family-first gestures</strong>
+              <span>Slow approach, soft voice, kid-aware spacing.</span>
+            </div>
+          </div>
+          <div class="trust-item">
+            <span class="icon-box"><i data-lucide="lock-keyhole"></i></span>
+            <div>
+              <strong>Local privacy vault</strong>
+              <span>Faces, routines, and rooms stay at home.</span>
+            </div>
+          </div>
+          <div class="trust-item">
+            <span class="icon-box"><i data-lucide="badge-check"></i></span>
+            <div>
+              <strong>Home safety stack</strong>
+              <span>Force limits, fall avoidance, emergency stop.</span>
+            </div>
+          </div>
+          <div class="trust-item">
+            <span class="icon-box"><i data-lucide="leaf"></i></span>
+            <div>
+              <strong>Warm industrial design</strong>
+              <span>Soft materials and calm ambient lighting.</span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="section" id="home">
+        <div class="shell">
+          <div class="section-head reveal">
+            <div>
+              <p class="kicker">Home Life</p>
+              <h2>A helpful presence that learns the rhythm of your household.</h2>
+            </div>
+            <p class="section-lede">
+              Halo is designed for shared spaces: kitchens, playrooms, laundry corners, entryways, and the small
+              transitions that can make a busy day feel heavier than it needs to.
+            </p>
+          </div>
+
+          <div class="showcase">
+            <figure class="photo-panel reveal">
+              <img
+                src="https://images.pexels.com/photos/8294810/pexels-photo-8294810.jpeg?auto=compress&amp;cs=tinysrgb&amp;w=1400"
+                alt="A parent and child sitting in a living room with a small humanoid robot."
+              />
+              <figcaption class="photo-caption">
+                <div>
+                  <strong>Guided play without taking over</strong>
+                  <span>Halo can set up STEM games, then step back for family time.</span>
+                </div>
+                <span class="status-pill"><i data-lucide="activity"></i> Calm mode</span>
+              </figcaption>
+            </figure>
+
+            <div class="spec-list">
+              <article class="spec reveal">
+                <span class="icon-box"><i data-lucide="hand"></i></span>
+                <div>
+                  <h3>Capable with everyday objects</h3>
+                  <p>
+                    From lunch containers to laundry baskets, Halo prioritizes lightweight household tasks with
+                    predictable, visible movement.
+                  </p>
+                </div>
+              </article>
+              <article class="spec reveal">
+                <span class="icon-box"><i data-lucide="volume-2"></i></span>
+                <div>
+                  <h3>Voice that respects the room</h3>
+                  <p>
+                    A warm tone, room-aware volume, and parent-managed permissions keep assistance from feeling
+                    intrusive.
+                  </p>
+                </div>
+              </article>
+              <article class="spec reveal">
+                <span class="icon-box"><i data-lucide="route"></i></span>
+                <div>
+                  <h3>Routines, not surveillance</h3>
+                  <p>
+                    Halo learns household patterns as private automations, not behavioral profiles sold across the
+                    internet.
+                  </p>
+                </div>
+              </article>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="section" id="features">
+        <div class="shell">
+          <div class="section-head reveal">
+            <div>
+              <p class="kicker">What Halo Handles</p>
+              <h2>Premium robotics for the tasks families repeat every day.</h2>
+            </div>
+            <p class="section-lede">
+              The assistant is fictional, but the product promise is grounded: visible help, simple controls, and
+              automation that never hides what it is doing.
+            </p>
+          </div>
+
+          <div class="feature-grid">
+            <article class="feature-card reveal">
+              <span class="icon-box"><i data-lucide="shirt"></i></span>
+              <h3>Laundry sidekick</h3>
+              <p>Sorts gentle piles, carries light baskets, and reminds you when the dryer has finished.</p>
+              <span class="feature-tag">Home chores</span>
+            </article>
+            <article class="feature-card reveal">
+              <span class="icon-box"><i data-lucide="utensils"></i></span>
+              <h3>Kitchen reset</h3>
+              <p>Clears safe counter items, stages lunch prep, and keeps timers visible across the room.</p>
+              <span class="feature-tag">Meal flow</span>
+            </article>
+            <article class="feature-card reveal">
+              <span class="icon-box"><i data-lucide="book-open-check"></i></span>
+              <h3>Homework companion</h3>
+              <p>Guides focus blocks, reads prompts aloud, and hands control back to parents.</p>
+              <span class="feature-tag">Kids &amp; learning</span>
+            </article>
+            <article class="feature-card reveal">
+              <span class="icon-box"><i data-lucide="home"></i></span>
+              <h3>Entryway concierge</h3>
+              <p>Preps bags, checks the door list, and quietly catches missing keys before school runs.</p>
+              <span class="feature-tag">Daily routines</span>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section class="section usecases" aria-labelledby="usecase-title">
+        <div class="shell">
+          <div class="section-head reveal">
+            <div>
+              <p class="kicker">Use Cases</p>
+              <h2 id="usecase-title">Built around the human parts of the day.</h2>
+            </div>
+            <p class="section-lede">
+              Halo is meant to feel like practical help, not a showpiece. Its best moments are small, quiet, and
+              repeatable.
+            </p>
+          </div>
+
+          <div class="usecase-grid">
+            <article class="usecase reveal">
+              <span class="icon-box"><i data-lucide="sunrise"></i></span>
+              <div>
+                <h3>Morning launch</h3>
+                <p>Sets out backpacks, confirms medication reminders, and keeps the breakfast list moving.</p>
+              </div>
+            </article>
+            <article class="usecase reveal">
+              <span class="icon-box"><i data-lucide="baby"></i></span>
+              <div>
+                <h3>Kid-aware assistance</h3>
+                <p>Uses a slower motion envelope around children and waits for explicit parent approval.</p>
+              </div>
+            </article>
+            <article class="usecase reveal">
+              <span class="icon-box"><i data-lucide="package-check"></i></span>
+              <div>
+                <h3>Errand staging</h3>
+                <p>Collects returns, grocery totes, and reusable bottles near the door before you leave.</p>
+              </div>
+            </article>
+            <article class="usecase reveal">
+              <span class="icon-box"><i data-lucide="moon-star"></i></span>
+              <div>
+                <h3>Evening reset</h3>
+                <p>Dims lights, clears safe clutter, and gives a short home status without late-night noise.</p>
+              </div>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section class="section safety" id="safety">
+        <div class="shell">
+          <div class="section-head reveal">
+            <div>
+              <p class="kicker">Safety, Privacy, Reliability</p>
+              <h2>Trust is the product, not a setting buried in a menu.</h2>
+            </div>
+            <p class="section-lede">
+              Halo's fictional control system is presented around conservative motion, local-first intelligence, and
+              clear family authority over every shared-space behavior.
+            </p>
+          </div>
+
+          <div class="safety-grid">
+            <article class="safety-card reveal">
+              <span class="icon-box"><i data-lucide="shield"></i></span>
+              <h3>Physical safety envelope</h3>
+              <p>Limited joint force, padded touch zones, visual path projection, and room-level emergency stop.</p>
+            </article>
+            <article class="safety-card reveal">
+              <span class="icon-box"><i data-lucide="database-zap"></i></span>
+              <h3>Local-first intelligence</h3>
+              <p>House maps and family routines are stored on-device with cloud features off by default.</p>
+            </article>
+            <article class="safety-card reveal">
+              <span class="icon-box"><i data-lucide="wrench"></i></span>
+              <h3>Service you can understand</h3>
+              <p>Plain-language diagnostics, modular service visits, and a transparent uptime history.</p>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section class="section" id="stories">
+        <div class="shell">
+          <div class="section-head reveal">
+            <div>
+              <p class="kicker">Family Reviews</p>
+              <h2>Early households describe relief, not novelty.</h2>
+            </div>
+            <p class="section-lede">
+              Fictional testimonials for the fictional launch, written to reflect the brand tone: practical, warm,
+              and specific.
+            </p>
+          </div>
+
+          <div class="testimonial-grid">
+            <article class="testimonial reveal">
+              <div class="stars" aria-label="Five star review">
+                <i data-lucide="star"></i><i data-lucide="star"></i><i data-lucide="star"></i><i data-lucide="star"></i><i data-lucide="star"></i>
+              </div>
+              <p>
+                "Halo feels less like a gadget and more like the missing 20 minutes between dinner and bedtime."
+              </p>
+              <div class="person">
+                <span class="avatar">MR</span>
+                <div>
+                  <strong>Maya R.</strong>
+                  <span>Parent of two, Seattle</span>
+                </div>
+              </div>
+            </article>
+            <article class="testimonial reveal">
+              <div class="stars" aria-label="Five star review">
+                <i data-lucide="star"></i><i data-lucide="star"></i><i data-lucide="star"></i><i data-lucide="star"></i><i data-lucide="star"></i>
+              </div>
+              <p>
+                "The privacy controls are why we kept it on. Nothing felt hidden, and every routine was easy to audit."
+              </p>
+              <div class="person">
+                <span class="avatar">JK</span>
+                <div>
+                  <strong>Jon K.</strong>
+                  <span>Security engineer, Austin</span>
+                </div>
+              </div>
+            </article>
+            <article class="testimonial reveal">
+              <div class="stars" aria-label="Five star review">
+                <i data-lucide="star"></i><i data-lucide="star"></i><i data-lucide="star"></i><i data-lucide="star"></i><i data-lucide="star"></i>
+              </div>
+              <p>
+                "My dad uses Halo for reminders and light carrying. It gives him independence without making him feel monitored."
+              </p>
+              <div class="person">
+                <span class="avatar">AL</span>
+                <div>
+                  <strong>Ari L.</strong>
+                  <span>Care partner, Denver</span>
+                </div>
+              </div>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section class="section pricing" id="pricing">
+        <div class="shell">
+          <div class="section-head reveal">
+            <div>
+              <p class="kicker">Preorder</p>
+              <h2>Reserve a place in the first family pilot.</h2>
+            </div>
+            <p class="section-lede">
+              A premium fictional launch model with careful onboarding, home mapping, and a human service team behind
+              every unit.
+            </p>
+          </div>
+
+          <div class="price-grid">
+            <article class="price-card featured reveal">
+              <span class="status-pill"><i data-lucide="sparkles"></i> Pilot reservations open</span>
+              <h3 class="reserve-title">Halo Family Reserve</h3>
+              <div class="price">$250 <small>refundable</small></div>
+              <p>
+                Apply the reservation toward pilot onboarding, delivery consultation, and your first year of Halo Care.
+              </p>
+              <ul class="checks">
+                <li><i data-lucide="check"></i> Priority access to the fictional 2027 home pilot</li>
+                <li><i data-lucide="check"></i> Remote family safety review before install</li>
+                <li><i data-lucide="check"></i> Parent controls and routine design session</li>
+              </ul>
+              <form class="mini-form">
+                <input type="email" aria-label="Email address" placeholder="Email address" />
+                <button class="btn btn-primary" type="submit">
+                  <i data-lucide="send"></i>
+                  Join List
+                </button>
+              </form>
+            </article>
+            <article class="price-card reveal">
+              <h3>Expected Pilot Package</h3>
+              <div class="price">$499 <small>/mo</small></div>
+              <p>
+                Includes hardware lease, safety updates, annual service, household setup, and standard parts coverage.
+              </p>
+              <ul class="checks">
+                <li><i data-lucide="check"></i> No advertising data model</li>
+                <li><i data-lucide="check"></i> Local processing by default</li>
+                <li><i data-lucide="check"></i> Cancel after pilot term</li>
+              </ul>
+              <a class="btn btn-secondary" href="#safety">
+                <i data-lucide="shield-question"></i>
+                Read Safety Notes
+              </a>
+            </article>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer class="site-footer">
+      <div class="shell footer-grid">
+        <div>
+          <a class="brand" href="#top">
+            <span class="brand-mark"><i data-lucide="bot"></i></span>
+            <span>LumaOne Halo</span>
+          </a>
+          <p class="footer-copy">
+            LumaOne Halo is a fictional consumer robotics brand concept. Product details, pricing, certifications,
+            testimonials, and availability are invented for this demo landing page.
+          </p>
+          <p class="asset-note">
+            Asset notes: robot and family photography by Pavel Danilyuk on
+            <a href="https://www.pexels.com/@pavel-danilyuk/" target="_blank" rel="noreferrer">Pexels</a>, used under the
+            <a href="https://www.pexels.com/license/" target="_blank" rel="noreferrer">Pexels License</a>
+            (free use; attribution not required but appreciated). Icons by
+            <a href="https://lucide.dev/" target="_blank" rel="noreferrer">Lucide</a>. Fonts from
+            <a href="https://fonts.google.com/" target="_blank" rel="noreferrer">Google Fonts</a>. Scroll animation powered by
+            <a href="https://gsap.com/" target="_blank" rel="noreferrer">GSAP</a>.
+          </p>
+        </div>
+        <div class="legal" aria-label="Footer links">
+          <a href="#features">Features</a>
+          <a href="#home">Home</a>
+          <a href="#safety">Safety</a>
+          <a href="#pricing">Pricing</a>
+          <a href="#">Privacy</a>
+          <a href="#">Terms</a>
+        </div>
+      </div>
+    </footer>
+
+    <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/gsap.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/ScrollTrigger.min.js"></script>
+    <script>
+      if (window.lucide) {
+        lucide.createIcons({ attrs: { "stroke-width": 1.8 } });
+      }
+
+      const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+      document.querySelector(".mini-form").addEventListener("submit", (event) => {
+        event.preventDefault();
+        const button = event.currentTarget.querySelector("button");
+        button.innerHTML = '<i data-lucide="check"></i> Reserved';
+        if (window.lucide) {
+          lucide.createIcons({ attrs: { "stroke-width": 1.8 } });
+        }
+      });
+
+      if (!reduceMotion && window.gsap && window.ScrollTrigger) {
+        gsap.registerPlugin(ScrollTrigger);
+
+        gsap.to(".hero-media img", {
+          yPercent: 4,
+          scale: 1.035,
+          ease: "none",
+          scrollTrigger: {
+            trigger: ".hero",
+            start: "top top",
+            end: "bottom top",
+            scrub: 0.8
+          }
+        });
+
+        gsap.to(".home-dock", {
+          y: -10,
+          duration: 2.2,
+          repeat: -1,
+          yoyo: true,
+          ease: "sine.inOut"
+        });
+
+        gsap.utils.toArray(".reveal").forEach((element) => {
+          gsap.to(element, {
+            opacity: 1,
+            y: 0,
+            duration: 0.82,
+            ease: "power3.out",
+            scrollTrigger: {
+              trigger: element,
+              start: "top 86%",
+              once: true
+            }
+          });
+        });
+      } else {
+        document.querySelectorAll(".reveal").forEach((element) => {
+          element.style.opacity = 1;
+          element.style.transform = "none";
+        });
+      }
+    </script>
+  </body>
+</html>

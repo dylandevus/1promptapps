@@ -26,7 +26,7 @@ const RESERVED_USERNAMES = new Set([
 const VALID_CATEGORIES = new Set([
   'productivity', 'developer-tools', 'design-tools', 'education', 'finance',
   'data-visualization', 'internal-tools', 'games', 'writing', 'personal-utilities',
-  'ecommerce', 'health-fitness', 'other',
+  'ecommerce', 'landing-page', 'health-fitness', 'other',
 ])
 
 
