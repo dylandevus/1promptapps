@@ -197,6 +197,7 @@ function main() {
   const BASE = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://1promptapps.com'
   const sitemap = [
     { url: BASE, changefreq: 'daily', priority: '1.0' },
+    { url: `${BASE}/about`, changefreq: 'monthly', priority: '0.5' },
     ...entries.map(e => ({ url: `${BASE}${e.path}`, changefreq: 'weekly', priority: '0.8' })),
   ]
   fs.writeFileSync(path.join(GEN_DIR, 'sitemap.json'), JSON.stringify(sitemap, null, 2))

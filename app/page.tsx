@@ -17,6 +17,15 @@ export default function HomePage() {
 
   return (
     <div className="min-h-screen" style={{ background: 'var(--bg)' }}>
+      {/* Skip to content link for keyboard users */}
+      <a
+        href="#gallery"
+        className="sr-only focus:not-sr-only focus:absolute focus:top-2 focus:left-2 focus:z-50 focus:px-4 focus:py-2 focus:rounded-md focus:font-medium"
+        style={{ background: 'var(--accent)', color: '#fff' }}
+      >
+        Skip to gallery
+      </a>
+
       {/* Header */}
       <header style={{ background: 'var(--surface)', borderBottom: '1px solid var(--border)' }}>
         <div className="max-w-7xl mx-auto px-6 h-14 flex items-center justify-between">
@@ -47,16 +56,18 @@ export default function HomePage() {
       </div>
 
       {/* Gallery — Suspense required for useSearchParams() */}
-      <Suspense fallback={<div className="max-w-7xl mx-auto px-6 py-12 text-sm" style={{ color: 'var(--muted)' }}>Loading…</div>}>
-        <GalleryClient
-          apps={apps}
-          categories={categories}
-          builtWithOptions={builtWithOptions}
-          models={models}
-          categoryLabels={CATEGORY_LABELS}
-          builtWithLabels={BUILT_WITH_LABELS}
-        />
-      </Suspense>
+      <div id="gallery">
+        <Suspense fallback={<div className="max-w-7xl mx-auto px-6 py-12 text-sm" style={{ color: 'var(--muted)' }}>Loading…</div>}>
+          <GalleryClient
+            apps={apps}
+            categories={categories}
+            builtWithOptions={builtWithOptions}
+            models={models}
+            categoryLabels={CATEGORY_LABELS}
+            builtWithLabels={BUILT_WITH_LABELS}
+          />
+        </Suspense>
+      </div>
 
       {/* Footer */}
       <footer className="max-w-7xl mx-auto px-6 py-12 mt-16" style={{ borderTop: '1px solid var(--border)' }}>

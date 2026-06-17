@@ -1,0 +1,5 @@
+User-agent: *
+Allow: /
+Disallow: /_apps/
+
+Sitemap: https://1promptapps.com/sitemap.xml

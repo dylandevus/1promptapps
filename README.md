@@ -6,7 +6,7 @@ A curated gallery of static webapps built from a single AI prompt — original p
 
 ## Submit an app
 
-Open a PR adding your app folder. See [CONTRIBUTING.md](CONTRIBUTING.md).
+Open a PR adding your app folder. See [How submissions work](docs/how-submissions-work.md) (3-step guide with example PR) or the condensed [CONTRIBUTING.md](CONTRIBUTING.md).
 
 ```
 apps/<username>/<slug>/

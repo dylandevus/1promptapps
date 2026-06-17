@@ -23,7 +23,18 @@ export async function generateMetadata({ params }: { params: Promise<Params> }):
   return {
     title: `${app.name} — Static App Built from One AI Prompt`,
     description: `${app.tagline} Built with ${BUILT_WITH_LABELS[app.builtWith] ?? app.builtWith}. ${app.timeToFirstVersionMinutes != null ? `First version in ${app.timeToFirstVersionMinutes} minutes.` : ''} Original prompt included.`,
-    openGraph: { images: [{ url: app.thumbnail }] },
+    openGraph: {
+      title: `${app.name} — 1PromptApps`,
+      description: `${app.tagline} Built with ${BUILT_WITH_LABELS[app.builtWith] ?? app.builtWith}.`,
+      images: [{ url: app.thumbnail, width: 1280, height: 800, alt: app.name }],
+      url: `/${username}/${slug}`,
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title: `${app.name} — 1PromptApps`,
+      description: `${app.tagline} Built with ${BUILT_WITH_LABELS[app.builtWith] ?? app.builtWith}.`,
+      images: [app.thumbnail],
+    },
   }
 }
 
@@ -45,6 +56,14 @@ export default async function AppPage({ params }: { params: Promise<Params> }) {
 
   return (
     <div className="min-h-screen" style={{ background: 'var(--bg)' }}>
+      {/* Skip to content */}
+      <a
+        href="#main-content"
+        className="sr-only focus:not-sr-only focus:fixed focus:top-2 focus:left-2 focus:z-50 focus:px-4 focus:py-2 focus:rounded focus:text-sm focus:font-medium"
+        style={{ background: 'var(--accent)', color: '#fff' }}
+      >
+        Skip to content
+      </a>
       {/* Provenance banner — OUTSIDE the iframe, on gallery origin */}
       <header style={{ background: 'var(--surface)', borderBottom: '1px solid var(--border)', position: 'sticky', top: 0, zIndex: 40 }}>
         <div className="max-w-7xl mx-auto px-4 h-12 flex items-center gap-3 text-sm overflow-x-auto">
@@ -107,7 +126,7 @@ export default async function AppPage({ params }: { params: Promise<Params> }) {
       />
 
       {/* Case study */}
-      <main className="max-w-3xl mx-auto px-6 py-12">
+      <main id="main-content" className="max-w-3xl mx-auto px-6 py-12">
         {/* Title + meta */}
         <div className="mb-8">
           <h1 className="text-2xl font-bold mb-1" style={{ color: 'var(--ink)' }}>{app.name}</h1>
@@ -188,7 +207,7 @@ export default async function AppPage({ params }: { params: Promise<Params> }) {
             <h2 className="text-sm font-semibold uppercase tracking-wide" style={{ color: 'var(--muted)' }}>
               The Prompt
             </h2>
-            <CopyButton text={app.promptText} />
+            <CopyButton text={app.promptText} label={`Copy ${app.name} prompt to clipboard`} />
           </div>
           <div
             className="prompt-block rounded-xl p-5 whitespace-pre-wrap text-sm leading-relaxed"
@@ -211,7 +230,7 @@ export default async function AppPage({ params }: { params: Promise<Params> }) {
                   <h2 className="text-sm font-semibold uppercase tracking-wide" style={{ color: 'var(--muted)' }}>
                     Follow-up {i + 1}
                   </h2>
-                  <CopyButton text={fp} />
+                  <CopyButton text={fp} label={`Copy ${app.name} follow-up ${i + 1} to clipboard`} />
                 </div>
                 <div
                   className="prompt-block rounded-xl p-5 whitespace-pre-wrap text-sm leading-relaxed"

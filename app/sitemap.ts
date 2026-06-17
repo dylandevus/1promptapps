@@ -9,6 +9,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
   const apps = getApps()
   return [
     { url: BASE, lastModified: new Date(), changeFrequency: 'daily', priority: 1 },
+    { url: `${BASE}/about`, lastModified: new Date(), changeFrequency: 'monthly', priority: 0.6 },
     ...apps.map(a => ({
       url: `${BASE}${a.path}`,
       lastModified: new Date(a.publishedAt),

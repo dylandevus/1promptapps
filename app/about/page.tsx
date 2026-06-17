@@ -3,6 +3,17 @@ import Link from 'next/link'
 export const metadata = {
   title: 'About',
   description: 'What 1PromptApps is and what counts as one prompt.',
+  openGraph: {
+    title: 'About — 1PromptApps',
+    description: 'What 1PromptApps is and what counts as one prompt.',
+    images: [{ url: '/og-default.png', width: 1200, height: 630, alt: '1PromptApps' }],
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'About — 1PromptApps',
+    description: 'What 1PromptApps is and what counts as one prompt.',
+    images: ['/og-default.png'],
+  },
 }
 
 export default function AboutPage() {

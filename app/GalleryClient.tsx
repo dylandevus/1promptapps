@@ -149,13 +149,14 @@ export function GalleryClient({ apps, categories, builtWithOptions, models, cate
   return (
     <div className="max-w-7xl mx-auto px-6 pb-16">
       {/* Filter bar */}
-      <div className="flex flex-wrap gap-3 items-center mb-8 py-4" style={{ borderBottom: '1px solid var(--border)' }}>
+      <div role="search" className="flex flex-wrap gap-3 items-center mb-8 py-4" style={{ borderBottom: '1px solid var(--border)' }}>
         {/* Search */}
         <input
           type="search"
           placeholder="Search apps…"
           value={search}
           onChange={e => { setSearch(e.target.value); updateParam('q', e.target.value) }}
+          aria-label="Search apps by name, tag, model, or builder"
           className="flex-1 min-w-[200px] max-w-xs h-9 px-3 text-sm rounded-lg outline-none focus:ring-2"
           style={{
             background: 'var(--surface)',
@@ -168,6 +169,7 @@ export function GalleryClient({ apps, categories, builtWithOptions, models, cate
         <select
           value={category}
           onChange={e => { setCategory(e.target.value); updateParam('category', e.target.value) }}
+          aria-label="Filter by category"
           className="h-9 px-3 text-sm rounded-lg outline-none"
           style={{ background: 'var(--surface)', border: '1px solid var(--border)', color: 'var(--ink)' }}
         >
@@ -181,6 +183,7 @@ export function GalleryClient({ apps, categories, builtWithOptions, models, cate
         <select
           value={builtWith}
           onChange={e => { setBuiltWith(e.target.value); updateParam('builtWith', e.target.value) }}
+          aria-label="Filter by builder tool"
           className="h-9 px-3 text-sm rounded-lg outline-none"
           style={{ background: 'var(--surface)', border: '1px solid var(--border)', color: 'var(--ink)' }}
         >
@@ -194,6 +197,7 @@ export function GalleryClient({ apps, categories, builtWithOptions, models, cate
         <select
           value={model}
           onChange={e => { setModel(e.target.value); updateParam('model', e.target.value) }}
+          aria-label="Filter by AI model"
           className="h-9 px-3 text-sm rounded-lg outline-none"
           style={{ background: 'var(--surface)', border: '1px solid var(--border)', color: 'var(--ink)' }}
         >
