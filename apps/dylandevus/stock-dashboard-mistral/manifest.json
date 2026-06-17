@@ -1,0 +1,71 @@
+{
+  "manifestVersion": "1.0",
+  "name": "Stock Market Dashboard",
+  "slug": "stock-dashboard-mistral",
+  "tagline": "QQQ, SPY & SCHD with clean price charts, fundamental cards, and plain-English market commentary.",
+  "description": "A dark-themed ETF dashboard for QQQ, SPY, and SCHD. Shows 2-year Chart.js price charts with Bollinger Bands, 100d and 200d SMA overlays, per-ETF fundamental metrics cards (P/E, YTD, 52-wk range, volume), a market heatmap bar for direction signals (VIX, Yield, US Dollar), and a plain-English Insights section. Uses vanilla JS with a pragmatic, uncluttered layout. Data is hardcoded — no live API calls required.",
+  "category": "finance",
+  "tags": ["stocks", "charts", "technical-analysis", "etf", "qqq", "spy", "schd", "dark-theme", "open-model", "mistral"],
+  "prompt": {
+    "text": "Create a stock market dashboard using Lit-HTML, Tailwind, JS libs from CDNs, in a single HTML file. Add 2-year charts for QQQ, SPY, SCHD, do a web search to get latest market prices. Each chart has Bollinger Bands, 100d SMA, 200d SMA lines. Add an Insights section to analyze market, sectors. Add another section for Prediction for next few months.",
+    "model": "Mistral-Max",
+    "modelId": "mistralai/Mistral-Max",
+    "provider": "Mistral AI",
+    "effort": "default",
+    "builtWith": "Le Chat",
+    "followUpCount": 2,
+    "errorFixes": 2,
+    "estimatedCostUSD": null,
+    "generationDurationSeconds": 89,
+    "toolsUsed": ["web-search"]
+  },
+  "outcome": {
+    "timeToFirstVersionMinutes": 2,
+    "reproducibility": "partial",
+    "worked": [
+      "Dark theme with clean typography (Inter font)",
+      "Three ETF cards with key fundamentals (P/E, YTD, 52-wk range, volume)",
+      "Market bar showing VIX, Yield, and USD index direction signals",
+      "2-year Chart.js price charts with Bollinger Bands, 100d and 200d SMA",
+      "Per-ETF chart switching",
+      "Plain-English Insights section avoiding jargon",
+      "Compact two-column layout on wide screens"
+    ],
+    "manualEdits": [
+      "Fixed chart legend rendering order on first load",
+      "Added responsive breakpoint for mobile view"
+    ]
+  },
+  "demo": {
+    "type": "bundle",
+    "entry": "index.html"
+  },
+  "source": {
+    "available": false,
+    "url": null,
+    "license": null
+  },
+  "author": {
+    "name": "Duc Nguyen",
+    "handle": "dylandevus",
+    "url": null
+  },
+  "media": {
+    "thumbnail": "screenshots/thumbnail.png",
+    "screenshots": [
+      { "src": "screenshots/desktop.png", "alt": "Full-page Stock Market Dashboard with dark theme, QQQ/SPY/SCHD cards with fundamentals, market heatmap bar, and 2-year price chart" }
+    ]
+  },
+  "permissions": {
+    "permissionToFeature": true,
+    "rightsAttested": true
+  },
+  "manualEditLevel": "minor-edits",
+  "externalApiDomains": [
+    "cdn.tailwindcss.com",
+    "cdn.jsdelivr.net",
+    "fonts.googleapis.com",
+    "fonts.gstatic.com"
+  ],
+  "publishedAt": "2026-06-16T18:03:00-07:00"
+}
