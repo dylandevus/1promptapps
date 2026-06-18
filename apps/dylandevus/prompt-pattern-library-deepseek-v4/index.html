@@ -1,0 +1,629 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Prompt Pattern Library</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --bg: #0f1117;
+    --surface: #1a1d27;
+    --surface2: #232638;
+    --border: #2e3148;
+    --text: #e2e4ed;
+    --text2: #8b8fa8;
+    --accent: #7c5cfc;
+    --accent2: #5d3fd9;
+    --green: #34d399;
+    --amber: #fbbf24;
+    --blue: #60a5fa;
+    --red: #f87171;
+    --radius: 12px;
+    --radius-sm: 8px;
+  }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.6;
+  }
+  .container { max-width: 1200px; margin: 0 auto; padding: 24px 20px; }
+
+  /* header */
+  header {
+    text-align: center;
+    padding: 60px 20px 40px;
+    background: linear-gradient(180deg, rgba(124,92,252,0.08) 0%, transparent 100%);
+  }
+  header h1 {
+    font-size: 2.4rem;
+    font-weight: 700;
+    background: linear-gradient(135deg, var(--accent), var(--blue));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin-bottom: 8px;
+  }
+  header p {
+    color: var(--text2);
+    font-size: 1.05rem;
+    max-width: 600px;
+    margin: 0 auto;
+  }
+
+  /* filters */
+  .filters {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+    justify-content: center;
+    margin-bottom: 32px;
+  }
+  .filters input {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    padding: 10px 16px;
+    color: var(--text);
+    font-size: 0.95rem;
+    width: 280px;
+    outline: none;
+    transition: border-color .2s;
+  }
+  .filters input:focus { border-color: var(--accent); }
+  .filters input::placeholder { color: var(--text2); }
+  .filter-group { display: flex; gap: 8px; flex-wrap: wrap; }
+  .filter-btn {
+    padding: 8px 16px;
+    border-radius: 20px;
+    border: 1px solid var(--border);
+    background: var(--surface);
+    color: var(--text2);
+    cursor: pointer;
+    font-size: 0.85rem;
+    transition: all .2s;
+  }
+  .filter-btn:hover { border-color: var(--accent); color: var(--text); }
+  .filter-btn.active { background: var(--accent); color: #fff; border-color: var(--accent); }
+
+  /* grid */
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(360px, 1fr));
+    gap: 20px;
+  }
+
+  /* card */
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    overflow: hidden;
+    transition: border-color .2s, transform .2s;
+    cursor: pointer;
+  }
+  .card:hover {
+    border-color: var(--accent);
+    transform: translateY(-2px);
+  }
+  .card-header {
+    padding: 20px 20px 0;
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 12px;
+  }
+  .card-header h2 {
+    font-size: 1.15rem;
+    font-weight: 600;
+    line-height: 1.4;
+  }
+  .badge {
+    font-size: 0.7rem;
+    padding: 3px 10px;
+    border-radius: 12px;
+    font-weight: 600;
+    white-space: nowrap;
+    flex-shrink: 0;
+    margin-top: 2px;
+  }
+  .badge.few-shot { background: rgba(96,165,250,0.15); color: var(--blue); }
+  .badge.zero-shot { background: rgba(251,191,36,0.15); color: var(--amber); }
+  .badge.structured { background: rgba(124,92,252,0.15); color: var(--accent); }
+  .badge.reasoning { background: rgba(52,211,153,0.15); color: var(--green); }
+  .badge.role { background: rgba(248,113,113,0.15); color: var(--red); }
+
+  .card-body { padding: 16px 20px 20px; }
+  .card-body p { color: var(--text2); font-size: 0.9rem; margin-bottom: 12px; }
+  .card-body .use-when {
+    font-size: 0.8rem;
+    background: var(--surface2);
+    padding: 8px 12px;
+    border-radius: var(--radius-sm);
+    margin-bottom: 12px;
+    color: var(--text2);
+  }
+  .card-body .use-when strong { color: var(--accent); }
+  .card-body .example-label {
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--text2);
+    margin-bottom: 6px;
+  }
+  .card-body .example {
+    background: var(--surface2);
+    border-radius: var(--radius-sm);
+    padding: 12px 14px;
+    font-family: 'SF Mono', 'Fira Code', 'Cascadia Code', monospace;
+    font-size: 0.8rem;
+    line-height: 1.6;
+    color: var(--text);
+    white-space: pre-wrap;
+    word-break: break-word;
+    max-height: 160px;
+    overflow-y: auto;
+    border-left: 3px solid var(--accent);
+  }
+  .card-body .example:focus {
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
+  }
+  .card-body .example[contenteditable="true"] { cursor: text; }
+  .card-body .copy-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    margin-top: 10px;
+    padding: 6px 14px;
+    border-radius: var(--radius-sm);
+    border: 1px solid var(--border);
+    background: var(--surface2);
+    color: var(--text2);
+    font-size: 0.8rem;
+    cursor: pointer;
+    transition: all .2s;
+  }
+  .card-body .copy-btn:hover {
+    border-color: var(--accent);
+    color: var(--text);
+    background: var(--surface);
+  }
+  .card-body .copy-btn.copied {
+    background: rgba(52,211,153,0.15);
+    border-color: var(--green);
+    color: var(--green);
+  }
+
+  .card-footer {
+    padding: 0 20px 16px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+  }
+  .card-tag {
+    font-size: 0.7rem;
+    padding: 2px 8px;
+    border-radius: 8px;
+    background: var(--surface2);
+    color: var(--text2);
+  }
+
+  /* modal */
+  .modal-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.7);
+    backdrop-filter: blur(4px);
+    z-index: 1000;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+  }
+  .modal-overlay.open { display: flex; }
+  .modal {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    max-width: 720px;
+    width: 100%;
+    max-height: 85vh;
+    overflow-y: auto;
+    padding: 32px;
+    position: relative;
+    animation: modalIn .25s ease;
+  }
+  @keyframes modalIn { from { opacity: 0; transform: scale(0.95) translateY(10px); } to { opacity: 1; transform: scale(1) translateY(0); } }
+  .modal-close {
+    position: absolute;
+    top: 16px;
+    right: 16px;
+    background: none;
+    border: 1px solid var(--border);
+    color: var(--text2);
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    font-size: 1.2rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all .2s;
+  }
+  .modal-close:hover { border-color: var(--red); color: var(--red); }
+  .modal h2 { font-size: 1.6rem; margin-bottom: 4px; }
+  .modal .meta { color: var(--text2); margin-bottom: 20px; display: flex; gap: 12px; flex-wrap: wrap; }
+  .modal h3 { font-size: 1rem; margin-bottom: 8px; margin-top: 20px; color: var(--accent); }
+  .modal p { color: var(--text2); margin-bottom: 12px; line-height: 1.7; }
+  .modal .example-full {
+    background: var(--surface2);
+    border-radius: var(--radius-sm);
+    padding: 16px;
+    font-family: 'SF Mono', 'Fira Code', 'Cascadia Code', monospace;
+    font-size: 0.85rem;
+    line-height: 1.7;
+    white-space: pre-wrap;
+    word-break: break-word;
+    border-left: 3px solid var(--accent);
+    max-height: 300px;
+    overflow-y: auto;
+  }
+  .modal .tips {
+    background: linear-gradient(135deg, rgba(124,92,252,0.08), rgba(96,165,250,0.08));
+    border: 1px solid rgba(124,92,252,0.2);
+    border-radius: var(--radius-sm);
+    padding: 14px 16px;
+    margin-top: 16px;
+  }
+  .modal .tips strong { color: var(--accent); }
+
+  /* empty state */
+  .empty-state {
+    text-align: center;
+    padding: 60px 20px;
+    color: var(--text2);
+    grid-column: 1 / -1;
+  }
+  .empty-state svg { width: 64px; height: 64px; margin-bottom: 16px; opacity: 0.4; }
+
+  /* responsive */
+  @media (max-width: 600px) {
+    header h1 { font-size: 1.8rem; }
+    header { padding: 40px 16px 28px; }
+    .grid { grid-template-columns: 1fr; }
+    .modal { padding: 20px; }
+    .filters input { width: 100%; }
+  }
+
+  /* scrollbar */
+  ::-webkit-scrollbar { width: 6px; }
+  ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+  ::-webkit-scrollbar-thumb:hover { background: var(--text2); }
+</style>
+</head>
+<body>
+<header>
+  <h1>Prompt Pattern Library</h1>
+  <p>Interactive reference of proven prompt engineering techniques. Click a pattern to see details. Edit examples inline — then copy what you need.</p>
+</header>
+
+<div class="container">
+  <div class="filters">
+    <input type="text" id="search" placeholder="Search patterns..." aria-label="Search prompt patterns">
+    <div class="filter-group" id="categoryFilters">
+      <button class="filter-btn active" data-cat="all">All</button>
+      <button class="filter-btn" data-cat="reasoning">Reasoning</button>
+      <button class="filter-btn" data-cat="role">Role / Persona</button>
+      <button class="filter-btn" data-cat="few-shot">Few-Shot</button>
+      <button class="filter-btn" data-cat="structured">Structured</button>
+      <button class="filter-btn" data-cat="zero-shot">Zero-Shot</button>
+    </div>
+  </div>
+
+  <div class="grid" id="grid"></div>
+</div>
+
+<!-- Modal -->
+<div class="modal-overlay" id="modal">
+  <div class="modal">
+    <button class="modal-close" id="modalClose" aria-label="Close">&times;</button>
+    <h2 id="modalTitle"></h2>
+    <div class="meta"><span id="modalCategory"></span> &middot; <span id="modalWhen"></span></div>
+    <p id="modalDesc"></p>
+    <h3>How It Works</h3>
+    <p id="modalHow"></p>
+    <h3>Example Prompt</h3>
+    <div class="example-full" id="modalExample"></div>
+    <div class="tips" id="modalTips">
+      <strong>Pro tip:</strong> <span id="modalTip"></span>
+    </div>
+  </div>
+</div>
+
+<script>
+const patterns = [
+  {
+    name: "Chain-of-Thought",
+    category: "reasoning",
+    badge: "Reasoning",
+    desc: "Ask the model to reason step-by-step before giving the final answer. Dramatically improves accuracy on math, logic, and multi-step problems.",
+    useWhen: "Math, logic puzzles, multi-step analysis, debugging",
+    example: "Q: A bat and a ball cost $1.10 in total. The bat costs $1.00 more than the ball. How much does the ball cost?\nA: Let's think through this step by step.\nLet the ball cost x dollars.\nThen the bat costs x + $1.00.\nTotal: x + (x + 1.00) = 1.10\n2x + 1.00 = 1.10\n2x = 0.10\nx = 0.05\nSo the ball costs $0.05 and the bat costs $1.05.",
+    how: "Append 'Let's think step by step' or 'Let's work through this carefully' before the answer. The model decomposes the problem into intermediate steps, reducing errors from shortcut reasoning.",
+    tip: "For harder problems, add 'Show your reasoning step by step, then give the final answer in a box: **Answer:** ...' to make parsing the final answer automatic.",
+    tags: ["math", "logic", "reasoning", "debugging"]
+  },
+  {
+    name: "Persona Prompting",
+    category: "role",
+    badge: "Role",
+    desc: "Assign the model a specific role, expertise, or perspective to shape tone, depth, and domain-specific accuracy.",
+    useWhen: "Domain-specific writing, code review, expert analysis, creative writing",
+    example: "You are a senior Python engineer with 15 years of experience in backend systems and distributed architectures. Review the following code. Focus on: 1) performance bottlenecks 2) thread safety 3) error handling patterns. Provide specific line-numbered suggestions.\n\n[code here]",
+    how: "Start with 'You are a [role] with [expertise/experience].' Then state the task constraint. The role primes the model's knowledge retrieval and response tone.",
+    tip: "Be specific about the persona's credentials ('senior', '15 years', 'specializing in X') — vaguer roles like 'you are an expert' give weaker signal than concrete ones.",
+    tags: ["role-playing", "expert", "code-review", "writing", "tone"]
+  },
+  {
+    name: "Few-Shot Prompting",
+    category: "few-shot",
+    badge: "Few-Shot",
+    desc: "Provide 2-5 high-quality input-output examples to teach the model the exact format, style, and reasoning pattern you want.",
+    useWhen: "Classification, formatting, extraction, translation, style transfer",
+    example: 'Extract the sentiment from each tweet as Positive, Negative, or Neutral.\n\nTweet: "Just got promoted! Absolutely thrilled!"\nSentiment: Positive\n\nTweet: "Stuck in traffic for 2 hours. Worst day ever."\nSentiment: Negative\n\nTweet: "The meeting is at 3pm tomorrow."\nSentiment: Neutral\n\nTweet: "This new update keeps crashing my phone"\nSentiment:',
+    how: "Show 2-5 diverse examples covering edge cases. Keep examples clean and consistent. The model extrapolates the pattern — more examples = better accuracy but higher token cost.",
+    tip: "Include edge-case examples (ambiguous, borderline) in your few-shots — the model generalizes better when it sees the boundaries of each category.",
+    tags: ["classification", "format", "extraction", "translation"]
+  },
+  {
+    name: "System Prompt / Meta Instructions",
+    category: "structured",
+    badge: "Structured",
+    desc: "Set global behavior rules, constraints, and output format at the system level before the conversation starts.",
+    useWhen: "Chatbots, API integrations, content moderation, structured output generation",
+    example: "You are a helpful coding assistant.\n\nRules:\n1. Always provide complete, working code examples.\n2. Use TypeScript with strict types unless asked otherwise.\n3. Include error handling and input validation.\n4. Prefer functional patterns over classes.\n5. Explain your reasoning before showing code.\n6. Keep responses concise — no fluff.\n\nFormat:\n- Brief explanation (2-3 sentences)\n- Code block with filename\n- Usage example if applicable",
+    how: "Put your most important rules first. Use bullet points for clarity. Include format instructions, behavior constraints, and style preferences. The system message acts as a persistent constitution for the conversation.",
+    tip: "State rules negatively AND positively: 'Do NOT include setup instructions' + 'Assume the reader knows how to install dependencies.' This cuts hallucinations by half.",
+    tags: ["system-prompt", "constraints", "format", "guidelines"]
+  },
+  {
+    name: "Structured Output (JSON/XML)",
+    category: "structured",
+    badge: "Structured",
+    desc: "Request output in a specific structured format (JSON, XML, markdown table) for programmatic consumption.",
+    useWhen: "API output, data extraction, automation, frontend rendering, database inserts",
+    example: "Extract the following fields from this restaurant review and return valid JSON:\n\nReview: \"The pasta was incredible — perfectly al dente. Service was slow though, took 20 minutes to get our drinks. Pricey at $28 for a main but portion was generous. Would come back for the food.\"\n\n{\n  \"sentiment\": \"mixed\",\n  "rating_estimate\": 3.5,\n  "aspects\": {\n    "food\": {\"sentiment\": \"positive\", \"mentioned\": true},\n    "service\": {\"sentiment\": \"negative\", \"mentioned\": true},\n    "price\": {\"sentiment\": \"negative\", \"mentioned\": true}\n  },\n  "key_phrases\": [\"perfectly al dente\", \"slow service\", \"generous portion\"],\n  "would_return\": true\n}",
+    how: "Provide a complete JSON schema example (with values, not just types). Use markdown code blocks with language tags. Constrain to 'Return ONLY valid JSON, no other text' for programmatic use.",
+    tip: "Add a 'strict' instruction: 'Return ONLY a valid JSON object. No markdown, no code fences, no explanation.' Also try providing an empty template with field types when the values are unpredictable.",
+    tags: ["json", "structured-data", "api", "automation"]
+  },
+  {
+    name: "Zero-Shot Chain-of-Thought",
+    category: "zero-shot",
+    badge: "Zero-Shot",
+    desc: "Trigger step-by-step reasoning without providing examples. A single phrase is enough to activate the reasoning chain.",
+    useWhen: "One-off questions, quick analysis, troubleshooting, explanation requests",
+    example: "A snail falls into a 30-foot well. Each day it climbs 3 feet, but each night it slips back 2 feet. How many days does it take to get out?\n\nLet's think through this step by step:\n- Day 1: climbs to 3, slips to 1\n- Day 2: climbs to 4, slips to 2\n- Day 3: climbs to 5, slips to 3\n...\n- Day 27: climbs to 29, slips to 27\n- Day 28: climbs to 30 — it's out! It doesn't slip back.\n\nAnswer: 28 days.",
+    how: "Simply append 'Let's think step by step.' or 'Let's reason through this.' to your prompt. No examples needed. Works because it activates the model's latent reasoning capabilities.",
+    tip: "Vary the trigger phrase: 'Let's work through this carefully,' 'First, let's consider what we know,' or 'Step-by-step reasoning:' all work, but some models respond better to different phrasings.",
+    tags: ["reasoning", "simple", "quick", "problem-solving"]
+  },
+  {
+    name: "Roleplay with Constraints",
+    category: "role",
+    badge: "Role",
+    desc: "Assign a role PLUS specific behavioral constraints — tone limits, knowledge boundaries, vocabulary rules, or ethical guardrails.",
+    useWhen: "Customer service bots, educational tutors, therapeutic conversations, creative dialogue",
+    example: "You are a friendly but professional customer support agent for a SaaS company called DataFlow.\n\nConstraints:\n- NEVER mention competitors by name. Say 'other solutions' instead.\n- If asked about pricing, only share what's on the pricing page (Basic: $29/mo, Pro: $99/mo, Enterprise: custom).\n- NEVER make promises about features not yet shipped. Say 'I don't have a timeline for that yet, but it's on our roadmap.'\n- Stay positive but honest. If a feature doesn't exist, say so and offer a workaround.\n- Keep responses under 100 words.\n\nCustomer: \"Your tool is too expensive. Competitor X is half the price.\"",
+    how: "Layer 2-5 specific behavioral DON'Ts on top of a persona. Concrete constraints ('NEVER mention competitors') work better than abstract ones ('be professional').",
+    tip: "Use ALL CAPS for hard constraints ('NEVER', 'ALWAYS') — it visually separates the rule from the persona and some models weight capitalized directives more heavily.",
+    tags: ["customer-service", "tutor", "dialogue", "constraints", "boundaries"]
+  },
+  {
+    name: "Tree-of-Thought",
+    category: "reasoning",
+    badge: "Reasoning",
+    desc: "Explore multiple reasoning paths simultaneously, evaluate each, and converge on the best answer. Extends Chain-of-Thought to branching exploration.",
+    useWhen: "Complex planning, creative problem-solving, strategic decisions, debugging hard bugs",
+    example: "We need to design a system that generates personalized workout plans. Let's explore three approaches:\n\nApproach A: Rule-based engine\n- Pros: deterministic, no API cost, easy to debug\n- Cons: inflexible, doesn't learn from feedback, every rule needs manual authoring\n- Best for: simple plans, fixed constraints\n\nApproach B: LLM-generated plans\n- Pros: personalized, adaptable, natural language interface\n- Cons: inconsistent, expensive at scale, hard to validate correctness\n- Best for: premium users, complex goals\n\nApproach C: Hybrid (LLM + rule-based validation)\n- Pros: best of both — creative LLM plans validated by deterministic rules\n- Cons: two systems to maintain, potential latency\n- Best for: production at scale\n\nEvaluation: Approach C wins for production use. A/B test Approach A vs C for the MVP.",
+    how: "Prompt the model to generate 2-4 distinct approaches, evaluate each with pros/cons, compare, then recommend. Structure the output with clear headings for each branch.",
+    tip: "Ask for exactly 3 approaches. Fewer = not enough coverage, more = token waste and diminishing returns. Also add 'For each approach, identify its fatal flaw' to stress-test the ideas.",
+    tags: ["planning", "strategy", "creative", "decision-making"]
+  },
+  {
+    name: "Refusal / Negative Prompting",
+    category: "structured",
+    badge: "Structured",
+    desc: "Tell the model what NOT to do as clearly as what TO do. Negative instructions reduce hallucination and unwanted behavior.",
+    useWhen: "Factual accuracy, summarization, code generation, content generation with guardrails",
+    example: "Summarize the following article in 3 bullet points.\n\nRules:\n- Do NOT include opinions or analysis — only factual statements from the article.\n- Do NOT use words like 'importantly', 'notably', 'significantly'.\n- Do NOT add introductory or concluding sentences. Just the bullets.\n- If the article doesn't state something explicitly, do NOT infer it.\n- Each bullet must be under 25 words.\n\nArticle: [paste article here]",
+    how: "State 'Do NOT' rules explicitly and place them before the task. Negative instructions should be specific and testable ('Do NOT add opinions') rather than abstract ('Do NOT be biased').",
+    tip: "Combine positive + negative: 'DO include only facts stated in the source. Do NOT add opinions, introductory sentences, or markdown formatting.' The pair is more effective than either alone.",
+    tags: ["hallucination", "accuracy", "summarization", "guardrails"]
+  },
+  {
+    name: "Iterative Refinement Prompt",
+    category: "zero-shot",
+    badge: "Zero-Shot",
+    desc: "Ask the model to critique its own output and improve it in successive passes — simulating iterative editing.",
+    useWhen: "Writing, code optimization, design, any task where quality benefits from revision",
+    example: "Draft a short email inviting users to a beta launch of our app.\n\n---\n\nNow review that draft critically:\n1. Is the value proposition clear in the first sentence?\n2. Is the call-to-action specific and urgent?\n3. Are there any jargon words a non-technical reader wouldn't understand?\n4. Is the tone right for our audience (early adopters)?\n\n---\n\nNow rewrite it incorporating your critique. Aim for under 100 words.",
+    how: "Break the task into [draft -> critique -> revise] stages. Each stage uses the model's output from the previous step. The critique stage should have specific criteria, not just 'make it better'.",
+    tip: "For code: ask 'List 3 bugs or edge cases in the above code' before asking for a rewrite. The self-critique pass catches issues the initial generation missed.",
+    tags: ["writing", "editing", "iteration", "quality", "code"]
+  },
+  {
+    name: "Delimiter-Based Extraction",
+    category: "few-shot",
+    badge: "Few-Shot",
+    desc: "Use clear delimiters (""" , ''' , <tag>, ---) to separate instructions from input data, preventing prompt injection and ambiguity.",
+    useWhen: "User input processing, data extraction, prompt injection defense, template filling",
+    example: 'Extract the name, date, and amount from each receipt below.\n\nReceipt 1:\n"""\nJoe\'s Diner\nDate: 03/15/2026\nTotal: $24.50\nItems: 2\n"""\nName: Joe\'s Diner\nDate: 2026-03-15\nAmount: 24.50\n\nReceipt 2:\n"""\nGreen Grocers\nMarch 20, 2026\nApples $5.00\nBananas $3.50\nTotal $8.50\n"""\nName: Green Grocers\nDate: 2026-03-20\nAmount: 8.50\n\nReceipt 3:\n"""\n{user input here}\n"""',
+    how: "Wrap user-provided text in consistent delimiters (triple quotes, XML tags, or markdown code fences). Never put user input directly in the instruction flow — this is the #1 defense against prompt injection.",
+    tip: "Use """ (triple quotes) as delimiters — they're more recognizable to LLMs than single quotes or dashes. For code, use ``` blocks. The delimiter must be clear and consistent across all examples.",
+    tags: ["extraction", "security", "prompt-injection", "data-processing"]
+  },
+  {
+    name: "Emotion / Urgency Prompting",
+    category: "zero-shot",
+    badge: "Zero-Shot",
+    desc: "Append an emotional appeal or urgency framing to increase response quality, correctness, and thoroughness.",
+    useWhen: "Important tasks, fact-checking, critical analysis, any situation where output quality is paramount",
+    example: "Review this SQL query for performance issues and security vulnerabilities. This is really important for my job — giving the wrong advice could cause a production outage that affects thousands of users.\n\nSELECT * FROM users WHERE email = '" + userInput + "';\n\nTake a deep breath and work through this step by step. Check for: SQL injection, missing indexes, N+1 patterns, and unnecessary SELECT *.",
+    how: "Append a phrase like 'This is important for my career' or 'Take a deep breath and work on this step by step.' Research shows emotional framing measurably improves accuracy on complex tasks.",
+    tip: "Combine urgency + CoT: 'This is critical — take a deep breath and work through this step by step.' The emotional appeal activates thoroughness; CoT activates reasoning. Together they outperform either alone.",
+    tags: ["quality", "urgency", "engagement", "thoroughness"]
+  }
+];
+
+const grid = document.getElementById('grid');
+const search = document.getElementById('search');
+const catBtns = document.querySelectorAll('.filter-btn');
+const modal = document.getElementById('modal');
+const modalOverlay = document.getElementById('modal');
+const modalClose = document.getElementById('modalClose');
+
+let activeCat = 'all';
+let activeSearch = '';
+
+function render() {
+  const q = activeSearch.toLowerCase();
+  const filtered = patterns.filter(p => {
+    const matchCat = activeCat === 'all' || p.category === activeCat;
+    const matchSearch = !q ||
+      p.name.toLowerCase().includes(q) ||
+      p.desc.toLowerCase().includes(q) ||
+      p.tags.some(t => t.includes(q)) ||
+      p.badge.toLowerCase().includes(q);
+    return matchCat && matchSearch;
+  });
+
+  if (filtered.length === 0) {
+    grid.innerHTML = `<div class="empty-state">
+      <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+      <p>No patterns match your search.</p>
+      <p style="font-size:0.85rem;margin-top:4px">Try a different category or search term.</p>
+    </div>`;
+    return;
+  }
+
+  grid.innerHTML = filtered.map(p => `
+    <div class="card" data-name="${p.name}">
+      <div class="card-header">
+        <h2>${p.name}</h2>
+        <span class="badge ${p.category}">${p.badge}</span>
+      </div>
+      <div class="card-body">
+        <p>${p.desc}</p>
+        <div class="use-when"><strong>Best for:</strong> ${p.useWhen}</div>
+        <div class="example-label">Try it — edit the example below</div>
+        <div class="example" contenteditable="true" spellcheck="false">${escapeHtml(p.example)}</div>
+        <button class="copy-btn" data-example="${p.name.replace(/'/g, "\\'")}">
+          <svg width="14" height="14" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"/></svg>
+          Copy
+        </button>
+      </div>
+      <div class="card-footer">
+        ${p.tags.map(t => `<span class="card-tag">${t}</span>`).join('')}
+      </div>
+    </div>
+  `).join('');
+
+  // attach click handlers
+  document.querySelectorAll('.card').forEach(el => {
+    const name = el.dataset.name;
+    el.addEventListener('click', (e) => {
+      if (e.target.closest('.copy-btn') || e.target.closest('.example')) return;
+      openModal(name);
+    });
+  });
+
+  document.querySelectorAll('.copy-btn').forEach(btn => {
+    btn.addEventListener('click', async (e) => {
+      e.stopPropagation();
+      const card = btn.closest('.card');
+      const example = card.querySelector('.example');
+      const text = example.innerText;
+      try {
+        await navigator.clipboard.writeText(text);
+        btn.classList.add('copied');
+        btn.innerHTML = '<svg width="14" height="14" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg> Copied!';
+        setTimeout(() => {
+          btn.classList.remove('copied');
+          btn.innerHTML = '<svg width="14" height="14" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"/></svg> Copy';
+        }, 2000);
+      } catch (err) {
+        // fallback
+        const ta = document.createElement('textarea');
+        ta.value = text;
+        document.body.appendChild(ta);
+        ta.select();
+        document.execCommand('copy');
+        document.body.removeChild(ta);
+        btn.classList.add('copied');
+        btn.innerHTML = 'Copied!';
+        setTimeout(() => {
+          btn.classList.remove('copied');
+          btn.innerHTML = '<svg width="14" height="14" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"/></svg> Copy';
+        }, 2000);
+      }
+    });
+  });
+}
+
+function escapeHtml(str) {
+  return str.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+}
+
+function openModal(name) {
+  const p = patterns.find(x => x.name === name);
+  if (!p) return;
+  document.getElementById('modalTitle').textContent = p.name;
+  document.getElementById('modalCategory').textContent = p.badge;
+  document.getElementById('modalWhen').textContent = p.useWhen;
+  document.getElementById('modalDesc').textContent = p.desc;
+  document.getElementById('modalHow').textContent = p.how;
+  document.getElementById('modalExample').textContent = p.example;
+  document.getElementById('modalTip').textContent = p.tip;
+  modalOverlay.classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+
+function closeModal() {
+  modalOverlay.classList.remove('open');
+  document.body.style.overflow = '';
+}
+
+// search
+search.addEventListener('input', () => {
+  activeSearch = search.value;
+  render();
+});
+
+// category filters
+catBtns.forEach(btn => {
+  btn.addEventListener('click', () => {
+    catBtns.forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    activeCat = btn.dataset.cat;
+    render();
+  });
+});
+
+// modal events
+modalClose.addEventListener('click', closeModal);
+modalOverlay.addEventListener('click', (e) => {
+  if (e.target === modalOverlay) closeModal();
+});
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'Escape') closeModal();
+});
+
+render();
+</script>
+</body>
+</html>
