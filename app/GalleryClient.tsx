@@ -14,6 +14,7 @@ interface Props {
   builtWithOptions: string[]
   models: string[]
   techStack: string[]
+  allTags: string[]
   categoryLabels: Record<string, string>
   builtWithLabels: Record<string, string>
 }
@@ -123,7 +124,7 @@ function AppCard({ app, categoryLabels, builtWithLabels }: {
   )
 }
 
-export function GalleryClient({ apps, categories, builtWithOptions, models, techStack, categoryLabels, builtWithLabels }: Props) {
+export function GalleryClient({ apps, categories, builtWithOptions, models, techStack, allTags, categoryLabels, builtWithLabels }: Props) {
   const router = useRouter()
   const pathname = usePathname()
   const searchParams = useSearchParams()
@@ -132,6 +133,7 @@ export function GalleryClient({ apps, categories, builtWithOptions, models, tech
   const [builtWith, setBuiltWith] = useState(searchParams.get('builtWith') ?? '')
   const [model, setModel] = useState(searchParams.get('model') ?? '')
   const [tech, setTech] = useState(searchParams.get('tech') ?? '')
+  const [tagFilter, setTagFilter] = useState(searchParams.get('tag') ?? '')
   const [search, setSearch] = useState(searchParams.get('q') ?? '')
 
   const updateParam = useCallback((key: string, value: string) => {
@@ -147,6 +149,7 @@ export function GalleryClient({ apps, categories, builtWithOptions, models, tech
     if (builtWith && app.builtWith !== builtWith) return false
     if (model && app.model !== model) return false
     if (tech && !app.techStack.includes(tech)) return false
+    if (tagFilter && !app.tags.includes(tagFilter)) return false
     if (search) {
       const q = search.toLowerCase()
       return (
@@ -162,7 +165,7 @@ export function GalleryClient({ apps, categories, builtWithOptions, models, tech
     return true
   })
 
-  const hasFilters = !!(category || builtWith || model || tech || search)
+  const hasFilters = !!(category || builtWith || model || tech || tagFilter || search)
 
   return (
     <div className="max-w-7xl mx-auto px-6 pb-16">
@@ -240,7 +243,7 @@ export function GalleryClient({ apps, categories, builtWithOptions, models, tech
         {hasFilters && (
           <button
             onClick={() => {
-              setCategory(''); setBuiltWith(''); setModel(''); setTech(''); setSearch('')
+              setCategory(''); setBuiltWith(''); setModel(''); setTech(''); setTagFilter(''); setSearch('')
               router.replace(pathname, { scroll: false })
             }}
             className="h-9 px-3 text-sm rounded-lg transition-colors"
@@ -255,13 +258,41 @@ export function GalleryClient({ apps, categories, builtWithOptions, models, tech
         </span>
       </div>
 
+      {/* Tag chips */}
+      {allTags.length > 0 && (
+        <div className="flex flex-wrap gap-1.5 mb-5 max-h-28 overflow-y-auto">
+          {allTags.map(t => {
+            const active = tagFilter === t
+            return (
+              <button
+                key={t}
+                onClick={() => {
+                  const next = active ? '' : t
+                  setTagFilter(next)
+                  updateParam('tag', next)
+                }}
+                className="inline-flex items-center rounded-full px-3 py-1 text-xs font-medium transition-all"
+                style={{
+                  background: active ? 'var(--accent)' : 'var(--surface)',
+                  color: active ? '#fff' : 'var(--muted)',
+                  border: active ? '1px solid transparent' : '1px solid var(--border)',
+                }}
+                aria-pressed={active}
+              >
+                {t}
+              </button>
+            )
+          })}
+        </div>
+      )}
+
       {/* Grid */}
       {filtered.length === 0 ? (
         <div className="text-center py-20" style={{ color: 'var(--muted)' }}>
           <p className="text-lg mb-2">No apps match your filters.</p>
           <button
             onClick={() => {
-              setCategory(''); setBuiltWith(''); setModel(''); setTech(''); setSearch('')
+              setCategory(''); setBuiltWith(''); setModel(''); setTech(''); setTagFilter(''); setSearch('')
               router.replace(pathname, { scroll: false })
             }}
             className="text-sm underline"

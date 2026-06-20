@@ -3,6 +3,7 @@ import Link from 'next/link'
 import { getApps, getCategories, getBuiltWith, getModels, getTechStack } from '@/lib/registry'
 import { CATEGORY_LABELS, BUILT_WITH_LABELS } from '@/lib/constants'
 import { GalleryClient } from './GalleryClient'
+import { ShowcaseHero } from './_components/ShowcaseHero'
 
 export const metadata = {
   title: '1PromptApps — Real apps from one prompt',
@@ -15,6 +16,9 @@ export default function HomePage() {
   const builtWithOptions = getBuiltWith()
   const models = getModels()
   const techStack = getTechStack()
+
+  // Collect unique tags from all apps
+  const allTags = [...new Set(apps.flatMap(a => a.tags))].sort()
 
   return (
     <div className="min-h-screen" style={{ background: 'var(--bg)' }}>
@@ -58,6 +62,9 @@ export default function HomePage() {
 
       {/* Gallery — Suspense required for useSearchParams() */}
       <div id="gallery">
+        <div className="max-w-7xl mx-auto px-6 mb-6">
+          <ShowcaseHero />
+        </div>
         <Suspense fallback={<div className="max-w-7xl mx-auto px-6 py-12 text-sm" style={{ color: 'var(--muted)' }}>Loading…</div>}>
           <GalleryClient
             apps={apps}
@@ -65,6 +72,7 @@ export default function HomePage() {
             builtWithOptions={builtWithOptions}
             models={models}
             techStack={techStack}
+            allTags={allTags}
             categoryLabels={CATEGORY_LABELS}
             builtWithLabels={BUILT_WITH_LABELS}
           />
