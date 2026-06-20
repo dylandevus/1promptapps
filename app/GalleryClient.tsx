@@ -6,6 +6,7 @@ import Link from 'next/link'
 import type { AppEntry } from '@/lib/types'
 import { EDIT_LEVEL_LABELS, EDIT_LEVEL_COLORS, ISSUE_LABELS, ISSUE_COLORS, USABLE_COLOR } from '@/lib/constants'
 import { formatDuration, formatRelativeDate } from '@/lib/format'
+import { CopyButton } from '@/app/_components/CopyButton'
 
 interface Props {
   apps: AppEntry[]
@@ -34,78 +35,91 @@ function AppCard({ app, categoryLabels, builtWithLabels }: {
   builtWithLabels: Record<string, string>
 }) {
   return (
-    <Link
-      href={app.path}
-      className="group block rounded-xl overflow-hidden transition-shadow hover:shadow-md"
+    <div className="group relative rounded-xl overflow-hidden transition-shadow hover:shadow-md"
       style={{ background: 'var(--surface)', border: '1px solid var(--border)' }}
     >
-      {/* Thumbnail */}
-      <div className="w-full aspect-[16/10] overflow-hidden bg-stone-100">
-        <img
-          src={app.thumbnail}
-          alt={`${app.name} screenshot`}
-          className="w-full h-full object-cover transition-transform group-hover:scale-[1.02]"
-          loading="lazy"
-        />
-      </div>
-
-      {/* Content */}
-      <div className="p-4">
-        <h2 className="font-semibold text-sm mb-0.5 truncate" style={{ color: 'var(--ink)' }}>
-          {app.name}
-        </h2>
-        <p className="text-xs mb-3 line-clamp-2" style={{ color: 'var(--muted)' }}>
-          {app.tagline}
-        </p>
-
-        {/* Identity pills: category + model (purple) + usability */}
-        <div className="flex flex-wrap gap-1.5 mb-2">
-          <Badge
-            label={categoryLabels[app.category] ?? app.category}
-            color="bg-indigo-50 text-indigo-700 ring-indigo-600/20"
+      <Link
+        href={app.path}
+        className="block"
+      >
+        {/* Thumbnail */}
+        <div className="w-full aspect-[16/10] overflow-hidden bg-stone-100">
+          <img
+            src={app.thumbnail}
+            alt={`${app.name} screenshot`}
+            className="w-full h-full object-cover transition-transform group-hover:scale-[1.02]"
+            loading="lazy"
           />
-          {app.model && (
-            <Badge
-              label={app.effort && app.effort !== 'default' ? `${app.model} ${app.effort}` : app.model}
-              color="bg-violet-50 text-violet-700 ring-violet-600/20"
-            />
-          )}
-          {app.manualEditLevel !== 'none-claimed' && (
-            <Badge
-              label={EDIT_LEVEL_LABELS[app.manualEditLevel] ?? app.manualEditLevel}
-              color={EDIT_LEVEL_COLORS[app.manualEditLevel]}
-            />
-          )}
-          {app.issues.length === 0 ? (
-            <Badge label="Usable" color={USABLE_COLOR} />
-          ) : (
-            app.issues.map(issue => (
-              <Badge key={issue} label={ISSUE_LABELS[issue] ?? issue} color={ISSUE_COLORS[issue]} />
-            ))
-          )}
         </div>
 
-        {/* Tool · provider */}
-        <div className="text-xs mb-3" style={{ color: 'var(--muted)' }}>
-          {builtWithLabels[app.builtWith] ?? app.builtWith}
-          {app.provider && <span> · {app.provider}</span>}
-        </div>
+        {/* Content */}
+        <div className="p-4">
+          <h2 className="font-semibold text-sm mb-0.5 truncate" style={{ color: 'var(--ink)' }}>
+            {app.name}
+          </h2>
+          <p className="text-xs mb-3 line-clamp-2" style={{ color: 'var(--muted)' }}>
+            {app.tagline}
+          </p>
 
-        {/* Metrics row */}
-        <div className="flex items-center gap-3 text-xs" style={{ color: 'var(--muted)' }}>
-          {formatDuration(app.generationDurationSeconds, app.timeToFirstVersionMinutes) && (
-            <span>⏱ {formatDuration(app.generationDurationSeconds, app.timeToFirstVersionMinutes)}</span>
-          )}
-          <span>↻ {app.followUpCount + 1} prompt{app.followUpCount + 1 !== 1 ? 's' : ''}</span>
-          {app.sourceAvailable && <span>‹/› source</span>}
-          {formatRelativeDate(app.publishedAt) && (
-            <span className="ml-auto" suppressHydrationWarning title={app.publishedAt}>
-              {formatRelativeDate(app.publishedAt)}
-            </span>
-          )}
+          {/* Identity pills: category + model (purple) + usability */}
+          <div className="flex flex-wrap gap-1.5 mb-2">
+            <Badge
+              label={categoryLabels[app.category] ?? app.category}
+              color="bg-indigo-50 text-indigo-700 ring-indigo-600/20"
+            />
+            {app.model && (
+              <Badge
+                label={app.effort && app.effort !== 'default' ? `${app.model} ${app.effort}` : app.model}
+                color="bg-violet-50 text-violet-700 ring-violet-600/20"
+              />
+            )}
+            {app.manualEditLevel !== 'none-claimed' && (
+              <Badge
+                label={EDIT_LEVEL_LABELS[app.manualEditLevel] ?? app.manualEditLevel}
+                color={EDIT_LEVEL_COLORS[app.manualEditLevel]}
+              />
+            )}
+            {app.issues.length === 0 ? (
+              <Badge label="Usable" color={USABLE_COLOR} />
+            ) : (
+              app.issues.map(issue => (
+                <Badge key={issue} label={ISSUE_LABELS[issue] ?? issue} color={ISSUE_COLORS[issue]} />
+              ))
+            )}
+          </div>
+
+          {/* Tool · provider */}
+          <div className="text-xs mb-3" style={{ color: 'var(--muted)' }}>
+            {builtWithLabels[app.builtWith] ?? app.builtWith}
+            {app.provider && <span> · {app.provider}</span>}
+          </div>
+
+          {/* Metrics row */}
+          <div className="flex items-center gap-3 text-xs" style={{ color: 'var(--muted)' }}>
+            {formatDuration(app.generationDurationSeconds, app.timeToFirstVersionMinutes) && (
+              <span>⏱ {formatDuration(app.generationDurationSeconds, app.timeToFirstVersionMinutes)}</span>
+            )}
+            <span>↻ {app.followUpCount + 1} prompt{app.followUpCount + 1 !== 1 ? 's' : ''}</span>
+            {app.sourceAvailable && <span>‹/› source</span>}
+            {formatRelativeDate(app.publishedAt) && (
+              <span className="ml-auto" suppressHydrationWarning title={app.publishedAt}>
+                {formatRelativeDate(app.publishedAt)}
+              </span>
+            )}
+          </div>
         </div>
+      </Link>
+
+      {/* Copy prompt overlay — visible on card hover/focus */}
+      <div
+        className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 group-focus-within:opacity-100 transition-opacity z-10"
+        onClick={e => e.stopPropagation()}
+        onKeyDown={e => { if (e.key === 'Enter' || e.key === ' ') e.stopPropagation() }}
+        role="none"
+      >
+        <CopyButton text={app.promptText} label={`Copy ${app.name} prompt to clipboard`} />
       </div>
-    </Link>
+    </div>
   )
 }
 

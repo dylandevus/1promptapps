@@ -5,7 +5,7 @@ import { getApps, getApp } from '@/lib/registry'
 import { formatDuration } from '@/lib/format'
 import { CATEGORY_LABELS, BUILT_WITH_LABELS, EDIT_LEVEL_LABELS, EDIT_LEVEL_COLORS, REPRO_COLORS, ISSUE_LABELS, ISSUE_COLORS, USABLE_COLOR } from '@/lib/constants'
 import { DemoFrame } from './DemoFrame'
-import { CopyButton } from './CopyButton'
+import { CopyButton } from '@/app/_components/CopyButton'
 import { Comments } from './Comments'
 
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://1promptapps.com'
