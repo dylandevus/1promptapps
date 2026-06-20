@@ -7,6 +7,7 @@ import { CATEGORY_LABELS, BUILT_WITH_LABELS, EDIT_LEVEL_LABELS, EDIT_LEVEL_COLOR
 import { DemoFrame } from './DemoFrame'
 import { CopyButton } from '@/app/_components/CopyButton'
 import { RemixButtons } from '@/app/_components/RemixButtons'
+import { getSiblings, compareUrl } from '@/lib/siblings'
 import { Comments } from './Comments'
 
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://1promptapps.com'
@@ -54,6 +55,9 @@ export default async function AppPage({ params }: { params: Promise<Params> }) {
 
   const builtWithLabel = BUILT_WITH_LABELS[app.builtWith] ?? app.builtWith
   const categoryLabel = CATEGORY_LABELS[app.category] ?? app.category
+  const siblings = getSiblings(app)
+  const hasSiblings = siblings.length > 1
+  const firstSibling = hasSiblings ? siblings.find(s => s.slug !== app.slug) : null
 
   return (
     <div className="min-h-screen" style={{ background: 'var(--bg)' }}>
@@ -99,6 +103,15 @@ export default async function AppPage({ params }: { params: Promise<Params> }) {
             >
               💬<span className="hidden sm:inline">&nbsp;Comments</span>
             </a>
+            {firstSibling && (<>
+              <Link
+                href={compareUrl(app, firstSibling)}
+                className="h-7 px-2 sm:px-3 text-xs rounded-md font-medium flex items-center"
+                style={{ border: '1px solid var(--border)', color: 'var(--ink)', background: 'var(--surface)' }}
+              >
+                &#8644;<span className="hidden sm:inline">&nbsp;Compare</span>
+              </Link>
+            </>)}
             <a
               href={app.demoUrl}
               target="_blank"
@@ -238,6 +251,16 @@ export default async function AppPage({ params }: { params: Promise<Params> }) {
         </section>
 
         <RemixButtons promptText={app.promptText} />
+
+        {/* Compare across models */}
+        {firstSibling && (
+          <div className="mb-8 text-sm mt-4">
+            <span style={{ color: 'var(--muted)' }}>See how other models built this: </span>
+            <Link href={compareUrl(app, firstSibling)} className="font-medium hover:underline" style={{ color: 'var(--accent)' }}>
+              Compare {app.model} vs {firstSibling.model} &rarr;
+            </Link>
+          </div>
+        )}
 
         {/* Follow-up prompts */}
         {app.followUpPrompts.length > 0 && (
