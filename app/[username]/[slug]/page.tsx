@@ -9,6 +9,7 @@ import { CopyButton } from '@/app/_components/CopyButton'
 import { RemixButtons } from '@/app/_components/RemixButtons'
 import { getSiblings, compareUrl } from '@/lib/siblings'
 import { Comments } from './Comments'
+import CostBadges from '@/app/_components/CostBadges'
 
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://1promptapps.com'
 
@@ -176,6 +177,17 @@ export default async function AppPage({ params }: { params: Promise<Params> }) {
             )}
           </div>
         </div>
+
+        {/* Build-cost badge row */}
+        <CostBadges
+          model={app.model}
+          effort={app.effort}
+          provider={app.provider}
+          generationDurationSeconds={app.generationDurationSeconds}
+          followUpCount={app.followUpCount}
+          errorFixes={app.errorFixes}
+          timeToFirstVersionMinutes={app.timeToFirstVersionMinutes}
+        />
 
         {/* Proof strip */}
         <div
