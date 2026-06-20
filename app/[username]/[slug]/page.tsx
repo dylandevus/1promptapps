@@ -108,7 +108,7 @@ export default async function AppPage({ params }: { params: Promise<Params> }) {
             >
               Open<span className="hidden sm:inline">&nbsp;full app</span> ↗
             </a>
-            {app.sourceUrl && (
+            {app.sourceUrl && (<>
               <a
                 href={app.sourceUrl}
                 target="_blank"
@@ -119,7 +119,16 @@ export default async function AppPage({ params }: { params: Promise<Params> }) {
               >
                 ‹/›<span className="hidden sm:inline">&nbsp;Source</span>
               </a>
-            )}
+              <a
+                href={app.sourceUrl}
+                download={`${app.slug}.html`}
+                aria-label="Download HTML"
+                className="h-7 px-2 sm:px-3 text-xs rounded-md font-medium flex items-center"
+                style={{ border: '1px solid var(--border)', color: 'var(--ink)', background: 'var(--surface)' }}
+              >
+                ↓<span className="hidden sm:inline">&nbsp;Download</span>
+              </a>
+            </>)}
           </div>
         </div>
       </header>
