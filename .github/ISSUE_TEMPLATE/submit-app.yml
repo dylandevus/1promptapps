@@ -1,0 +1,185 @@
+name: Submit a prompt-built app (no-PR route)
+description: Dont want to fork and PR? Paste your app info here and a maintainer will convert it
+title: "[App] "
+labels: [app-submission, needs-pr-conversion]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for submitting your LLM-generated app to 1PromptApps!
+
+        **This is the no-PR route.** A maintainer will review your submission and convert it into a pull request for you. If you prefer to submit directly via git, see the [PR-based guide](https://github.com/dylandevus/1promptapps/blob/main/CONTRIBUTING.md).
+
+  - type: input
+    id: app-name
+    attributes:
+      label: App name
+      description: A short, catchy name for your app (3-60 chars)
+      placeholder: e.g. Stock Dashboard, Low Poly Village, Color Palette Generator
+    validations:
+      required: true
+
+  - type: input
+    id: app-url
+    attributes:
+      label: Live app URL
+      description: URL where we can see the app running (GitHub Pages, Vercel, your own domain, etc.)
+      placeholder: https://your-username.github.io/your-app
+    validations:
+      required: true
+
+  - type: textarea
+    id: prompt
+    attributes:
+      label: The prompt
+      description: The exact prompt you used to generate this app. Paste the full text.
+      placeholder: Paste the prompt you gave the LLM ...
+      render: text
+    validations:
+      required: true
+
+  - type: dropdown
+    id: model
+    attributes:
+      label: Model used
+      description: Which LLM did you use to generate this app?
+      options:
+        - Claude Opus 4.8 (Anthropic)
+        - Claude Sonnet 4.8 (Anthropic)
+        - GPT-5.5 (OpenAI)
+        - GPT-5.1 (OpenAI)
+        - GLM-5.2 (Zhipu AI)
+        - GLM-5.1 (Zhipu AI)
+        - Gemini 3.0 Pro (Google)
+        - Gemini 3.1 Pro (Google)
+        - Gemini 2.5 Pro (Google)
+        - DeepSeek V4 (DeepSeek)
+        - DeepSeek V3 (DeepSeek)
+        - Mistral Large (Mistral AI)
+        - Mistral Max (Mistral AI)
+        - Qwen 3 (Alibaba Cloud)
+        - Other (specify in notes)
+    validations:
+      required: true
+
+  - type: dropdown
+    id: builder
+    attributes:
+      label: Builder / tool used
+      description: What tool did you use to create the app?
+      options:
+        - Claude Code
+        - OpenCode
+        - Codex CLI
+        - Cursor
+        - v0 (Vercel)
+        - Lovable
+        - ChatGPT Canvas
+        - Claude Artifacts
+        - Gemini App
+        - Bolt.new
+        - Replit Agent
+        - Windsurf
+        - Manual (hand-coded after LLM output)
+        - Other (specify in notes)
+    validations:
+      required: true
+
+  - type: dropdown
+    id: category
+    attributes:
+      label: Category
+      description: What category best describes your app?
+      options:
+        - productivity
+        - games
+        - design
+        - utilities
+        - data-viz
+        - finance
+        - education
+        - entertainment
+        - dev-tools
+        - writing
+        - health
+        - music
+        - social
+        - other (specify in notes)
+    validations:
+      required: true
+
+  - type: dropdown
+    id: theme
+    attributes:
+      label: Theme preference
+      options:
+        - light
+        - dark
+        - auto
+    validations:
+      required: true
+
+  - type: input
+    id: generation-time
+    attributes:
+      label: Generation time (seconds)
+      description: How many seconds did the LLM take to generate the initial output?
+      placeholder: "30"
+
+  - type: input
+    id: followups
+    attributes:
+      label: Follow-up prompts (count)
+      description: How many follow-up prompts did you give (not counting error fixes)?
+      placeholder: "0"
+
+  - type: input
+    id: error-fixes
+    attributes:
+      label: Error-fix iterations (count)
+      description: How many times did you tell the LLM to fix an error?
+      placeholder: "0"
+
+  - type: dropdown
+    id: manual-edit-level
+    attributes:
+      label: Manual edit level
+      description: How much did you edit the output by hand after the LLM finished?
+      options:
+        - none-claimed (zero manual edits)
+        - minor (cosmetic tweaks only)
+        - moderate (structural changes)
+        - significant (mostly hand-written, LLM assisted only)
+    validations:
+      required: true
+
+  - type: textarea
+    id: notes
+    attributes:
+      label: Notes for the reviewer
+      description: Anything special about this app? Known limitations, interesting approach, unusual technique?
+      placeholder: e.g. "Uses canvas for rendering at 60fps. Runs entirely client-side."
+
+  - type: textarea
+    id: screenshot-urls
+    attributes:
+      label: Screenshot URLs (optional)
+      description: Links to screenshot images. Paste URLs for a thumbnail (1280x800 best) and a full-page screenshot if you have them.
+      placeholder: |
+        Thumbnail: https://...
+        Desktop: https://...
+
+  - type: checkboxes
+    id: checklist
+    attributes:
+      label: Submission checklist
+      description: Confirm these before submitting
+      options:
+        - label: My app is a **static HTML/CSS/JS** webapp — no server-side code, no API key required to run
+          required: true
+        - label: My app runs entirely in the browser — no install, no build step
+          required: true
+        - label: I grant permission to feature this app on the 1PromptApps gallery
+          required: true
+        - label: This submission contains **no secrets, private keys, or credentials**
+          required: true
