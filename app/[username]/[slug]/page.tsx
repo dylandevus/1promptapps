@@ -6,6 +6,7 @@ import { formatDuration } from '@/lib/format'
 import { CATEGORY_LABELS, BUILT_WITH_LABELS, EDIT_LEVEL_LABELS, EDIT_LEVEL_COLORS, REPRO_COLORS, ISSUE_LABELS, ISSUE_COLORS, USABLE_COLOR } from '@/lib/constants'
 import { DemoFrame } from './DemoFrame'
 import { CopyButton } from '@/app/_components/CopyButton'
+import { RemixButtons } from '@/app/_components/RemixButtons'
 import { Comments } from './Comments'
 
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://1promptapps.com'
@@ -226,6 +227,8 @@ export default async function AppPage({ params }: { params: Promise<Params> }) {
             {app.techStack.length > 0 && <span>Tech: {app.techStack.join(', ')}</span>}
           </div>
         </section>
+
+        <RemixButtons promptText={app.promptText} />
 
         {/* Follow-up prompts */}
         {app.followUpPrompts.length > 0 && (
